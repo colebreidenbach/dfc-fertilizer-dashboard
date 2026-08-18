@@ -322,16 +322,8 @@
 
       <!-- Blend calculator -->
       <div id="tool-blend" class="tool-panel p-5 hidden">
-        <div class="flex flex-wrap gap-2 mb-4">
-          <button type="button" id="blendModeUrea" onclick="setBlendMode('urea')" class="blend-mode-btn px-4 py-2 rounded-lg text-sm font-medium bg-dfc-red text-white">
-            Urea / bulk blend
-          </button>
-          <button type="button" id="blendModeStarter" onclick="setBlendMode('starter')" class="blend-mode-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
-            Starter (PKS) blend
-          </button>
-        </div>
-        <p id="blendModeHelp" class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          <strong>Urea blend:</strong> N mainly from urea; P from MAP/40 Rock; K from potash; S from AMS or Poly4.
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          Enter target analysis and total tons. Choose N, P, K, and S sources below — the estimate builds the blend from those products.
         </p>
         <div class="grid grid-cols-2 md:grid-cols-6 gap-3 mb-4">
           <div id="blendNWrap">
@@ -391,7 +383,7 @@
           </div>
         </div>
         <div id="blendResults" class="space-y-2 text-sm"></div>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Estimates only. Starter mode uses no urea — N comes only from MAP/AMS if present. Confirm exact blends with your DFC agronomist.</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Estimates only. Set Target N to 0 for a PKS-style blend with no dedicated nitrogen. Confirm exact blends with your DFC agronomist.</p>
       </div>
 
       <!-- Unit converter -->
@@ -832,6 +824,23 @@
   <script>
     const DASHBOARD_PASSWORD = "DFC2026";
 
+    function formatMoney(n, decimals) {
+      if (n == null || isNaN(n)) return '—';
+      const d = (decimals == null) ? 0 : decimals;
+      return Number(n).toLocaleString('en-US', {
+        minimumFractionDigits: d,
+        maximumFractionDigits: d
+      });
+    }
+    function money(n, decimals) {
+      if (n == null || isNaN(n) || n === 0 && decimals === undefined) {
+        /* still format 0 */
+      }
+      if (n == null || isNaN(n)) return '—';
+      return '$' + formatMoney(n, decimals == null ? 0 : decimals);
+    }
+
+
     function tryUnlock(e) {
       e.preventDefault();
       const input = document.getElementById('lockPassword');
@@ -998,7 +1007,7 @@
         } else if (prodUnit === 'gal') {
           if (rateUnit === 'gal') cost = rate * price;
         }
-        tr.querySelector('.acre-row-cost').textContent = cost ? '$' + cost.toFixed(2) : '—';
+        tr.querySelector('.acre-row-cost').textContent = cost ? money(cost, 2) : '—';
         totalPerAcre += cost;
         count++;
         const lbs = lbsProductPerAcre(rate, rateUnit, prodUnit, lbPerGal);
@@ -1008,8 +1017,8 @@
         kLbs += lbs * (k / 100);
         sLbs += lbs * (s / 100);
       });
-      document.getElementById('acrePerAcre').textContent = count ? '$' + totalPerAcre.toFixed(2) : '—';
-      document.getElementById('acreTotal').textContent = count && acres ? '$' + (totalPerAcre * acres).toFixed(2) : '—';
+      document.getElementById('acrePerAcre').textContent = count ? money(totalPerAcre, 2) : '—';
+      document.getElementById('acreTotal').textContent = count && acres ? money(totalPerAcre * acres, 2) : '—';
       document.getElementById('acreProductQty').textContent = count;
 
       const lbsEl = document.getElementById('acreAnalysisLbs');
@@ -1098,7 +1107,7 @@
       const unitLabel = { lb: 'lbs/acre', ton: 'tons/acre', gal: 'gal/acre' };
       let rowsHtml = data.rows.map(r =>
         '<tr><td>' + r.name + '</td><td>' + r.rate + ' ' + (unitLabel[r.rateUnit] || r.rateUnit) +
-        '</td><td>$' + r.price + '/' + r.prodUnit + '</td><td style="text-align:right">$' + r.cost.toFixed(2) + '</td></tr>'
+        '</td><td>$' + formatMoney(r.price, 0) + '/' + r.prodUnit + '</td><td style="text-align:right">' + money(r.cost, 2) + '</td></tr>'
       ).join('');
       const w = window.open('', '_blank');
       w.document.write('<!DOCTYPE html><html><head><title>DFC Cost per Acre Estimate</title><style>' +
@@ -1120,8 +1129,8 @@
       w.document.write('<div class="totals">');
       w.document.write('<div><span>Nutrients applied (lbs/acre)</span><span class="big">' + data.analysisLbs + '</span></div>');
       w.document.write('<div><span>Equivalent blend grade</span><span class="big">' + data.analysisGrade + '</span></div>');
-      w.document.write('<div><span>Combined cost per acre</span><span class="big">$' + data.totalPerAcre.toFixed(2) + '</span></div>');
-      w.document.write('<div><span>Total for ' + data.acres + ' acres</span><span class="big">$' + data.totalCost.toFixed(2) + '</span></div>');
+      w.document.write('<div><span>Combined cost per acre</span><span class="big">' + money(data.totalPerAcre, 2) + '</span></div>');
+      w.document.write('<div><span>Total for ' + data.acres + ' acres</span><span class="big">' + money(data.totalCost, 2) + '</span></div>');
       w.document.write('</div>');
       w.document.write('<footer>Central Dakota Frontier Cooperative · Napoleon, ND · 701-754-2252<br>Prices subject to change. Confirm with your DFC representative before ordering.</footer>');
       w.document.write('</body></html>');
@@ -1153,12 +1162,12 @@
       let text = 'DFC Cost per Acre Estimate\n';
       text += 'Field: ' + data.acres + ' acres · Prices as of Aug 17, 2026\n\n';
       data.rows.forEach(r => {
-        text += r.name + ' — ' + r.rate + ' ' + (unitLabel[r.rateUnit] || '') + ' @ $' + r.price + '/' + r.prodUnit + ' = $' + r.cost.toFixed(2) + '/acre\n';
+        text += r.name + ' — ' + r.rate + ' ' + (unitLabel[r.rateUnit] || '') + ' @ $' + formatMoney(r.price, 0) + '/' + r.prodUnit + ' = ' + money(r.cost, 2) + '/acre\n';
       });
       text += '\nNutrients applied: ' + data.analysisLbs + ' lbs/acre\n';
       text += 'Blend grade: ' + data.analysisGrade + '\n';
-      text += 'Combined: $' + data.totalPerAcre.toFixed(2) + '/acre\n';
-      text += 'Total for ' + data.acres + ' acres: $' + data.totalCost.toFixed(2) + '\n';
+      text += 'Combined: ' + money(data.totalPerAcre, 2) + '/acre\n';
+      text += 'Total for ' + data.acres + ' acres: ' + money(data.totalCost, 2) + '\n';
       text += '\nDFC · Napoleon, ND · 701-754-2252';
       navigator.clipboard.writeText(text).then(() => {
         alert('Summary copied to clipboard — paste into a text, email, or note.');
@@ -1182,41 +1191,13 @@
       const cost = tons * price;
       document.getElementById('ratePerAcre').textContent = lbsProductPerAcre.toFixed(1) + ' lbs';
       document.getElementById('rateTons').textContent = tons.toFixed(2);
-      document.getElementById('rateCost').textContent = '$' + cost.toFixed(0);
+      document.getElementById('rateCost').textContent = money(cost, 0);
     }
     calcAppRate();
 
-    // Blend calculator — Urea/bulk vs Starter (PKS)
-    let blendMode = 'urea';
-
-    function setBlendMode(mode) {
-      blendMode = mode;
-      const ureaBtn = document.getElementById('blendModeUrea');
-      const starterBtn = document.getElementById('blendModeStarter');
-      const help = document.getElementById('blendModeHelp');
-      const nWrap = document.getElementById('blendNWrap');
-      const nSourceWrap = document.getElementById('blendNSourceWrap');
-      if (mode === 'urea') {
-        ureaBtn.className = 'blend-mode-btn px-4 py-2 rounded-lg text-sm font-medium bg-dfc-red text-white';
-        starterBtn.className = 'blend-mode-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200';
-        help.innerHTML = '<strong>Urea / bulk blend:</strong> Choose N, P, K, and S sources. N is finished with urea or AMS after P/K/S are set.';
-        nWrap.style.display = '';
-        if (nSourceWrap) nSourceWrap.style.display = '';
-        if (!document.getElementById('blendN').value) document.getElementById('blendN').value = 20;
-      } else {
-        starterBtn.className = 'blend-mode-btn px-4 py-2 rounded-lg text-sm font-medium bg-dfc-red text-white';
-        ureaBtn.className = 'blend-mode-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200';
-        help.innerHTML = '<strong>Starter (PKS) blend:</strong> No dedicated N source. Built from P, K, and S products only. Any N is incidental from MAP/AMS.';
-        nWrap.style.display = 'none';
-        if (nSourceWrap) nSourceWrap.style.display = 'none';
-        document.getElementById('blendN').value = 0;
-      }
-      calcBlend();
-    }
-
+    // Blend calculator — driven by NPKS source dropdowns
     function calcBlend() {
-      const mode = blendMode;
-      const targetN = mode === 'starter' ? 0 : (parseFloat(document.getElementById('blendN').value) || 0);
+      const targetN = parseFloat(document.getElementById('blendN').value) || 0;
       const targetP = parseFloat(document.getElementById('blendP').value) || 0;
       const targetK = parseFloat(document.getElementById('blendK').value) || 0;
       const targetS = parseFloat(document.getElementById('blendS').value) || 0;
@@ -1283,26 +1264,23 @@
         }
       }
 
-      // 6) Nitrogen (urea/bulk mode only) — preferred N source after credit from existing ingredients
+      // 6) Nitrogen — preferred N source after credit from existing ingredients
       let nFromOthers = mix.map * 11 + mix.rock40 * 12 + mix.ams * 21;
-      if (mode === 'urea') {
-        let nStillNeeded = Math.max(0, targetN - nFromOthers);
-        if (nStillNeeded > 0) {
-          if (nSource === 'ams') {
-            mix.ams = mix.ams + (nStillNeeded / 21);
-          } else if (nSource === 'map') {
-            // Use MAP as N source (also adds P — may exceed P target)
-            mix.map = mix.map + (nStillNeeded / 11);
-          } else if (nSource === 'rock40') {
-            // Use 40 Rock as N source (also adds P and S)
-            mix.rock40 = mix.rock40 + (nStillNeeded / 12);
-          } else {
-            // urea (default)
-            mix.urea = nStillNeeded / 46;
-          }
+      let nStillNeeded = Math.max(0, targetN - nFromOthers);
+      if (nStillNeeded > 0) {
+        if (nSource === 'ams') {
+          mix.ams = mix.ams + (nStillNeeded / 21);
+        } else if (nSource === 'map') {
+          // MAP as N source (also adds P — may exceed P target)
+          mix.map = mix.map + (nStillNeeded / 11);
+        } else if (nSource === 'rock40') {
+          // 40 Rock as N source (also adds P and S)
+          mix.rock40 = mix.rock40 + (nStillNeeded / 12);
+        } else {
+          // urea (default)
+          mix.urea = nStillNeeded / 46;
         }
       }
-      // starter: no dedicated N source
 
       // Scale so ingredients sum to ~1.0 of blend (if over, flag it)
       let sumFrac = mix.urea + mix.map + mix.rock40 + mix.potash + mix.ams + mix.poly4;
@@ -1331,11 +1309,10 @@
         }
       });
 
-      const modeLabel = mode === 'urea' ? 'Urea / bulk blend' : 'Starter (PKS) blend';
       let grade = delN.toFixed(1) + '-' + delP.toFixed(1) + '-' + delK.toFixed(1) + '-' + delS.toFixed(1) + 'S';
 
       let html = '<div class="bg-gray-50 dark:bg-gray-700/40 rounded-lg p-4 space-y-3">';
-      html += '<div class="font-semibold">' + modeLabel + ' · target ' + (mode === 'urea' ? targetN + '-' : '0-') + targetP + '-' + targetK + '-' + targetS + 'S · ' + tons + ' tons</div>';
+      html += '<div class="font-semibold">Blend estimate · target ' + targetN + '-' + targetP + '-' + targetK + '-' + targetS + 'S · ' + tons + ' tons</div>';
       html += '<div class="text-sm">Estimated delivered grade: <strong>' + grade + '</strong></div>';
 
       if (sumFrac > 1.02) {
@@ -1346,15 +1323,13 @@
 
       html += '<table class="w-full text-sm mt-2"><thead><tr class="text-xs uppercase text-gray-500 border-b border-gray-200 dark:border-gray-600"><th class="text-left py-1">Product</th><th class="text-right">% of blend</th><th class="text-right">Tons</th><th class="text-right">Est. $</th></tr></thead><tbody>';
       lines.forEach(l => {
-        html += '<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-1.5">' + l.name + '</td><td class="text-right">' + l.frac.toFixed(1) + '%</td><td class="text-right">' + l.tons.toFixed(2) + '</td><td class="text-right">$' + l.cost.toFixed(0) + '</td></tr>';
+        html += '<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-1.5">' + l.name + '</td><td class="text-right">' + l.frac.toFixed(1) + '%</td><td class="text-right">' + l.tons.toFixed(2) + '</td><td class="text-right">' + money(l.cost, 0) + '</td></tr>';
       });
       html += '</tbody></table>';
-      html += '<div class="flex justify-between font-semibold pt-2"><span>Estimated product cost</span><span>$' + totalCost.toFixed(0) + '</span></div>';
-      html += '<div class="text-xs text-gray-500">$' + (tons > 0 ? (totalCost / tons).toFixed(0) : '0') + ' per ton of blend</div>';
+      html += '<div class="flex justify-between font-semibold pt-2"><span>Estimated product cost</span><span>' + money(totalCost, 0) + '</span></div>';
+      html += '<div class="text-xs text-gray-500">' + money(tons > 0 ? (totalCost / tons) : 0, 0) + ' per ton of blend</div>';
 
-      if (mode === 'starter' && delN > 0.3) {
-        html += '<div class="text-xs text-gray-500 mt-2">Incidental N from MAP/AMS: ~' + delN.toFixed(1) + '%. No urea used.</div>';
-      }
+
       html += '</div>';
       el.innerHTML = html;
     }
