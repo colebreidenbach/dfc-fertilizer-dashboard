@@ -27,7 +27,7 @@
     .star-btn { cursor: pointer; color: #d1d5db; transition: color 0.15s; }
     .star-btn.favorited { color: #f59e0b; }
     .star-btn:hover { color: #f59e0b; }
-    #historyModal, #quoteModal, #changelogModal { backdrop-filter: blur(4px); }
+    #historyModal, #quoteModal, #changelogModal, #watchModal { backdrop-filter: blur(4px); }
     .tool-tab { transition: all 0.15s; }
     .tool-tab.active { background: #C8102E; color: white; }
     @media print {
@@ -78,6 +78,10 @@
         <div class="flex items-center gap-2 no-print">
           <button onclick="openHistory()" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2" title="Pricing History">
             <i class="fas fa-chart-line"></i> <span class="hidden sm:inline">History</span>
+          </button>
+          <button onclick="openWatchList()" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 relative" title="Customer Watch List">
+            <i class="fas fa-user-clock"></i> <span class="hidden sm:inline">Watch List</span>
+            <span id="watchBadge" class="hidden absolute -top-1 -right-1 bg-dfc-red text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1">0</span>
           </button>
           <button onclick="openQuote()" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2" title="Customer Quote">
             <i class="fas fa-file-invoice"></i> <span class="hidden sm:inline">Quote</span>
@@ -791,6 +795,61 @@
     </div>
   </div>
 
+  <!-- Watch List Modal -->
+  <div id="watchModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4 no-print">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+      <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
+        <h2 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-user-clock text-dfc-red"></i> Customer Watch List</h2>
+        <button onclick="closeWatchList()" class="text-gray-500 hover:text-gray-800 dark:hover:text-white text-2xl leading-none">&times;</button>
+      </div>
+      <div class="p-6">
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Track customers who are not ready to buy yet but may want product later this season. Saved on this device only.</p>
+
+        <div class="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-4 mb-5 border border-gray-100 dark:border-gray-600">
+          <h3 class="font-semibold text-sm mb-3" id="watchFormTitle">Add customer</h3>
+          <input type="hidden" id="watchEditId" value="" />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1">Customer name *</label>
+              <input type="text" id="watchName" placeholder="Name" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1">Phone / contact</label>
+              <input type="text" id="watchContact" placeholder="Phone or email" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1">Product interest</label>
+              <input type="text" id="watchInterest" placeholder="e.g. NH3, Urea, MAP" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1">Follow up by</label>
+              <input type="date" id="watchFollowUp" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="block text-xs font-medium text-gray-500 mb-1">Notes</label>
+            <textarea id="watchNotes" rows="2" placeholder="Why they are waiting, acres, program notes…" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm"></textarea>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="saveWatchEntry()" class="bg-dfc-red hover:bg-dfc-darkred text-white px-4 py-2 rounded-lg text-sm font-medium">
+              <i class="fas fa-save mr-1"></i> <span id="watchSaveLabel">Save to watch list</span>
+            </button>
+            <button onclick="resetWatchForm()" class="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 px-4 py-2 rounded-lg text-sm font-medium">Clear form</button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-semibold text-sm">Watching (<span id="watchCount">0</span>)</h3>
+          <button onclick="exportWatchList()" class="text-xs text-gray-500 hover:text-dfc-red"><i class="fas fa-file-csv mr-1"></i>Export CSV</button>
+        </div>
+        <div id="watchListEmpty" class="text-sm text-gray-500 py-6 text-center border border-dashed border-gray-200 dark:border-gray-600 rounded-xl">
+          No customers on the watch list yet.
+        </div>
+        <div id="watchList" class="space-y-3"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Quote Modal -->
   <div id="quoteModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4 no-print">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -1360,6 +1419,149 @@
       document.getElementById('uGals').value = (l / 10.6).toFixed(1);
     }
 
+    // Customer Watch List
+    function getWatchList() {
+      try { return JSON.parse(localStorage.getItem('dfc-watchlist') || '[]'); } catch { return []; }
+    }
+    function saveWatchList(arr) {
+      localStorage.setItem('dfc-watchlist', JSON.stringify(arr));
+      renderWatchList();
+      updateWatchBadge();
+    }
+    function openWatchList() {
+      document.getElementById('watchModal').classList.remove('hidden');
+      renderWatchList();
+    }
+    function closeWatchList() {
+      document.getElementById('watchModal').classList.add('hidden');
+      resetWatchForm();
+    }
+    function resetWatchForm() {
+      document.getElementById('watchEditId').value = '';
+      document.getElementById('watchName').value = '';
+      document.getElementById('watchContact').value = '';
+      document.getElementById('watchInterest').value = '';
+      document.getElementById('watchFollowUp').value = '';
+      document.getElementById('watchNotes').value = '';
+      document.getElementById('watchFormTitle').textContent = 'Add customer';
+      document.getElementById('watchSaveLabel').textContent = 'Save to watch list';
+    }
+    function saveWatchEntry() {
+      const name = document.getElementById('watchName').value.trim();
+      if (!name) { alert('Customer name is required.'); return; }
+      const entry = {
+        id: document.getElementById('watchEditId').value || ('w' + Date.now()),
+        name: name,
+        contact: document.getElementById('watchContact').value.trim(),
+        interest: document.getElementById('watchInterest').value.trim(),
+        followUp: document.getElementById('watchFollowUp').value,
+        notes: document.getElementById('watchNotes').value.trim(),
+        created: new Date().toISOString().slice(0, 10)
+      };
+      let list = getWatchList();
+      const idx = list.findIndex(x => x.id === entry.id);
+      if (idx >= 0) {
+        entry.created = list[idx].created || entry.created;
+        list[idx] = entry;
+      } else {
+        list.unshift(entry);
+      }
+      // Sort: follow-up date soonest first, blank dates last
+      list.sort((a, b) => {
+        if (!a.followUp && !b.followUp) return 0;
+        if (!a.followUp) return 1;
+        if (!b.followUp) return -1;
+        return a.followUp.localeCompare(b.followUp);
+      });
+      saveWatchList(list);
+      resetWatchForm();
+    }
+    function editWatchEntry(id) {
+      const entry = getWatchList().find(x => x.id === id);
+      if (!entry) return;
+      document.getElementById('watchEditId').value = entry.id;
+      document.getElementById('watchName').value = entry.name || '';
+      document.getElementById('watchContact').value = entry.contact || '';
+      document.getElementById('watchInterest').value = entry.interest || '';
+      document.getElementById('watchFollowUp').value = entry.followUp || '';
+      document.getElementById('watchNotes').value = entry.notes || '';
+      document.getElementById('watchFormTitle').textContent = 'Edit customer';
+      document.getElementById('watchSaveLabel').textContent = 'Update';
+      document.getElementById('watchName').focus();
+    }
+    function removeWatchEntry(id) {
+      if (!confirm('Remove this customer from the watch list?')) return;
+      saveWatchList(getWatchList().filter(x => x.id !== id));
+    }
+    function markWatchDone(id) {
+      if (!confirm('Mark as done and remove from watch list?')) return;
+      saveWatchList(getWatchList().filter(x => x.id !== id));
+    }
+    function followUpStatus(dateStr) {
+      if (!dateStr) return { label: 'No date', cls: 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300' };
+      const today = new Date(); today.setHours(0,0,0,0);
+      const d = new Date(dateStr + 'T00:00:00');
+      const diff = Math.round((d - today) / 86400000);
+      if (diff < 0) return { label: 'Overdue', cls: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' };
+      if (diff === 0) return { label: 'Today', cls: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' };
+      if (diff <= 7) return { label: 'This week', cls: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300' };
+      return { label: dateStr, cls: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300' };
+    }
+    function renderWatchList() {
+      const list = getWatchList();
+      const container = document.getElementById('watchList');
+      const empty = document.getElementById('watchListEmpty');
+      document.getElementById('watchCount').textContent = list.length;
+      if (!list.length) {
+        empty.classList.remove('hidden');
+        container.innerHTML = '';
+        return;
+      }
+      empty.classList.add('hidden');
+      container.innerHTML = list.map(e => {
+        const st = followUpStatus(e.followUp);
+        return '<div class="border border-gray-200 dark:border-gray-600 rounded-xl p-4 bg-white dark:bg-gray-800">' +
+          '<div class="flex flex-wrap items-start justify-between gap-2 mb-1">' +
+            '<div class="font-semibold">' + escapeHtml(e.name) + '</div>' +
+            '<span class="text-xs px-2 py-0.5 rounded-full ' + st.cls + '">' + st.label + '</span>' +
+          '</div>' +
+          (e.contact ? '<div class="text-sm text-gray-600 dark:text-gray-300"><i class="fas fa-phone text-xs mr-1"></i>' + escapeHtml(e.contact) + '</div>' : '') +
+          (e.interest ? '<div class="text-sm text-gray-600 dark:text-gray-300 mt-0.5"><i class="fas fa-seedling text-xs mr-1"></i>' + escapeHtml(e.interest) + '</div>' : '') +
+          (e.notes ? '<div class="text-sm text-gray-500 dark:text-gray-400 mt-1">' + escapeHtml(e.notes) + '</div>' : '') +
+          '<div class="flex flex-wrap gap-2 mt-3 text-xs">' +
+            '<button onclick="editWatchEntry(\'' + e.id + '\')" class="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600">Edit</button>' +
+            '<button onclick="markWatchDone(\'' + e.id + '\')" class="px-2.5 py-1 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100">Done</button>' +
+            '<button onclick="removeWatchEntry(\'' + e.id + '\')" class="px-2.5 py-1 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">Remove</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+    function escapeHtml(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function updateWatchBadge() {
+      const n = getWatchList().length;
+      const badge = document.getElementById('watchBadge');
+      if (!badge) return;
+      if (n > 0) {
+        badge.textContent = n > 99 ? '99+' : n;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+    function exportWatchList() {
+      const list = getWatchList();
+      if (!list.length) { alert('Watch list is empty.'); return; }
+      let csv = 'Name,Contact,Interest,Follow Up,Notes,Added\n';
+      list.forEach(e => {
+        const q = (v) => '"' + String(v || '').replace(/"/g, '""') + '"';
+        csv += [q(e.name), q(e.contact), q(e.interest), q(e.followUp), q(e.notes), q(e.created)].join(',') + '\n';
+      });
+      downloadFile(csv, 'DFC_Customer_Watch_List.csv', 'text/csv');
+    }
+    updateWatchBadge();
+
     // Favorites
     function getFavorites() {
       try { return JSON.parse(localStorage.getItem('dfc-favorites') || '[]'); } catch { return []; }
@@ -1589,6 +1791,7 @@
         closeHistory();
         closeQuote();
         closeChangelog();
+        closeWatchList();
       }
     });
   </script>
