@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DFC Fertilizer Price Dashboard | Central Dakota Frontier Cooperative</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { dfc: { red: '#C8102E', darkred: '#9B0C24', gold: '#D4A017', navy: '#1a2332' } } } }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .card-hover { transition: all 0.2s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1); }
+    .section-header { background: linear-gradient(90deg, #C8102E 0%, #9B0C24 100%); }
+    .badge-call { background: #fef3c7; color: #92400e; }
+    .badge-price { background: #dcfce7; color: #166534; }
+    .dark .badge-call { background: #78350f; color: #fef3c7; }
+    .dark .badge-price { background: #14532d; color: #bbf7d0; }
+    .product-checkbox { accent-color: #C8102E; width: 1.1rem; height: 1.1rem; }
+    #historyModal { backdrop-filter: blur(4px); }
+    @media print { .no-print { display: none !important; } body { background: white !important; color: black !important; } }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen transition-colors duration-200 dark:bg-gray-900 dark:text-gray-100">
+  <!-- Password Lock Screen -->
+  <div id="lockScreen" class="fixed inset-0 z-[100] bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center border border-gray-200 dark:border-gray-700">
+      <div class="mb-2">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-dfc-red text-white text-2xl font-bold mb-3">DFC</div>
+      </div>
+      <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-1">Fertilizer Price Dashboard</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Central Dakota Frontier Cooperative</p>
+      <form id="lockForm" onsubmit="return tryUnlock(event)" class="space-y-4">
+        <div>
+          <input type="password" id="lockPassword" placeholder="Enter password" autocomplete="current-password"
+            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg text-center text-sm focus:ring-2 focus:ring-dfc-red focus:border-dfc-red outline-none"
+            autofocus />
+        </div>
+        <p id="lockError" class="text-sm text-red-600 hidden">Incorrect password. Try again.</p>
+        <button type="submit" class="w-full bg-dfc-red hover:bg-dfc-darkred text-white font-medium py-3 rounded-lg transition">
+          Unlock Dashboard
+        </button>
+      </form>
+      <p class="text-xs text-gray-400 mt-6">Authorized personnel only</p>
+    </div>
+  </div>
+
+
+  <!-- Top Logo Banner -->
+  <div class="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 py-5 no-print">
+    <div class="max-w-7xl mx-auto px-4 flex justify-center">
+      <img src="data:image/png;base64,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" alt="Central Dakota Frontier Cooperative" class="h-20 sm:h-24 w-auto drop-shadow-md" 
+           onerror="this.outerHTML='<div class=\'text-center\'><div class=\'inline-block bg-dfc-red text-white font-bold text-3xl px-8 py-3 rounded-full tracking-wider\'>DFC</div><div class=\'text-sm mt-2 text-gray-500 dark:text-gray-400\'>Central Dakota Frontier Cooperative</div></div>'" />
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-dfc-navy text-white shadow-lg sticky top-0 z-40 dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14">
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight">Fertilizer Price Dashboard</h1>
+          <p class="text-xs text-gray-300">Current Pricing · August 17, 2026</p>
+        </div>
+        <div class="flex items-center gap-2 no-print">
+          <button onclick="openHistory()" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2" title="Pricing History">
+            <i class="fas fa-chart-line"></i> <span class="hidden sm:inline">History</span>
+          </button>
+          <button onclick="toggleDarkMode()" class="bg-white/10 hover:bg-white/20 text-white p-2.5 rounded-lg transition" title="Toggle dark mode">
+            <i class="fas fa-moon" id="darkIcon"></i>
+          </button>
+          <button onclick="window.print()" class="bg-dfc-red hover:bg-dfc-darkred text-white px-3 py-2 rounded-lg text-sm font-medium transition">
+            <i class="fas fa-print"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 card-hover">
+        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">NH3</div>
+        <div class="mt-1 text-2xl font-bold text-dfc-red">$790<span class="text-sm font-normal text-gray-500">/ton</span></div>
+        <div class="text-xs text-gray-400 mt-1">$0.482/lb N</div>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 card-hover">
+        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Urea</div>
+        <div class="mt-1 text-2xl font-bold text-green-700 dark:text-green-400">$530<span class="text-sm font-normal text-gray-500">/ton</span></div>
+        <div class="text-xs text-gray-400 mt-1">$0.576/lb N</div>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 card-hover">
+        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">MAP</div>
+        <div class="mt-1 text-2xl font-bold text-blue-700 dark:text-blue-400">$935<span class="text-sm font-normal text-gray-500">/ton</span></div>
+        <div class="text-xs text-gray-400 mt-1">$0.899/lb P₂O₅</div>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 card-hover">
+        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Products</div>
+        <div class="mt-1 text-2xl font-bold">24</div>
+        <div class="text-xs text-gray-400 mt-1">Select & Export</div>
+      </div>
+    </div>
+
+    <!-- Export Bar -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 mb-6 no-print flex flex-col sm:flex-row gap-3 items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button onclick="toggleSelectAll()" id="selectAllBtn" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm px-4 py-2 rounded-lg font-medium transition">
+          <i class="fas fa-check-double mr-1"></i> Select All
+        </button>
+        <span class="text-sm text-gray-500 dark:text-gray-400"><span id="selectedCount">0</span> selected</span>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="exportCSV()" class="bg-dfc-red hover:bg-dfc-darkred text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
+          <i class="fas fa-file-csv"></i> Export CSV
+        </button>
+        <button onclick="exportJSON()" class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
+          <i class="fas fa-file-code"></i> Export JSON
+        </button>
+      </div>
+    </div>
+
+    <!-- NPK Calculator -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 mb-6">
+      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-calculator text-dfc-red"></i> Cost per Pound N-P-K Calculator</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Select Product</label>
+          <select id="calcProduct" onchange="loadProduct()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
+            <option value="">— Custom / Select —</option>
+            <option value="nh3" data-n="82" data-p="0" data-k="0" data-price="790">NH3 (82-0-0) · $790</option>
+            <option value="urea" data-n="46" data-p="0" data-k="0" data-price="530">Urea (46-0-0) · $530</option>
+            <option value="map" data-n="11" data-p="52" data-k="0" data-price="935">MAP (11-52-0) · $935</option>
+            <option value="40rock" data-n="12" data-p="40" data-k="0" data-price="940">40 Rock (12-40-0) · $940</option>
+            <option value="potash" data-n="0" data-p="0" data-k="60" data-price="470">Potash (0-0-60) · $470</option>
+            <option value="ams" data-n="21" data-p="0" data-k="0" data-price="540">AMS (21-0-0) · $540</option>
+            <option value="poly4" data-n="0" data-p="0" data-k="14" data-price="525">Poly4 (0-0-14) · $525</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Price ($/ton)</label>
+          <input type="number" id="calcPrice" value="530" step="1" min="0" oninput="calculateNPK()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">N % · P₂O₅ % · K₂O %</label>
+          <div class="flex gap-2">
+            <input type="number" id="calcN" value="46" step="0.1" min="0" max="100" oninput="calculateNPK()" class="w-1/3 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-2 text-sm text-center" />
+            <input type="number" id="calcP" value="0" step="0.1" min="0" max="100" oninput="calculateNPK()" class="w-1/3 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-2 text-sm text-center" />
+            <input type="number" id="calcK" value="0" step="0.1" min="0" max="100" oninput="calculateNPK()" class="w-1/3 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-2 text-sm text-center" />
+          </div>
+        </div>
+        <div class="flex items-end">
+          <button onclick="calculateNPK()" class="w-full bg-dfc-red hover:bg-dfc-darkred text-white py-2 rounded-lg text-sm font-medium">Calculate</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-4 text-center border border-green-100 dark:border-green-800">
+          <div class="text-xs font-medium text-green-700 dark:text-green-400 uppercase">$/lb N</div>
+          <div class="text-2xl font-bold text-green-800 dark:text-green-300 mt-1" id="resultN">$0.576</div>
+        </div>
+        <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 text-center border border-blue-100 dark:border-blue-800">
+          <div class="text-xs font-medium text-blue-700 dark:text-blue-400 uppercase">$/lb P₂O₅</div>
+          <div class="text-2xl font-bold text-blue-800 dark:text-blue-300 mt-1" id="resultP">—</div>
+        </div>
+        <div class="bg-amber-50 dark:bg-amber-900/30 rounded-lg p-4 text-center border border-amber-100 dark:border-amber-800">
+          <div class="text-xs font-medium text-amber-700 dark:text-amber-400 uppercase">$/lb K₂O</div>
+          <div class="text-2xl font-bold text-amber-800 dark:text-amber-300 mt-1" id="resultK">—</div>
+        </div>
+      </div>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Formula: $/ton ÷ (analysis % × 20) = $/lb nutrient</p>
+    </div>
+
+    <!-- Search -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 mb-6 no-print">
+      <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div class="relative w-full sm:w-80">
+          <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input type="text" id="searchInput" placeholder="Search products..." class="w-full pl-10 pr-4 py-2.5 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg text-sm" onkeyup="filterProducts()" />
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          <button onclick="filterCategory('all')" class="filter-btn active px-3 py-2 rounded-lg text-sm font-medium bg-dfc-red text-white" data-cat="all">All</button>
+          <button onclick="filterCategory('ammonia')" class="filter-btn px-3 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200" data-cat="ammonia">Ammonia</button>
+          <button onclick="filterCategory('dry')" class="filter-btn px-3 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200" data-cat="dry">Dry</button>
+          <button onclick="filterCategory('liquid')" class="filter-btn px-3 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200" data-cat="liquid">Liquid</button>
+          <button onclick="filterCategory('other')" class="filter-btn px-3 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200" data-cat="other">Other</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Tables -->
+    <div id="productsContainer" class="space-y-6">
+      <section class="product-section" data-category="ammonia">
+        <div class="section-header text-white px-5 py-3 rounded-t-xl flex items-center gap-2"><i class="fas fa-flask"></i><h2 class="font-semibold text-lg">Ammonia</h2></div>
+        <div class="bg-white dark:bg-gray-800 rounded-b-xl shadow-sm border border-t-0 border-gray-100 dark:border-gray-700 overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 uppercase text-xs">
+              <tr><th class="px-4 py-3 w-10 no-print"></th><th class="px-4 py-3 text-left">Product</th><th class="px-4 py-3 text-left">Analysis</th><th class="px-4 py-3 text-right">Price</th></tr>
+            </thead>
+            <tbody>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="nh3 ammonia" data-product="NH3" data-analysis="82-0-0" data-price="790" data-unit="ton">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">NH3</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">82-0-0</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$790/ton</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="product-section" data-category="dry">
+        <div class="section-header text-white px-5 py-3 rounded-t-xl flex items-center gap-2"><i class="fas fa-seedling"></i><h2 class="font-semibold text-lg">Dry Fertilizer</h2></div>
+        <div class="bg-white dark:bg-gray-800 rounded-b-xl shadow-sm border border-t-0 border-gray-100 dark:border-gray-700 overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 uppercase text-xs">
+              <tr><th class="px-4 py-3 w-10 no-print"></th><th class="px-4 py-3 text-left">Product</th><th class="px-4 py-3 text-left">Analysis</th><th class="px-4 py-3 text-right">Price</th></tr>
+            </thead>
+            <tbody>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="urea" data-product="Urea" data-analysis="46-0-0" data-price="530" data-unit="ton">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">Urea</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">46-0-0</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$530/ton</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="map" data-product="MAP" data-analysis="11-52-0" data-price="935" data-unit="ton">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">MAP</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">11-52-0</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$935/ton</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="40 rock" data-product="40 Rock" data-analysis="12-40-0-6.5S" data-price="940" data-unit="ton">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">40 Rock</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">12-40-0-6.5S</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$940/ton</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="potash" data-product="Potash" data-analysis="0-0-60" data-price="470" data-unit="ton">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">Potash</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">0-0-60</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$470/ton</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="ams" data-product="AMS" data-analysis="21-0-0-24S" data-price="540" data-unit="ton">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">AMS</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">21-0-0-24S</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$540/ton</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="poly4" data-product="Poly4" data-analysis="0-0-14-19S-11Ca-4Mg" data-price="525" data-unit="ton">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">Poly4</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">0-0-14-19S-11Ca-4Mg</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$525/ton</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="product-section" data-category="liquid">
+        <div class="section-header text-white px-5 py-3 rounded-t-xl flex items-center gap-2"><i class="fas fa-tint"></i><h2 class="font-semibold text-lg">Liquid</h2></div>
+        <div class="bg-white dark:bg-gray-800 rounded-b-xl shadow-sm border border-t-0 border-gray-100 dark:border-gray-700 overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 uppercase text-xs">
+              <tr><th class="px-4 py-3 w-10 no-print"></th><th class="px-4 py-3 text-left">Product</th><th class="px-4 py-3 text-left">Analysis</th><th class="px-4 py-3 text-right">Price</th></tr>
+            </thead>
+            <tbody>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="optistart gold" data-product="Optistart Gold" data-analysis="6-20-5-2S-0.05Mn-0.10Zn" data-price="6" data-unit="gal">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">Optistart Gold</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">6-20-5-2S-0.05Mn-0.10Zn</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$6/gal</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="6-24-6" data-product="6-24-6" data-analysis="6-24-6" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">6-24-6</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">6-24-6</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="7-23-5" data-product="7-23-5" data-analysis="7-23-5" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">7-23-5</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">7-23-5</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="8-20-5-4" data-product="8-20-5-4" data-analysis="8-20-5-4S-0.5Zn" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">8-20-5-4</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">8-20-5-4S-0.5Zn</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="10-34-0" data-product="10-34-0" data-analysis="10-34-0" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">10-34-0</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">—</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="uan" data-product="UAN" data-analysis="28-0-0" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">UAN</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">28-0-0</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="ats" data-product="ATS" data-analysis="12-0-0-26S" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">ATS</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">12-0-0-26S</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="kts" data-product="KTS" data-analysis="0-0-25-17S" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">KTS</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">0-0-25-17S</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="product-section" data-category="other">
+        <div class="section-header text-white px-5 py-3 rounded-t-xl flex items-center gap-2"><i class="fas fa-boxes"></i><h2 class="font-semibold text-lg">Other Products</h2></div>
+        <div class="bg-white dark:bg-gray-800 rounded-b-xl shadow-sm border border-t-0 border-gray-100 dark:border-gray-700 overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 uppercase text-xs">
+              <tr><th class="px-4 py-3 w-10 no-print"></th><th class="px-4 py-3 text-left">Product</th><th class="px-4 py-3 text-left">Analysis</th><th class="px-4 py-3 text-right">Price</th></tr>
+            </thead>
+            <tbody>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="am-chlor" data-product="Am-Chlor" data-analysis="25-0-0-64S" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">Am-Chlor</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">25-0-0-64S</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="arctic s" data-product="Arctic S" data-analysis="11-0-0-75S" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">Arctic S</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">11-0-0-75S</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="croplex" data-product="Croplex" data-analysis="12-40-0-10S" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">Croplex</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">12-40-0-10S</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="crystal green" data-product="Crystal Green" data-analysis="7-33-0" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">Crystal Green</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">7-33-0</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="esn" data-product="ESN" data-analysis="44-0-0" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">ESN</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">44-0-0</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="pell lime" data-product="Pell Lime" data-analysis="—" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">Pell Lime</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">—</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="pkplus" data-product="PkPlus" data-analysis="0-24-6-9S-15Ca-2Mg" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">PkPlus</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">0-24-6-9S-15Ca-2Mg</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="supercal gypsum" data-product="Supercal Gypsum" data-analysis="0-0-0-17S-21Ca" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">Supercal Gypsum</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">0-0-0-17S-21Ca</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="tiger 90" data-product="Tiger 90" data-analysis="0-0-0-90S" data-price="Call" data-unit="">
+                <td class="px-4 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-4 py-3.5 font-medium">Tiger 90</td><td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">0-0-0-90S</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div class="mt-8 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-5">
+      <h3 class="font-semibold text-amber-900 dark:text-amber-200 flex items-center gap-2 mb-3"><i class="fas fa-info-circle"></i> Important Notes</h3>
+      <ul class="text-sm text-amber-800 dark:text-amber-300 space-y-1.5">
+        <li>• Prices subject to change without notice.</li>
+        <li>• “Call” items — contact your local DFC representative for current pricing and availability.</li>
+        <li>• Ask about micros and fertilizer additives.</li>
+      </ul>
+    </div>
+
+    <div class="mt-6 bg-dfc-navy dark:bg-gray-950 text-white rounded-xl p-6 text-center">
+      <h3 class="text-lg font-semibold mb-2">Ready to place an order?</h3>
+      <p class="text-gray-300 text-sm mb-4">Contact your local DFC Agronomy representative for pricing confirmation, delivery, and custom blends.</p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center items-center text-sm">
+        <span class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-dfc-gold"></i> Napoleon, ND & multiple locations</span>
+        <span class="hidden sm:inline text-gray-500">|</span>
+        <span class="flex items-center gap-2"><i class="fas fa-phone text-dfc-gold"></i> 701-754-2252 (Napoleon)</span>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-gray-100 dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 mt-12 py-6">
+    <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500 dark:text-gray-400">
+      <p>© 2026 Central Dakota Frontier Cooperative · Farmer-owned</p>
+      <p class="mt-1 text-xs">Dashboard · Prices effective 8/17/2026</p>
+    </div>
+  </footer>
+
+  <!-- Pricing History Modal -->
+  <div id="historyModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4 no-print">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+        <h2 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-chart-line text-dfc-red"></i> Pricing History</h2>
+        <button onclick="closeHistory()" class="text-gray-500 hover:text-gray-800 dark:hover:text-white text-2xl leading-none">&times;</button>
+      </div>
+      <div class="p-6">
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Illustrative trend using regional Midwest retail benchmarks. Actual DFC historical prices can be loaded later. Toggle products to compare.</p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <button onclick="toggleHistoryProduct('urea')" id="hist-urea" class="hist-btn px-3 py-1.5 rounded-full text-sm font-medium bg-dfc-red text-white">Urea</button>
+          <button onclick="toggleHistoryProduct('map')" id="hist-map" class="hist-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700">MAP</button>
+          <button onclick="toggleHistoryProduct('nh3')" id="hist-nh3" class="hist-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700">NH3</button>
+          <button onclick="toggleHistoryProduct('potash')" id="hist-potash" class="hist-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700">Potash</button>
+          <button onclick="toggleHistoryProduct('rock40')" id="hist-rock40" class="hist-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700">40 Rock</button>
+          <button onclick="toggleHistoryProduct('ams')" id="hist-ams" class="hist-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700">AMS</button>
+          <button onclick="toggleHistoryProduct('poly4')" id="hist-poly4" class="hist-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700">Poly4</button>
+        </div>
+        <div class="relative h-72 sm:h-96">
+          <canvas id="priceChart"></canvas>
+        </div>
+        <p class="text-xs text-gray-400 mt-4">Current DFC prices (Aug 17, 2026) are the final data points. Earlier values are regional averages for reference.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+// ========== Password Protection ==========
+    // CHANGE THIS PASSWORD as needed:
+    const DASHBOARD_PASSWORD = "DFC2026";
+
+    function tryUnlock(e) {
+      e.preventDefault();
+      const input = document.getElementById('lockPassword');
+      const err = document.getElementById('lockError');
+      if (input.value === DASHBOARD_PASSWORD) {
+        sessionStorage.setItem('dfc-unlocked', '1');
+        document.getElementById('lockScreen').style.display = 'none';
+        err.classList.add('hidden');
+      } else {
+        err.classList.remove('hidden');
+        input.value = '';
+        input.focus();
+      }
+      return false;
+    }
+
+    // Check on load
+    (function() {
+      if (sessionStorage.getItem('dfc-unlocked') === '1') {
+        const ls = document.getElementById('lockScreen');
+        if (ls) ls.style.display = 'none';
+      }
+    })();
+
+    // ========== Dark Mode ==========
+
+    // Dark Mode
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('dfc-dark', isDark ? '1' : '0');
+      document.getElementById('darkIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+      if (window.priceChart) renderChart();
+    }
+    if (localStorage.getItem('dfc-dark') === '1' || (!localStorage.getItem('dfc-dark') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      document.getElementById('darkIcon').className = 'fas fa-sun';
+    }
+
+    // NPK Calculator
+    function loadProduct() {
+      const opt = document.getElementById('calcProduct').selectedOptions[0];
+      if (!opt.value) return;
+      document.getElementById('calcPrice').value = opt.dataset.price;
+      document.getElementById('calcN').value = opt.dataset.n;
+      document.getElementById('calcP').value = opt.dataset.p;
+      document.getElementById('calcK').value = opt.dataset.k;
+      calculateNPK();
+    }
+    function calculateNPK() {
+      const price = parseFloat(document.getElementById('calcPrice').value) || 0;
+      const n = parseFloat(document.getElementById('calcN').value) || 0;
+      const p = parseFloat(document.getElementById('calcP').value) || 0;
+      const k = parseFloat(document.getElementById('calcK').value) || 0;
+      document.getElementById('resultN').textContent = n > 0 ? '$' + (price / (n * 20)).toFixed(3) : '—';
+      document.getElementById('resultP').textContent = p > 0 ? '$' + (price / (p * 20)).toFixed(3) : '—';
+      document.getElementById('resultK').textContent = k > 0 ? '$' + (price / (k * 20)).toFixed(3) : '—';
+    }
+    calculateNPK();
+
+    // Select / Export
+    let allSelected = false;
+    function toggleSelectAll() {
+      allSelected = !allSelected;
+      document.querySelectorAll('.product-checkbox').forEach(cb => cb.checked = allSelected);
+      document.getElementById('selectAllBtn').innerHTML = allSelected
+        ? '<i class="fas fa-times mr-1"></i> Deselect All'
+        : '<i class="fas fa-check-double mr-1"></i> Select All';
+      updateSelectedCount();
+    }
+    function updateSelectedCount() {
+      document.getElementById('selectedCount').textContent = document.querySelectorAll('.product-checkbox:checked').length;
+    }
+    function getSelectedProducts() {
+      const rows = [];
+      document.querySelectorAll('.product-row').forEach(row => {
+        const cb = row.querySelector('.product-checkbox');
+        if (cb && cb.checked) {
+          rows.push({ product: row.dataset.product, analysis: row.dataset.analysis, price: row.dataset.price, unit: row.dataset.unit || '' });
+        }
+      });
+      return rows;
+    }
+    function exportCSV() {
+      const data = getSelectedProducts();
+      if (!data.length) { alert('Select at least one product first.'); return; }
+      let csv = 'Product,Analysis,Price,Unit,Date\n';
+      data.forEach(r => { csv += `"${r.product}","${r.analysis}","${r.price}","${r.unit}","2026-08-17"\n`; });
+      downloadFile(csv, 'DFC_Fertilizer_Prices_2026-08-17.csv', 'text/csv');
+    }
+    function exportJSON() {
+      const data = getSelectedProducts();
+      if (!data.length) { alert('Select at least one product first.'); return; }
+      downloadFile(JSON.stringify({ date: '2026-08-17', source: 'DFC', products: data }, null, 2), 'DFC_Fertilizer_Prices_2026-08-17.json', 'application/json');
+    }
+    function downloadFile(content, filename, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Filters
+    let currentCategory = 'all';
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.classList.add('bg-dfc-red', 'text-white');
+          btn.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+        } else {
+          btn.classList.remove('bg-dfc-red', 'text-white');
+          btn.classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+        }
+      });
+      applyFilters();
+    }
+    function filterProducts() { applyFilters(); }
+    function applyFilters() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      document.querySelectorAll('.product-section').forEach(section => {
+        const matchesCat = currentCategory === 'all' || currentCategory === section.dataset.category;
+        let hasVisible = false;
+        section.querySelectorAll('.product-row').forEach(row => {
+          const match = !query || (row.dataset.name || '').includes(query) || row.textContent.toLowerCase().includes(query);
+          row.style.display = (matchesCat && match) ? '' : 'none';
+          if (matchesCat && match) hasVisible = true;
+        });
+        section.style.display = (matchesCat && (hasVisible || !query)) ? '' : 'none';
+      });
+    }
+
+    // Pricing History
+    const historyData = {
+      labels: ['Mar 2026', 'Apr 2026', 'May 2026', 'Jun 2026', 'Jul 2026', 'Aug 17 2026'],
+      urea:   [677, 858, 865, 764, 683, 530],
+      map:    [886, 932, 942, 955, 958, 935],
+      nh3:    [924, 1088, 1118, 1091, 962, 790],
+      potash: [487, 489, 493, 494, 494, 470],
+      rock40: [900, 920, 935, 945, 950, 940],
+      ams:    [510, 525, 535, 545, 550, 540],
+      poly4:  [490, 505, 515, 520, 530, 525]
+    };
+    const activeHist = { urea: true, map: false, nh3: false, potash: false, rock40: false, ams: false, poly4: false };
+    let priceChart = null;
+
+    function openHistory() {
+      document.getElementById('historyModal').classList.remove('hidden');
+      setTimeout(renderChart, 50);
+    }
+    function closeHistory() { document.getElementById('historyModal').classList.add('hidden'); }
+    function toggleHistoryProduct(key) {
+      activeHist[key] = !activeHist[key];
+      const btn = document.getElementById('hist-' + key);
+      if (activeHist[key]) {
+        btn.classList.add('bg-dfc-red', 'text-white');
+        btn.classList.remove('bg-gray-200', 'dark:bg-gray-700');
+      } else {
+        btn.classList.remove('bg-dfc-red', 'text-white');
+        btn.classList.add('bg-gray-200', 'dark:bg-gray-700');
+      }
+      renderChart();
+    }
+    function renderChart() {
+      const ctx = document.getElementById('priceChart').getContext('2d');
+      if (priceChart) priceChart.destroy();
+      const datasets = [];
+      const colors = { urea: '#16a34a', map: '#2563eb', nh3: '#C8102E', potash: '#d97706', rock40: '#7c3aed', ams: '#0891b2', poly4: '#be185d' };
+      const labels = { urea: 'Urea', map: 'MAP', nh3: 'NH3', potash: 'Potash', rock40: '40 Rock', ams: 'AMS', poly4: 'Poly4' };
+      ['urea','map','nh3','potash','rock40','ams','poly4'].forEach(key => {
+        if (activeHist[key]) {
+          datasets.push({
+            label: labels[key],
+            data: historyData[key],
+            borderColor: colors[key],
+            backgroundColor: colors[key] + '33',
+            tension: 0.3,
+            fill: false,
+            pointRadius: 5,
+            pointHoverRadius: 7
+          });
+        }
+      });
+      const isDark = document.documentElement.classList.contains('dark');
+      priceChart = new Chart(ctx, {
+        type: 'line',
+        data: { labels: historyData.labels, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: isDark ? '#e5e7eb' : '#374151' } }, tooltip: { mode: 'index', intersect: false } },
+          scales: {
+            x: { ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { color: isDark ? '#374151' : '#e5e7eb' } },
+            y: { title: { display: true, text: '$ / ton', color: isDark ? '#9ca3af' : '#6b7280' }, ticks: { color: isDark ? '#9ca3af' : '#6b7280' }, grid: { color: isDark ? '#374151' : '#e5e7eb' } }
+          }
+        }
+      });
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === '/' && !['INPUT','SELECT'].includes(document.activeElement.tagName)) { e.preventDefault(); document.getElementById('searchInput').focus(); }
+      if (e.key === 'Escape') closeHistory();
+    });
+  </script>
+</body>
+</html>
