@@ -138,7 +138,7 @@
     <!-- Tools tabs -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 overflow-hidden">
       <div class="flex flex-wrap border-b border-gray-100 dark:border-gray-700 no-print">
-        <button onclick="showTool('npk')" class="tool-tab active px-4 py-3 text-sm font-medium" data-tool="npk"><i class="fas fa-calculator mr-1"></i> $/lb NPK</button>
+        <button onclick="showTool('npk')" class="tool-tab active px-4 py-3 text-sm font-medium" data-tool="npk"><i class="fas fa-calculator mr-1"></i> $/lb NPKS</button>
         <button onclick="showTool('acre')" class="tool-tab px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-300" data-tool="acre"><i class="fas fa-tractor mr-1"></i> $/Acre</button>
         <button onclick="showTool('rate')" class="tool-tab px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-300" data-tool="rate"><i class="fas fa-flask mr-1"></i> App Rate</button>
         <button onclick="showTool('blend')" class="tool-tab px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-300" data-tool="blend"><i class="fas fa-layer-group mr-1"></i> Blend</button>
@@ -152,13 +152,13 @@
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Select Product</label>
             <select id="calcProduct" onchange="loadProduct()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
               <option value="">— Custom / Select —</option>
-              <option value="nh3" data-n="82" data-p="0" data-k="0" data-price="790">NH3 (82-0-0) · $790</option>
-              <option value="urea" data-n="46" data-p="0" data-k="0" data-price="530">Urea (46-0-0) · $530</option>
-              <option value="map" data-n="11" data-p="52" data-k="0" data-price="935">MAP (11-52-0) · $935</option>
-              <option value="40rock" data-n="12" data-p="40" data-k="0" data-price="940">40 Rock (12-40-0) · $940</option>
-              <option value="potash" data-n="0" data-p="0" data-k="60" data-price="470">Potash (0-0-60) · $470</option>
-              <option value="ams" data-n="21" data-p="0" data-k="0" data-price="540">AMS (21-0-0) · $540</option>
-              <option value="poly4" data-n="0" data-p="0" data-k="14" data-price="525">Poly4 (0-0-14) · $525</option>
+              <option value="nh3" data-n="82" data-p="0" data-k="0" data-s="0" data-price="790">NH3 (82-0-0) · $790</option>
+              <option value="urea" data-n="46" data-p="0" data-k="0" data-s="0" data-price="530">Urea (46-0-0) · $530</option>
+              <option value="map" data-n="11" data-p="52" data-k="0" data-s="0" data-price="935">MAP (11-52-0) · $935</option>
+              <option value="40rock" data-n="12" data-p="40" data-k="0" data-s="6.5" data-price="940">40 Rock (12-40-0-6.5S) · $940</option>
+              <option value="potash" data-n="0" data-p="0" data-k="60" data-s="0" data-price="470">Potash (0-0-60) · $470</option>
+              <option value="ams" data-n="21" data-p="0" data-k="0" data-s="24" data-price="540">AMS (21-0-0-24S) · $540</option>
+              <option value="poly4" data-n="0" data-p="0" data-k="14" data-s="19" data-price="525">Poly4 (0-0-14-19S) · $525</option>
             </select>
           </div>
           <div>
@@ -166,70 +166,67 @@
             <input type="number" id="calcPrice" value="530" step="1" min="0" oninput="calculateNPK()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">N % · P₂O₅ % · K₂O %</label>
-            <div class="flex gap-2">
-              <input type="number" id="calcN" value="46" step="0.1" min="0" max="100" oninput="calculateNPK()" class="w-1/3 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-2 text-sm text-center" />
-              <input type="number" id="calcP" value="0" step="0.1" min="0" max="100" oninput="calculateNPK()" class="w-1/3 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-2 text-sm text-center" />
-              <input type="number" id="calcK" value="0" step="0.1" min="0" max="100" oninput="calculateNPK()" class="w-1/3 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-2 text-sm text-center" />
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">N % · P₂O₅ % · K₂O % · S %</label>
+            <div class="flex gap-1.5">
+              <input type="number" id="calcN" value="46" step="0.1" min="0" max="100" oninput="calculateNPK()" class="w-1/4 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-1.5 py-2 text-sm text-center" title="N %" />
+              <input type="number" id="calcP" value="0" step="0.1" min="0" max="100" oninput="calculateNPK()" class="w-1/4 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-1.5 py-2 text-sm text-center" title="P₂O₅ %" />
+              <input type="number" id="calcK" value="0" step="0.1" min="0" max="100" oninput="calculateNPK()" class="w-1/4 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-1.5 py-2 text-sm text-center" title="K₂O %" />
+              <input type="number" id="calcS" value="0" step="0.1" min="0" max="100" oninput="calculateNPK()" class="w-1/4 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-1.5 py-2 text-sm text-center" title="S %" />
             </div>
           </div>
           <div class="flex items-end">
             <button onclick="calculateNPK()" class="w-full bg-dfc-red hover:bg-dfc-darkred text-white py-2 rounded-lg text-sm font-medium">Calculate</button>
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-4 text-center border border-green-100 dark:border-green-800">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-3 text-center border border-green-100 dark:border-green-800">
             <div class="text-xs font-medium text-green-700 dark:text-green-400 uppercase">$/lb N</div>
-            <div class="text-2xl font-bold text-green-800 dark:text-green-300 mt-1" id="resultN">$0.576</div>
+            <div class="text-xl font-bold text-green-800 dark:text-green-300 mt-1" id="resultN">$0.576</div>
           </div>
-          <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 text-center border border-blue-100 dark:border-blue-800">
+          <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-3 text-center border border-blue-100 dark:border-blue-800">
             <div class="text-xs font-medium text-blue-700 dark:text-blue-400 uppercase">$/lb P₂O₅</div>
-            <div class="text-2xl font-bold text-blue-800 dark:text-blue-300 mt-1" id="resultP">—</div>
+            <div class="text-xl font-bold text-blue-800 dark:text-blue-300 mt-1" id="resultP">—</div>
           </div>
-          <div class="bg-amber-50 dark:bg-amber-900/30 rounded-lg p-4 text-center border border-amber-100 dark:border-amber-800">
+          <div class="bg-amber-50 dark:bg-amber-900/30 rounded-lg p-3 text-center border border-amber-100 dark:border-amber-800">
             <div class="text-xs font-medium text-amber-700 dark:text-amber-400 uppercase">$/lb K₂O</div>
-            <div class="text-2xl font-bold text-amber-800 dark:text-amber-300 mt-1" id="resultK">—</div>
+            <div class="text-xl font-bold text-amber-800 dark:text-amber-300 mt-1" id="resultK">—</div>
+          </div>
+          <div class="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-3 text-center border border-purple-100 dark:border-purple-800">
+            <div class="text-xs font-medium text-purple-700 dark:text-purple-400 uppercase">$/lb S</div>
+            <div class="text-xl font-bold text-purple-800 dark:text-purple-300 mt-1" id="resultS">—</div>
           </div>
         </div>
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Formula: $/ton ÷ (analysis % × 20) = $/lb nutrient</p>
       </div>
 
-      <!-- Cost per Acre -->
+      <!-- Cost per Acre (multi-product) -->
       <div id="tool-acre" class="tool-panel p-5 hidden">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          <div>
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Product</label>
-            <select id="acreProduct" onchange="calcAcre()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
-              <option value="790" data-unit="ton">NH3 · $790/ton</option>
-              <option value="530" data-unit="ton" selected>Urea · $530/ton</option>
-              <option value="935" data-unit="ton">MAP · $935/ton</option>
-              <option value="940" data-unit="ton">40 Rock · $940/ton</option>
-              <option value="470" data-unit="ton">Potash · $470/ton</option>
-              <option value="540" data-unit="ton">AMS · $540/ton</option>
-              <option value="525" data-unit="ton">Poly4 · $525/ton</option>
-              <option value="6" data-unit="gal">Optistart Gold · $6/gal</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Rate</label>
-            <input type="number" id="acreRate" value="200" min="0" step="1" oninput="calcAcre()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Rate unit</label>
-            <select id="acreRateUnit" onchange="calcAcre()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
-              <option value="lb">lbs / acre</option>
-              <option value="ton">tons / acre</option>
-              <option value="gal">gal / acre</option>
-            </select>
-          </div>
-          <div>
+        <div class="flex flex-col sm:flex-row sm:items-end gap-3 mb-4">
+          <div class="flex-1">
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Acres</label>
-            <input type="number" id="acreAcres" value="160" min="0" step="1" oninput="calcAcre()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+            <input type="number" id="acreAcres" value="160" min="0" step="1" oninput="calcAcre()" class="w-full sm:w-40 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
           </div>
+          <button onclick="addAcreRow()" class="bg-dfc-red hover:bg-dfc-darkred text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <i class="fas fa-plus"></i> Add product
+          </button>
+        </div>
+        <div class="overflow-x-auto mb-4">
+          <table class="w-full text-sm">
+            <thead class="text-xs uppercase text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-600">
+              <tr>
+                <th class="text-left py-2 pr-2">Product</th>
+                <th class="text-left py-2 pr-2 w-28">Rate</th>
+                <th class="text-left py-2 pr-2 w-32">Unit</th>
+                <th class="text-right py-2 pr-2 w-28">$/acre</th>
+                <th class="w-10"></th>
+              </tr>
+            </thead>
+            <tbody id="acreRows"></tbody>
+          </table>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-4 text-center border border-green-100 dark:border-green-800">
-            <div class="text-xs font-medium text-green-700 dark:text-green-400 uppercase">$/Acre</div>
+            <div class="text-xs font-medium text-green-700 dark:text-green-400 uppercase">Combined $/Acre</div>
             <div class="text-2xl font-bold text-green-800 dark:text-green-300 mt-1" id="acrePerAcre">—</div>
           </div>
           <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 text-center border border-blue-100 dark:border-blue-800">
@@ -237,10 +234,11 @@
             <div class="text-2xl font-bold text-blue-800 dark:text-blue-300 mt-1" id="acreTotal">—</div>
           </div>
           <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 text-center border border-gray-100 dark:border-gray-600">
-            <div class="text-xs font-medium text-gray-500 uppercase">Total Product</div>
-            <div class="text-2xl font-bold mt-1" id="acreProductQty">—</div>
+            <div class="text-xs font-medium text-gray-500 uppercase">Products</div>
+            <div class="text-2xl font-bold mt-1" id="acreProductQty">0</div>
           </div>
         </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Add each product you plan to apply. Combined $/acre sums all rows for the field size above.</p>
       </div>
 
       <!-- Application Rate Helper -->
@@ -253,6 +251,7 @@
               <option value="n">Nitrogen (N)</option>
               <option value="p">Phosphate (P₂O₅)</option>
               <option value="k">Potash (K₂O)</option>
+              <option value="s">Sulfur (S)</option>
             </select>
           </div>
           <div>
@@ -262,13 +261,17 @@
           <div>
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Product</label>
             <select id="rateProduct" onchange="calcAppRate()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
-              <option value="82" data-name="NH3" data-price="790">NH3 (82-0-0)</option>
-              <option value="46" data-name="Urea" data-price="530" selected>Urea (46-0-0)</option>
-              <option value="21" data-name="AMS" data-price="540">AMS (21-0-0)</option>
-              <option value="11" data-name="MAP" data-price="935" data-nut="p">MAP (11-52-0) — N</option>
-              <option value="52" data-name="MAP" data-price="935" data-nut="p">MAP (11-52-0) — P₂O₅</option>
-              <option value="60" data-name="Potash" data-price="470" data-nut="k">Potash (0-0-60)</option>
-              <option value="40" data-name="40 Rock" data-price="940" data-nut="p">40 Rock — P₂O₅</option>
+              <option value="82" data-name="NH3" data-price="790">NH3 (82-0-0) — N</option>
+              <option value="46" data-name="Urea" data-price="530" selected>Urea (46-0-0) — N</option>
+              <option value="21" data-name="AMS" data-price="540">AMS (21-0-0-24S) — N</option>
+              <option value="24" data-name="AMS" data-price="540">AMS (21-0-0-24S) — S</option>
+              <option value="11" data-name="MAP" data-price="935">MAP (11-52-0) — N</option>
+              <option value="52" data-name="MAP" data-price="935">MAP (11-52-0) — P₂O₅</option>
+              <option value="60" data-name="Potash" data-price="470">Potash (0-0-60) — K₂O</option>
+              <option value="40" data-name="40 Rock" data-price="940">40 Rock — P₂O₅</option>
+              <option value="6.5" data-name="40 Rock" data-price="940">40 Rock — S</option>
+              <option value="19" data-name="Poly4" data-price="525">Poly4 — S</option>
+              <option value="14" data-name="Poly4" data-price="525">Poly4 — K₂O</option>
             </select>
           </div>
           <div>
@@ -295,7 +298,7 @@
       <!-- Blend calculator -->
       <div id="tool-blend" class="tool-panel p-5 hidden">
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Target analysis and total tons. Simple single-product or basic multi-product estimate.</p>
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-3 mb-4">
           <div>
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Target N %</label>
             <input type="number" id="blendN" value="20" min="0" max="100" step="0.1" oninput="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
@@ -307,6 +310,10 @@
           <div>
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Target K₂O %</label>
             <input type="number" id="blendK" value="5" min="0" max="100" step="0.1" oninput="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Target S %</label>
+            <input type="number" id="blendS" value="5" min="0" max="100" step="0.1" oninput="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Total tons</label>
@@ -807,7 +814,7 @@
       }
     }
 
-    // NPK
+    // NPKS
     function loadProduct() {
       const opt = document.getElementById('calcProduct').selectedOptions[0];
       if (!opt.value) return;
@@ -815,6 +822,7 @@
       document.getElementById('calcN').value = opt.dataset.n;
       document.getElementById('calcP').value = opt.dataset.p;
       document.getElementById('calcK').value = opt.dataset.k;
+      document.getElementById('calcS').value = opt.dataset.s || 0;
       calculateNPK();
     }
     function calculateNPK() {
@@ -822,33 +830,102 @@
       const n = parseFloat(document.getElementById('calcN').value) || 0;
       const p = parseFloat(document.getElementById('calcP').value) || 0;
       const k = parseFloat(document.getElementById('calcK').value) || 0;
+      const s = parseFloat(document.getElementById('calcS').value) || 0;
       document.getElementById('resultN').textContent = n > 0 ? '$' + (price / (n * 20)).toFixed(3) : '—';
       document.getElementById('resultP').textContent = p > 0 ? '$' + (price / (p * 20)).toFixed(3) : '—';
       document.getElementById('resultK').textContent = k > 0 ? '$' + (price / (k * 20)).toFixed(3) : '—';
+      document.getElementById('resultS').textContent = s > 0 ? '$' + (price / (s * 20)).toFixed(3) : '—';
     }
     calculateNPK();
 
-    // Cost per acre
-    function calcAcre() {
-      const price = parseFloat(document.getElementById('acreProduct').value) || 0;
-      const unit = document.getElementById('acreProduct').selectedOptions[0].dataset.unit;
-      const rate = parseFloat(document.getElementById('acreRate').value) || 0;
-      const rateUnit = document.getElementById('acreRateUnit').value;
-      const acres = parseFloat(document.getElementById('acreAcres').value) || 0;
-      let costPerAcre = 0, totalProduct = 0, productLabel = '';
-      if (unit === 'ton') {
-        if (rateUnit === 'lb') { costPerAcre = (rate / 2000) * price; totalProduct = (rate * acres) / 2000; productLabel = totalProduct.toFixed(2) + ' tons'; }
-        else if (rateUnit === 'ton') { costPerAcre = rate * price; totalProduct = rate * acres; productLabel = totalProduct.toFixed(2) + ' tons'; }
-        else { costPerAcre = 0; }
-      } else if (unit === 'gal') {
-        if (rateUnit === 'gal') { costPerAcre = rate * price; totalProduct = rate * acres; productLabel = totalProduct.toFixed(1) + ' gal'; }
-        else { costPerAcre = 0; }
-      }
-      document.getElementById('acrePerAcre').textContent = costPerAcre ? '$' + costPerAcre.toFixed(2) : '—';
-      document.getElementById('acreTotal').textContent = costPerAcre && acres ? '$' + (costPerAcre * acres).toFixed(2) : '—';
-      document.getElementById('acreProductQty').textContent = productLabel || '—';
+    // Cost per acre — multi product
+    const ACRE_PRODUCTS = [
+      { name: 'NH3', price: 790, unit: 'ton' },
+      { name: 'Urea', price: 530, unit: 'ton' },
+      { name: 'MAP', price: 935, unit: 'ton' },
+      { name: '40 Rock', price: 940, unit: 'ton' },
+      { name: 'Potash', price: 470, unit: 'ton' },
+      { name: 'AMS', price: 540, unit: 'ton' },
+      { name: 'Poly4', price: 525, unit: 'ton' },
+      { name: 'Optistart Gold', price: 6, unit: 'gal' }
+    ];
+    let acreRowId = 0;
+
+    function acreProductOptions(selected) {
+      return ACRE_PRODUCTS.map(p => {
+        const val = p.name;
+        const sel = p.name === selected ? ' selected' : '';
+        return '<option value="' + val + '" data-price="' + p.price + '" data-unit="' + p.unit + '"' + sel + '>' + p.name + ' · $' + p.price + '/' + p.unit + '</option>';
+      }).join('');
     }
-    calcAcre();
+
+    function addAcreRow(preset) {
+      const id = 'arow-' + (++acreRowId);
+      const name = (preset && preset.name) || 'Urea';
+      const rate = (preset && preset.rate != null) ? preset.rate : 200;
+      const rateUnit = (preset && preset.rateUnit) || 'lb';
+      const tr = document.createElement('tr');
+      tr.id = id;
+      tr.className = 'acre-row border-b border-gray-100 dark:border-gray-700';
+      tr.innerHTML =
+        '<td class="py-2 pr-2">' +
+          '<select class="acre-product w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" onchange="calcAcre()">' +
+            acreProductOptions(name) +
+          '</select>' +
+        '</td>' +
+        '<td class="py-2 pr-2">' +
+          '<input type="number" class="acre-rate w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" value="' + rate + '" min="0" step="1" oninput="calcAcre()" />' +
+        '</td>' +
+        '<td class="py-2 pr-2">' +
+          '<select class="acre-unit w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" onchange="calcAcre()">' +
+            '<option value="lb"' + (rateUnit === 'lb' ? ' selected' : '') + '>lbs / acre</option>' +
+            '<option value="ton"' + (rateUnit === 'ton' ? ' selected' : '') + '>tons / acre</option>' +
+            '<option value="gal"' + (rateUnit === 'gal' ? ' selected' : '') + '>gal / acre</option>' +
+          '</select>' +
+        '</td>' +
+        '<td class="py-2 pr-2 text-right font-medium acre-row-cost">—</td>' +
+        '<td class="py-2 text-center">' +
+          '<button type="button" onclick="removeAcreRow(\'' + id + '\')" class="text-gray-400 hover:text-red-600" title="Remove"><i class="fas fa-times"></i></button>' +
+        '</td>';
+      document.getElementById('acreRows').appendChild(tr);
+      calcAcre();
+    }
+
+    function removeAcreRow(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+      calcAcre();
+    }
+
+    function calcAcre() {
+      const acres = parseFloat(document.getElementById('acreAcres').value) || 0;
+      let totalPerAcre = 0;
+      let count = 0;
+      document.querySelectorAll('#acreRows tr.acre-row').forEach(tr => {
+        const sel = tr.querySelector('.acre-product');
+        const opt = sel.selectedOptions[0];
+        const price = parseFloat(opt.dataset.price) || 0;
+        const prodUnit = opt.dataset.unit;
+        const rate = parseFloat(tr.querySelector('.acre-rate').value) || 0;
+        const rateUnit = tr.querySelector('.acre-unit').value;
+        let cost = 0;
+        if (prodUnit === 'ton') {
+          if (rateUnit === 'lb') cost = (rate / 2000) * price;
+          else if (rateUnit === 'ton') cost = rate * price;
+        } else if (prodUnit === 'gal') {
+          if (rateUnit === 'gal') cost = rate * price;
+        }
+        tr.querySelector('.acre-row-cost').textContent = cost ? '$' + cost.toFixed(2) : '—';
+        totalPerAcre += cost;
+        count++;
+      });
+      document.getElementById('acrePerAcre').textContent = count ? '$' + totalPerAcre.toFixed(2) : '—';
+      document.getElementById('acreTotal').textContent = count && acres ? '$' + (totalPerAcre * acres).toFixed(2) : '—';
+      document.getElementById('acreProductQty').textContent = count;
+    }
+
+    // Start with one common row
+    addAcreRow({ name: 'Urea', rate: 200, rateUnit: 'lb' });
 
     // App rate helper
     function calcAppRate() {
@@ -866,16 +943,16 @@
     }
     calcAppRate();
 
-    // Blend (simplified)
+    // Blend (simplified) — NPKS
     function calcBlend() {
       const n = parseFloat(document.getElementById('blendN').value) || 0;
       const p = parseFloat(document.getElementById('blendP').value) || 0;
       const k = parseFloat(document.getElementById('blendK').value) || 0;
+      const s = parseFloat(document.getElementById('blendS').value) || 0;
       const tons = parseFloat(document.getElementById('blendTons').value) || 0;
       const el = document.getElementById('blendResults');
-      // Very simplified: suggest primary sources
       let html = '<div class="bg-gray-50 dark:bg-gray-700/40 rounded-lg p-4 space-y-2">';
-      html += '<div class="font-medium">Suggested approach for ' + tons + ' tons of ~' + n + '-' + p + '-' + k + ':</div>';
+      html += '<div class="font-medium">Suggested approach for ' + tons + ' tons of ~' + n + '-' + p + '-' + k + '-' + s + 'S:</div>';
       if (n > 0) {
         const ureaTons = (n / 46) * tons;
         html += '<div>• Urea (46-0-0): ~' + ureaTons.toFixed(2) + ' tons · est $' + (ureaTons * 530).toFixed(0) + '</div>';
@@ -887,6 +964,12 @@
       if (k > 0) {
         const potTons = (k / 60) * tons;
         html += '<div>• Potash (0-0-60): ~' + potTons.toFixed(2) + ' tons · est $' + (potTons * 470).toFixed(0) + '</div>';
+      }
+      if (s > 0) {
+        const amsTons = (s / 24) * tons;
+        html += '<div>• AMS (21-0-0-24S): ~' + amsTons.toFixed(2) + ' tons · est $' + (amsTons * 540).toFixed(0) + ' (also contributes N)</div>';
+        const polyTons = (s / 19) * tons;
+        html += '<div>• Poly4 (0-0-14-19S): ~' + polyTons.toFixed(2) + ' tons · est $' + (polyTons * 525).toFixed(0) + ' (also contributes K)</div>';
       }
       html += '<div class="text-xs text-gray-500 mt-2">Note: ratios above ignore interactions. Real blends need balancing — contact DFC for precise formulas.</div>';
       html += '</div>';
