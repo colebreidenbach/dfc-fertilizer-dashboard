@@ -1380,9 +1380,9 @@
         html += '<div class="text-xs text-gray-500">~' + (filler * 100).toFixed(0) + '% of the blend would be filler / carrier (not costed).</div>';
       }
 
-      html += '<table class="w-full text-sm mt-2"><thead><tr class="text-xs uppercase text-gray-500 border-b border-gray-200 dark:border-gray-600"><th class="text-left py-1">Product</th><th class="text-right">% of blend</th><th class="text-right">Tons</th><th class="text-right">Est. $</th></tr></thead><tbody>';
+      html += '<table class="w-full text-sm mt-2"><thead><tr class="text-xs uppercase text-gray-500 border-b border-gray-200 dark:border-gray-600"><th class="text-left py-1">Product</th><th class="text-right">% of blend</th><th class="text-right">Tons</th><th class="text-right">Lbs</th><th class="text-right">Est. $</th></tr></thead><tbody>';
       lines.forEach(l => {
-        html += '<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-1.5">' + l.name + '</td><td class="text-right">' + l.frac.toFixed(1) + '%</td><td class="text-right">' + l.tons.toFixed(2) + '</td><td class="text-right">' + money(l.cost, 0) + '</td></tr>';
+        html += '<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-1.5">' + l.name + '</td><td class="text-right">' + l.frac.toFixed(1) + '%</td><td class="text-right">' + l.tons.toFixed(2) + '</td><td class="text-right">' + formatMoney(l.tons * 2000, 0) + '</td><td class="text-right">' + money(l.cost, 0) + '</td></tr>';
       });
       html += '</tbody></table>';
       html += '<div class="flex justify-between font-semibold pt-2"><span>Estimated product cost</span><span>' + money(totalCost, 0) + '</span></div>';
