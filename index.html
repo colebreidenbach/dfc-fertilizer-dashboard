@@ -159,6 +159,13 @@
               <option value="nh3" data-n="82" data-p="0" data-k="0" data-s="0" data-price="790">NH3 (82-0-0) · $790</option>
               <option value="urea" data-n="46" data-p="0" data-k="0" data-s="0" data-price="530">Urea (46-0-0) · $530</option>
               <option value="uan28" data-n="28" data-p="0" data-k="0" data-s="0" data-price="">UAN 28% (28-0-0) · Call</option>
+              <option value="ats" data-n="12" data-p="0" data-k="0" data-s="26" data-price="">ATS (12-0-0-26S) · Call</option>
+              <option value="app" data-n="10" data-p="34" data-k="0" data-s="0" data-price="">10-34-0 · Call</option>
+              <option value="optigold" data-n="6" data-p="20" data-k="5" data-s="2" data-price="6">Optistart Gold (6-20-5-2S) · $6/gal</option>
+              <option value="s6246" data-n="6" data-p="24" data-k="6" data-s="0" data-price="">6-24-6 · Call</option>
+              <option value="s7235" data-n="7" data-p="23" data-k="5" data-s="0" data-price="">7-23-5 · Call</option>
+              <option value="s82054" data-n="8" data-p="20" data-k="5" data-s="4" data-price="">8-20-5-4S · Call</option>
+              <option value="kts" data-n="0" data-p="0" data-k="25" data-s="17" data-price="">KTS (0-0-25-17S) · Call</option>
               <option value="map" data-n="11" data-p="52" data-k="0" data-s="0" data-price="935">MAP (11-52-0) · $935</option>
               <option value="40rock" data-n="12" data-p="40" data-k="0" data-s="6.5" data-price="940">40 Rock (12-40-0-6.5S) · $940</option>
               <option value="potash" data-n="0" data-p="0" data-k="60" data-s="0" data-price="470">Potash (0-0-60) · $470</option>
@@ -294,6 +301,16 @@
               <option value="82" data-name="NH3" data-price="790">NH3 (82-0-0) — N</option>
               <option value="46" data-name="Urea" data-price="530" selected>Urea (46-0-0) — N</option>
               <option value="28" data-name="UAN 28%" data-price="0">UAN 28% (28-0-0) — N</option>
+              <option value="12" data-name="ATS" data-price="0">ATS (12-0-0-26S) — N</option>
+              <option value="26" data-name="ATS" data-price="0">ATS (12-0-0-26S) — S</option>
+              <option value="10" data-name="10-34-0" data-price="0">10-34-0 — N</option>
+              <option value="34" data-name="10-34-0" data-price="0">10-34-0 — P2O5</option>
+              <option value="6" data-name="Optistart Gold" data-price="6">Optistart Gold — N</option>
+              <option value="20" data-name="Optistart Gold" data-price="6">Optistart Gold — P2O5</option>
+              <option value="24" data-name="6-24-6" data-price="0">6-24-6 — P2O5</option>
+              <option value="23" data-name="7-23-5" data-price="0">7-23-5 — P2O5</option>
+              <option value="25" data-name="KTS" data-price="0">KTS — K2O</option>
+              <option value="17" data-name="KTS" data-price="0">KTS — S</option>
               <option value="21" data-name="AMS" data-price="540">AMS (21-0-0-24S) — N</option>
               <option value="24" data-name="AMS" data-price="540">AMS (21-0-0-24S) — S</option>
               <option value="11" data-name="MAP" data-price="935">MAP (11-52-0) — N</option>
@@ -361,32 +378,52 @@
           <div id="blendNSourceWrap">
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">N source <span class="text-gray-400 font-normal">finishes N</span></label>
             <select id="blendNSource" onchange="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
-              <option value="urea">Urea · 46-0-0 (N only)</option>
-              <option value="uan28">UAN 28% · 28-0-0 (N only, liquid)</option>
-              <option value="ams">AMS · 21-0-0-24S (also S)</option>
-              <option value="map">MAP · 11-52-0 (also P)</option>
-              <option value="rock40">40 Rock · 12-40-0-6.5S (also P+S)</option>
+              <option value="urea">Urea · 46-0-0 (dry)</option>
+              <option value="uan28">UAN 28% · 28-0-0 (liquid)</option>
+              <option value="ats">ATS · 12-0-0-26S (liquid, also S)</option>
+              <option value="app">10-34-0 · 10-34-0 (liquid, also P)</option>
+              <option value="optigold">Optistart Gold · 6-20-5-2S (liquid)</option>
+              <option value="s6246">6-24-6 (liquid)</option>
+              <option value="s7235">7-23-5 (liquid)</option>
+              <option value="s82054">8-20-5-4S (liquid)</option>
+              <option value="ams">AMS · 21-0-0-24S (dry, also S)</option>
+              <option value="map">MAP · 11-52-0 (dry, also P)</option>
+              <option value="rock40">40 Rock · 12-40-0-6.5S (dry, also P+S)</option>
             </select>
           </div>
           <div id="blendPSourceWrap">
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">P source <span class="text-gray-400 font-normal">sets P first</span></label>
             <select id="blendPSource" onchange="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
-              <option value="map">MAP · 11-52-0 (also N)</option>
-              <option value="rock40">40 Rock · 12-40-0-6.5S (also N+S)</option>
+              <option value="map">MAP · 11-52-0 (dry, also N)</option>
+              <option value="rock40">40 Rock · 12-40-0-6.5S (dry, also N+S)</option>
+              <option value="app">10-34-0 · 10-34-0 (liquid, also N)</option>
+              <option value="optigold">Optistart Gold · 6-20-5-2S (liquid)</option>
+              <option value="s6246">6-24-6 (liquid)</option>
+              <option value="s7235">7-23-5 (liquid)</option>
+              <option value="s82054">8-20-5-4S (liquid)</option>
             </select>
           </div>
           <div id="blendKSourceWrap">
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">K source <span class="text-gray-400 font-normal">sets/finishes K</span></label>
             <select id="blendKSource" onchange="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
-              <option value="potash">Potash · 0-0-60 (K only)</option>
-              <option value="poly4">Poly4 · 0-0-14-19S (also S)</option>
+              <option value="potash">Potash · 0-0-60 (dry)</option>
+              <option value="poly4">Poly4 · 0-0-14-19S (dry, also S)</option>
+              <option value="kts">KTS · 0-0-25-17S (liquid, also S)</option>
+              <option value="optigold">Optistart Gold · 6-20-5-2S (liquid)</option>
+              <option value="s6246">6-24-6 (liquid)</option>
+              <option value="s7235">7-23-5 (liquid)</option>
+              <option value="s82054">8-20-5-4S (liquid)</option>
             </select>
           </div>
           <div id="blendSSourceWrap">
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">S source <span class="text-gray-400 font-normal">finishes S</span></label>
             <select id="blendSSource" onchange="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
-              <option value="ams">AMS · 21-0-0-24S (also N)</option>
-              <option value="poly4">Poly4 · 0-0-14-19S (also K)</option>
+              <option value="ams">AMS · 21-0-0-24S (dry, also N)</option>
+              <option value="poly4">Poly4 · 0-0-14-19S (dry, also K)</option>
+              <option value="ats">ATS · 12-0-0-26S (liquid, also N)</option>
+              <option value="kts">KTS · 0-0-25-17S (liquid, also K)</option>
+              <option value="optigold">Optistart Gold · 6-20-5-2S (liquid)</option>
+              <option value="s82054">8-20-5-4S (liquid)</option>
             </select>
           </div>
         </div>
@@ -621,9 +658,9 @@
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">8-20-5-4S-0.5Zn</td>
                 <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
               </tr>
-              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="10-34-0" data-product="10-34-0" data-analysis="—" data-price="Call" data-unit="">
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="10-34-0" data-product="10-34-0" data-analysis="10-34-0" data-price="Call" data-unit="">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
-                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="10-34-0" data-analysis="—" data-price="Call" data-unit=""></i></td>
+                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="10-34-0" data-analysis="10-34-0" data-price="Call" data-unit="ton"></i></td>
                 <td class="px-4 py-3.5 font-medium">10-34-0</td>
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">—</td>
                 <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
@@ -1057,12 +1094,18 @@
       { name: 'NH3', price: 790, unit: 'ton', n: 82, p: 0, k: 0, s: 0, lbPerGal: 0 },
       { name: 'Urea', price: 530, unit: 'ton', n: 46, p: 0, k: 0, s: 0, lbPerGal: 0 },
       { name: 'UAN 28%', price: 0, unit: 'ton', n: 28, p: 0, k: 0, s: 0, lbPerGal: 10.6 },
+      { name: 'ATS', price: 0, unit: 'ton', n: 12, p: 0, k: 0, s: 26, lbPerGal: 11.1 },
+      { name: '10-34-0', price: 0, unit: 'ton', n: 10, p: 34, k: 0, s: 0, lbPerGal: 11.65 },
+      { name: 'Optistart Gold', price: 6, unit: 'gal', n: 6, p: 20, k: 5, s: 2, lbPerGal: 11.0 },
+      { name: '6-24-6', price: 0, unit: 'ton', n: 6, p: 24, k: 6, s: 0, lbPerGal: 11.22 },
+      { name: '7-23-5', price: 0, unit: 'ton', n: 7, p: 23, k: 5, s: 0, lbPerGal: 11.1 },
+      { name: '8-20-5-4', price: 0, unit: 'ton', n: 8, p: 20, k: 5, s: 4, lbPerGal: 11.4 },
+      { name: 'KTS', price: 0, unit: 'ton', n: 0, p: 0, k: 25, s: 17, lbPerGal: 12.2 },
       { name: 'MAP', price: 935, unit: 'ton', n: 11, p: 52, k: 0, s: 0, lbPerGal: 0 },
       { name: '40 Rock', price: 940, unit: 'ton', n: 12, p: 40, k: 0, s: 6.5, lbPerGal: 0 },
       { name: 'Potash', price: 470, unit: 'ton', n: 0, p: 0, k: 60, s: 0, lbPerGal: 0 },
       { name: 'AMS', price: 540, unit: 'ton', n: 21, p: 0, k: 0, s: 24, lbPerGal: 0 },
-      { name: 'Poly4', price: 525, unit: 'ton', n: 0, p: 0, k: 14, s: 19, lbPerGal: 0 },
-      { name: 'Optistart Gold', price: 6, unit: 'gal', n: 6, p: 20, k: 5, s: 2, lbPerGal: 11.0 }
+      { name: 'Poly4', price: 525, unit: 'ton', n: 0, p: 0, k: 14, s: 19, lbPerGal: 0 }
     ];
     let acreRowId = 0;
 
@@ -1351,69 +1394,116 @@
       const el = document.getElementById('blendResults');
 
       const products = {
-        urea:   { name: 'Urea (46-0-0)', n: 46, p: 0, k: 0, s: 0, price: 530 },
-        uan28:  { name: 'UAN 28% (28-0-0)', n: 28, p: 0, k: 0, s: 0, price: 0 },
-        map:    { name: 'MAP (11-52-0)', n: 11, p: 52, k: 0, s: 0, price: 935 },
-        rock40: { name: '40 Rock (12-40-0-6.5S)', n: 12, p: 40, k: 0, s: 6.5, price: 940 },
-        potash: { name: 'Potash (0-0-60)', n: 0, p: 0, k: 60, s: 0, price: 470 },
-        ams:    { name: 'AMS (21-0-0-24S)', n: 21, p: 0, k: 0, s: 24, price: 540 },
-        poly4:  { name: 'Poly4 (0-0-14-19S)', n: 0, p: 0, k: 14, s: 19, price: 525 }
+        urea:     { name: 'Urea (46-0-0)', n: 46, p: 0, k: 0, s: 0, price: 530, liquid: false, lbPerGal: 0 },
+        uan28:    { name: 'UAN 28% (28-0-0)', n: 28, p: 0, k: 0, s: 0, price: 0, liquid: true, lbPerGal: 10.6 },
+        ats:      { name: 'ATS (12-0-0-26S)', n: 12, p: 0, k: 0, s: 26, price: 0, liquid: true, lbPerGal: 11.1 },
+        app:      { name: '10-34-0', n: 10, p: 34, k: 0, s: 0, price: 0, liquid: true, lbPerGal: 11.65 },
+        optigold: { name: 'Optistart Gold (6-20-5-2S)', n: 6, p: 20, k: 5, s: 2, price: 6, liquid: true, lbPerGal: 11.0, priceUnit: 'gal' },
+        s6246:    { name: '6-24-6', n: 6, p: 24, k: 6, s: 0, price: 0, liquid: true, lbPerGal: 11.22 },
+        s7235:    { name: '7-23-5', n: 7, p: 23, k: 5, s: 0, price: 0, liquid: true, lbPerGal: 11.1 },
+        s82054:   { name: '8-20-5-4S', n: 8, p: 20, k: 5, s: 4, price: 0, liquid: true, lbPerGal: 11.4 },
+        kts:      { name: 'KTS (0-0-25-17S)', n: 0, p: 0, k: 25, s: 17, price: 0, liquid: true, lbPerGal: 12.2 },
+        map:      { name: 'MAP (11-52-0)', n: 11, p: 52, k: 0, s: 0, price: 935, liquid: false, lbPerGal: 0 },
+        rock40:   { name: '40 Rock (12-40-0-6.5S)', n: 12, p: 40, k: 0, s: 6.5, price: 940, liquid: false, lbPerGal: 0 },
+        potash:   { name: 'Potash (0-0-60)', n: 0, p: 0, k: 60, s: 0, price: 470, liquid: false, lbPerGal: 0 },
+        ams:      { name: 'AMS (21-0-0-24S)', n: 21, p: 0, k: 0, s: 24, price: 540, liquid: false, lbPerGal: 0 },
+        poly4:    { name: 'Poly4 (0-0-14-19S)', n: 0, p: 0, k: 14, s: 19, price: 525, liquid: false, lbPerGal: 0 }
       };
 
-      let mix = { urea: 0, uan28: 0, map: 0, rock40: 0, potash: 0, ams: 0, poly4: 0 };
+      let mix = { urea: 0, uan28: 0, ats: 0, app: 0, optigold: 0, s6246: 0, s7235: 0, s82054: 0, kts: 0, map: 0, rock40: 0, potash: 0, ams: 0, poly4: 0 };
       const warnings = [];
       const notes = [];
+      const liquidKeys = ['uan28', 'ats', 'app', 'optigold', 's6246', 's7235', 's82054', 'kts'];
 
       // Source clarity notes
-      if (nSource === 'map' && pSource === 'map') notes.push('MAP is both P source and N source — extra MAP for N will raise P above target.');
-      if (nSource === 'rock40' && pSource === 'rock40') notes.push('40 Rock is both P source and N source — extra for N will raise P and S.');
-      if (nSource === 'ams' && sSource === 'ams') notes.push('AMS is both S source and N source — extra AMS for N will raise S above target.');
+      if (nSource === 'map' && pSource === 'map') notes.push('MAP is both P and N source — extra MAP for N will raise P above target.');
+      if (nSource === 'rock40' && pSource === 'rock40') notes.push('40 Rock is both P and N source — extra for N will raise P and S.');
+      if (nSource === 'ams' && sSource === 'ams') notes.push('AMS is both S and N source — extra AMS for N will raise S above target.');
+      if (nSource === 'ats' && sSource === 'ats') notes.push('ATS is both S and N source — amounts are balanced where possible.');
+      if (nSource === 'app' && pSource === 'app') notes.push('10-34-0 is both P and N source — extra for N will raise P.');
       if (kSource === 'poly4' && sSource === 'poly4') notes.push('Poly4 is both K and S source — amounts are balanced for both nutrients where possible.');
-      if (nSource === 'uan28') notes.push('UAN 28% is liquid — typically not mixed into a dry blend; shown as N-equivalent for planning.');
+      if (kSource === 'kts' && sSource === 'kts') notes.push('KTS is both K and S source — amounts are balanced where possible.');
+      if ([nSource, pSource, kSource, sSource].filter(x => ['optigold','s6246','s7235','s82054'].includes(x)).length > 1) {
+        notes.push('Starter liquids supply N, P, K (and sometimes S) together — using the same starter for multiple roles can overshoot some nutrients.');
+      }
+      if (liquidKeys.includes(nSource) || liquidKeys.includes(pSource) || liquidKeys.includes(kSource) || liquidKeys.includes(sSource)) {
+        notes.push('Liquid products count by weight toward the nutrient plan. Gallons use listed densities.');
+      }
+
+      function pAnalysis(key) { return products[key].p; }
 
       // 1) P first
       if (targetP > 0) {
         if (pSource === 'map') mix.map = targetP / 52;
+        else if (pSource === 'app') mix.app = targetP / 34;
+        else if (pSource === 'optigold') mix.optigold = targetP / 20;
+        else if (pSource === 's6246') mix.s6246 = targetP / 24;
+        else if (pSource === 's7235') mix.s7235 = targetP / 23;
+        else if (pSource === 's82054') mix.s82054 = targetP / 20;
         else mix.rock40 = targetP / 40;
       }
 
-      // 2) S (credit 40 Rock; Poly4 if used for K)
-      let sFromRock = mix.rock40 * 6.5;
-      let sStillNeeded = Math.max(0, targetS - sFromRock);
-
-      if (targetK > 0 && kSource === 'poly4') {
-        mix.poly4 = Math.max(mix.poly4, targetK / 14);
-        sStillNeeded = Math.max(0, targetS - sFromRock - mix.poly4 * 19);
+      // Helper nutrient totals from current mix
+      function currentS() {
+        return mix.rock40 * 6.5 + mix.ats * 26 + mix.kts * 17 + mix.optigold * 2 + mix.s82054 * 4 + mix.ams * 24 + mix.poly4 * 19;
+      }
+      function currentK() {
+        return mix.potash * 60 + mix.poly4 * 14 + mix.kts * 25 + mix.optigold * 5 + mix.s6246 * 6 + mix.s7235 * 5 + mix.s82054 * 5;
+      }
+      function currentN() {
+        return mix.urea * 46 + mix.uan28 * 28 + mix.ats * 12 + mix.app * 10 + mix.optigold * 6 + mix.s6246 * 6 + mix.s7235 * 7 + mix.s82054 * 8 + mix.map * 11 + mix.rock40 * 12 + mix.ams * 21;
+      }
+      function currentP() {
+        return mix.map * 52 + mix.rock40 * 40 + mix.app * 34 + mix.optigold * 20 + mix.s6246 * 24 + mix.s7235 * 23 + mix.s82054 * 20;
       }
 
+      // 2) K (before S finish so Poly4/KTS/starters can supply S)
+      let kStillNeeded = Math.max(0, targetK - currentK());
+      if (kStillNeeded > 0) {
+        if (kSource === 'poly4') mix.poly4 = mix.poly4 + (kStillNeeded / 14);
+        else if (kSource === 'kts') mix.kts = mix.kts + (kStillNeeded / 25);
+        else if (kSource === 'optigold') mix.optigold = mix.optigold + (kStillNeeded / 5);
+        else if (kSource === 's6246') mix.s6246 = mix.s6246 + (kStillNeeded / 6);
+        else if (kSource === 's7235') mix.s7235 = mix.s7235 + (kStillNeeded / 5);
+        else if (kSource === 's82054') mix.s82054 = mix.s82054 + (kStillNeeded / 5);
+        else mix.potash = kStillNeeded / 60;
+      }
+
+      // 3) Finish S
+      let sStillNeeded = Math.max(0, targetS - currentS());
       if (sStillNeeded > 0) {
-        if (sSource === 'ams') mix.ams = Math.max(mix.ams, sStillNeeded / 24);
-        else mix.poly4 = Math.max(mix.poly4, sStillNeeded / 19);
+        if (sSource === 'ams') mix.ams = mix.ams + (sStillNeeded / 24);
+        else if (sSource === 'ats') mix.ats = mix.ats + (sStillNeeded / 26);
+        else if (sSource === 'kts') mix.kts = mix.kts + (sStillNeeded / 17);
+        else if (sSource === 'optigold') mix.optigold = mix.optigold + (sStillNeeded / 2);
+        else if (sSource === 's82054') mix.s82054 = mix.s82054 + (sStillNeeded / 4);
+        else mix.poly4 = mix.poly4 + (sStillNeeded / 19);
       }
-
-      // 3) Finish K with potash if needed
-      let kFromPoly = mix.poly4 * 14;
-      let kStillNeeded = Math.max(0, targetK - kFromPoly);
-      if (kStillNeeded > 0) mix.potash = kStillNeeded / 60;
 
       // 4) Finish N
-      let nFromOthers = mix.map * 11 + mix.rock40 * 12 + mix.ams * 21;
-      let nStillNeeded = Math.max(0, targetN - nFromOthers);
+      let nStillNeeded = Math.max(0, targetN - currentN());
       if (nStillNeeded > 0) {
         if (nSource === 'ams') mix.ams = mix.ams + (nStillNeeded / 21);
         else if (nSource === 'uan28') mix.uan28 = nStillNeeded / 28;
+        else if (nSource === 'ats') mix.ats = mix.ats + (nStillNeeded / 12);
+        else if (nSource === 'app') mix.app = mix.app + (nStillNeeded / 10);
+        else if (nSource === 'optigold') mix.optigold = mix.optigold + (nStillNeeded / 6);
+        else if (nSource === 's6246') mix.s6246 = mix.s6246 + (nStillNeeded / 6);
+        else if (nSource === 's7235') mix.s7235 = mix.s7235 + (nStillNeeded / 7);
+        else if (nSource === 's82054') mix.s82054 = mix.s82054 + (nStillNeeded / 8);
         else if (nSource === 'map') mix.map = mix.map + (nStillNeeded / 11);
         else if (nSource === 'rock40') mix.rock40 = mix.rock40 + (nStillNeeded / 12);
         else mix.urea = nStillNeeded / 46;
       }
 
-      let sumFrac = mix.urea + mix.uan28 + mix.map + mix.rock40 + mix.potash + mix.ams + mix.poly4;
+      const orderKeys = ['urea', 'uan28', 'ats', 'app', 'optigold', 's6246', 's7235', 's82054', 'kts', 'map', 'rock40', 'potash', 'ams', 'poly4'];
+      let sumFrac = orderKeys.reduce((a, k) => a + mix[k], 0);
       let filler = Math.max(0, 1 - sumFrac);
 
-      const delN = mix.urea * 46 + mix.uan28 * 28 + mix.map * 11 + mix.rock40 * 12 + mix.ams * 21;
-      const delP = mix.map * 52 + mix.rock40 * 40;
-      const delK = mix.potash * 60 + mix.poly4 * 14;
-      const delS = mix.rock40 * 6.5 + mix.ams * 24 + mix.poly4 * 19;
+      const delN = currentN();
+      const delP = currentP();
+      const delK = currentK();
+      const delS = currentS();
 
       // Validation
       if (targetN + targetP + targetK + targetS > 100) {
@@ -1448,14 +1538,37 @@
 
       let totalCost = 0;
       let lines = [];
-      ['urea', 'uan28', 'map', 'rock40', 'potash', 'ams', 'poly4'].forEach(key => {
+      let hasLiquid = false;
+      let hasDry = false;
+      orderKeys.forEach(key => {
         if (mix[key] > 0.0005) {
           const t = mix[key] * tons;
-          const cost = t * products[key].price;
+          const lbs = t * 2000;
+          const isLiq = !!products[key].liquid;
+          const gal = (isLiq && products[key].lbPerGal) ? (lbs / products[key].lbPerGal) : 0;
+          // Optistart Gold list price is $/gal; others in this tool are $/ton (0 = Call)
+          let cost = 0;
+          if (products[key].priceUnit === 'gal' && gal > 0) cost = gal * products[key].price;
+          else cost = t * products[key].price;
           totalCost += cost;
-          lines.push({ name: products[key].name, frac: mix[key] * 100, tons: t, cost: cost, price: products[key].price });
+          if (isLiq) hasLiquid = true; else hasDry = true;
+          lines.push({
+            name: products[key].name,
+            frac: mix[key] * 100,
+            tons: t,
+            lbs: lbs,
+            gal: gal,
+            cost: cost,
+            price: products[key].price,
+            liquid: isLiq
+          });
         }
       });
+      if (hasLiquid && hasDry) {
+        notes.push('Program mixes dry and liquid products — treat as a nutrient program, not a single physical dry blend.');
+      } else if (hasLiquid && !hasDry) {
+        notes.push('All-liquid nutrient program. Totals are by weight; gallons use listed densities.');
+      }
 
       let grade = delN.toFixed(1) + '-' + delP.toFixed(1) + '-' + delK.toFixed(1) + '-' + delS.toFixed(1) + 'S';
       let html = '<div class="bg-gray-50 dark:bg-gray-700/40 rounded-lg p-4 space-y-3">';
@@ -1480,10 +1593,12 @@
       }
 
       if (lines.length) {
-        html += '<table class="w-full text-sm mt-1"><thead><tr class="text-xs uppercase text-gray-500 border-b border-gray-200 dark:border-gray-600"><th class="text-left py-1">Product</th><th class="text-right">% of blend</th><th class="text-right">Tons</th><th class="text-right">Lbs</th><th class="text-right">Est. $</th></tr></thead><tbody>';
+        html += '<table class="w-full text-sm mt-1"><thead><tr class="text-xs uppercase text-gray-500 border-b border-gray-200 dark:border-gray-600"><th class="text-left py-1">Product</th><th class="text-right">% by wt</th><th class="text-right">Tons</th><th class="text-right">Lbs</th><th class="text-right">Gallons</th><th class="text-right">Est. $</th></tr></thead><tbody>';
         lines.forEach(l => {
           const costLabel = (l.price == null || l.price === 0) && l.cost === 0 ? 'Call' : money(l.cost, 0);
-          html += '<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-1.5">' + l.name + '</td><td class="text-right">' + l.frac.toFixed(1) + '%</td><td class="text-right">' + l.tons.toFixed(2) + '</td><td class="text-right">' + formatMoney(l.tons * 2000, 0) + '</td><td class="text-right">' + costLabel + '</td></tr>';
+          const galLabel = l.liquid && l.gal > 0 ? formatMoney(l.gal, 0) : '—';
+          const nameLabel = l.name + (l.liquid ? ' <span class="text-xs text-blue-600 dark:text-blue-400">liquid</span>' : '');
+          html += '<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-1.5">' + nameLabel + '</td><td class="text-right">' + l.frac.toFixed(1) + '%</td><td class="text-right">' + l.tons.toFixed(2) + '</td><td class="text-right">' + formatMoney(l.lbs, 0) + '</td><td class="text-right">' + galLabel + '</td><td class="text-right">' + costLabel + '</td></tr>';
         });
         html += '</tbody></table>';
         html += '<div class="flex justify-between font-semibold pt-2"><span>Estimated product cost</span><span>' + money(totalCost, 0) + '</span></div>';
@@ -1781,12 +1896,19 @@
       'NH3': { n: 82, p: 0, k: 0, s: 0, unit: 'ton', lbPerGal: 0 },
       'Urea': { n: 46, p: 0, k: 0, s: 0, unit: 'ton', lbPerGal: 0 },
       'UAN 28%': { n: 28, p: 0, k: 0, s: 0, unit: 'ton', lbPerGal: 10.6 },
+      'UAN': { n: 28, p: 0, k: 0, s: 0, unit: 'ton', lbPerGal: 10.6 },
+      'ATS': { n: 12, p: 0, k: 0, s: 26, unit: 'ton', lbPerGal: 11.1 },
+      '10-34-0': { n: 10, p: 34, k: 0, s: 0, unit: 'ton', lbPerGal: 11.65 },
+      'Optistart Gold': { n: 6, p: 20, k: 5, s: 2, unit: 'gal', lbPerGal: 11.0 },
+      '6-24-6': { n: 6, p: 24, k: 6, s: 0, unit: 'ton', lbPerGal: 11.22 },
+      '7-23-5': { n: 7, p: 23, k: 5, s: 0, unit: 'ton', lbPerGal: 11.1 },
+      '8-20-5-4': { n: 8, p: 20, k: 5, s: 4, unit: 'ton', lbPerGal: 11.4 },
+      'KTS': { n: 0, p: 0, k: 25, s: 17, unit: 'ton', lbPerGal: 12.2 },
       'MAP': { n: 11, p: 52, k: 0, s: 0, unit: 'ton', lbPerGal: 0 },
       '40 Rock': { n: 12, p: 40, k: 0, s: 6.5, unit: 'ton', lbPerGal: 0 },
       'Potash': { n: 0, p: 0, k: 60, s: 0, unit: 'ton', lbPerGal: 0 },
       'AMS': { n: 21, p: 0, k: 0, s: 24, unit: 'ton', lbPerGal: 0 },
-      'Poly4': { n: 0, p: 0, k: 14, s: 19, unit: 'ton', lbPerGal: 0 },
-      'Optistart Gold': { n: 6, p: 20, k: 5, s: 2, unit: 'gal', lbPerGal: 11 }
+      'Poly4': { n: 0, p: 0, k: 14, s: 19, unit: 'ton', lbPerGal: 0 }
     };
 
     function getCatalogProducts() {
