@@ -896,8 +896,13 @@
         <!-- Products & prices -->
         <div>
           <h3 class="font-semibold text-sm mb-2 flex items-center gap-2"><i class="fas fa-tags text-dfc-red"></i> Products & prices</h3>
-          <p class="text-xs text-gray-500 mb-2">Edit prices for this quote only. Select products on the main list first, then open Quote.</p>
-          <div id="quotePreview" class="border border-gray-200 dark:border-gray-600 rounded-lg p-3 text-sm min-h-[80px]"></div>
+          <p class="text-xs text-gray-500 mb-2">Check products to include, then edit prices. Selection is for this quote only.</p>
+          <div class="flex flex-wrap gap-2 mb-2">
+            <button type="button" onclick="quoteSelectAll(true)" class="text-xs px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600">Select all</button>
+            <button type="button" onclick="quoteSelectAll(false)" class="text-xs px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600">Clear</button>
+            <span class="text-xs text-gray-500 self-center"><span id="quoteSelectedCount">0</span> selected</span>
+          </div>
+          <div id="quotePreview" class="border border-gray-200 dark:border-gray-600 rounded-lg p-3 text-sm min-h-[80px] max-h-64 overflow-y-auto"></div>
         </div>
 
         <!-- $/Acre -->
@@ -941,71 +946,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Blend -->
-        <div class="border border-gray-200 dark:border-gray-600 rounded-xl p-4">
-          <h3 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-flask text-dfc-red"></i> Blend on quote</h3>
-          <p class="text-xs text-gray-500 mb-2">Target analysis and tons. Uses quote prices when the product is on this quote; otherwise list price.</p>
-          <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 mb-3">
-            <div>
-              <label class="block text-xs text-gray-500 mb-1">N %</label>
-              <input type="number" id="qBlendN" value="20" min="0" step="0.1" oninput="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
-            </div>
-            <div>
-              <label class="block text-xs text-gray-500 mb-1">P₂O₅ %</label>
-              <input type="number" id="qBlendP" value="10" min="0" step="0.1" oninput="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
-            </div>
-            <div>
-              <label class="block text-xs text-gray-500 mb-1">K₂O %</label>
-              <input type="number" id="qBlendK" value="5" min="0" step="0.1" oninput="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
-            </div>
-            <div>
-              <label class="block text-xs text-gray-500 mb-1">S %</label>
-              <input type="number" id="qBlendS" value="4" min="0" step="0.1" oninput="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
-            </div>
-            <div>
-              <label class="block text-xs text-gray-500 mb-1">Tons</label>
-              <input type="number" id="qBlendTons" value="20" min="0" step="0.1" oninput="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
-            </div>
-            <div class="flex items-end">
-              <button type="button" onclick="recalcQuoteBlend()" class="w-full bg-dfc-red hover:bg-dfc-darkred text-white py-1.5 rounded-lg text-sm font-medium">Estimate</button>
-            </div>
-          </div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
-            <div>
-              <label class="block text-xs text-gray-500 mb-1">N source</label>
-              <select id="qBlendNSource" onchange="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
-                <option value="urea">Urea</option>
-                <option value="uan28">UAN 28%</option>
-                <option value="ams">AMS</option>
-                <option value="map">MAP</option>
-                <option value="rock40">40 Rock</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs text-gray-500 mb-1">P source</label>
-              <select id="qBlendPSource" onchange="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
-                <option value="map">MAP</option>
-                <option value="rock40">40 Rock</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs text-gray-500 mb-1">K source</label>
-              <select id="qBlendKSource" onchange="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
-                <option value="potash">Potash</option>
-                <option value="poly4">Poly4</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs text-gray-500 mb-1">S source</label>
-              <select id="qBlendSSource" onchange="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
-                <option value="ams">AMS</option>
-                <option value="poly4">Poly4</option>
-              </select>
-            </div>
-          </div>
-          <div id="quoteBlendResults" class="text-sm"></div>
         </div>
 
         <div class="flex flex-wrap gap-2 sticky bottom-0 bg-white dark:bg-gray-800 py-2">
@@ -1848,54 +1788,64 @@
       'Poly4': { n: 0, p: 0, k: 14, s: 19, unit: 'ton', lbPerGal: 0 },
       'Optistart Gold': { n: 6, p: 20, k: 5, s: 2, unit: 'gal', lbPerGal: 11 }
     };
-    const QUOTE_BLEND_DEFAULTS = {
-      urea: { name: 'Urea', n: 46, p: 0, k: 0, s: 0, price: 530, key: 'Urea' },
-      uan28: { name: 'UAN 28%', n: 28, p: 0, k: 0, s: 0, price: 0, key: 'UAN 28%' },
-      map: { name: 'MAP', n: 11, p: 52, k: 0, s: 0, price: 935, key: 'MAP' },
-      rock40: { name: '40 Rock', n: 12, p: 40, k: 0, s: 6.5, price: 940, key: '40 Rock' },
-      potash: { name: 'Potash', n: 0, p: 0, k: 60, s: 0, price: 470, key: 'Potash' },
-      ams: { name: 'AMS', n: 21, p: 0, k: 0, s: 24, price: 540, key: 'AMS' },
-      poly4: { name: 'Poly4', n: 0, p: 0, k: 14, s: 19, price: 525, key: 'Poly4' }
-    };
+
+    function getCatalogProducts() {
+      const seen = {};
+      const list = [];
+      document.querySelectorAll('.product-row').forEach(row => {
+        const product = row.dataset.product;
+        if (!product || seen[product]) return;
+        seen[product] = true;
+        list.push({
+          product: product,
+          analysis: row.dataset.analysis || '',
+          price: row.dataset.price || '',
+          unit: row.dataset.unit || 'ton'
+        });
+      });
+      return list;
+    }
 
     function openQuote() {
-      const data = getSelectedProducts();
+      const catalog = getCatalogProducts();
+      const preselected = {};
+      getSelectedProducts().forEach(r => { preselected[r.product] = true; });
+      // If nothing preselected, still show full catalog unchecked
       const prev = document.getElementById('quotePreview');
-      if (!data.length) {
-        prev.innerHTML = '<p class="text-gray-500">No products selected. Check the boxes next to products first.</p>';
-        document.getElementById('quoteAcreRows').innerHTML = '';
-        document.getElementById('quoteBlendResults').innerHTML = '';
-        document.getElementById('quoteAcrePer').textContent = '—';
-        document.getElementById('quoteAcreTotal').textContent = '—';
-        document.getElementById('quoteAcreAnalysis').textContent = '—';
-        const _qg = document.getElementById('quoteAcreBlendGrade'); if (_qg) _qg.textContent = '—';
-      } else {
-        let h = '<table class="w-full text-sm" id="quoteTable"><thead><tr class="border-b text-xs uppercase text-gray-500"><th class="text-left py-1">Product</th><th class="text-left">Analysis</th><th class="text-right">Unit</th><th class="text-right" style="min-width:110px">Price</th></tr></thead><tbody>';
-        data.forEach((r) => {
-          const isCall = r.price === 'Call' || r.price === '';
-          const priceVal = isCall ? '' : r.price;
-          const unit = r.unit || 'ton';
-          h += '<tr class="quote-row border-b border-gray-100 dark:border-gray-700" data-product="' + r.product.replace(/"/g, '&quot;') + '" data-analysis="' + (r.analysis || '').replace(/"/g, '&quot;') + '" data-unit="' + unit + '">';
-          h += '<td class="py-1.5">' + r.product + '</td>';
-          h += '<td>' + (r.analysis || '') + '</td>';
-          h += '<td class="text-right text-gray-500">' + (unit ? '/' + unit : '') + '</td>';
-          h += '<td class="text-right py-1"><div class="inline-flex items-center justify-end gap-1"><span class="text-gray-400">$</span>';
-          h += '<input type="text" class="quote-price w-24 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded px-2 py-1 text-sm text-right" value="' + priceVal + '" placeholder="' + (isCall ? 'Call' : '0') + '" oninput="onQuotePriceChange()" /></div></td></tr>';
-        });
-        h += '</tbody></table>';
-        h += '<p class="text-xs text-gray-500 mt-2">Price edits apply to this quote only (including $/acre and blend below).</p>';
-        prev.innerHTML = h;
-        buildQuoteAcreRows(data);
-        recalcQuoteAcre();
-        recalcQuoteBlend();
-      }
+      let h = '<table class="w-full text-sm" id="quoteTable"><thead><tr class="border-b text-xs uppercase text-gray-500 sticky top-0 bg-white dark:bg-gray-800"><th class="text-left py-1 w-8"></th><th class="text-left py-1">Product</th><th class="text-left">Analysis</th><th class="text-right">Unit</th><th class="text-right" style="min-width:110px">Price</th></tr></thead><tbody>';
+      catalog.forEach((r) => {
+        const checked = preselected[r.product] ? ' checked' : '';
+        const isCall = r.price === 'Call' || r.price === '';
+        const priceVal = isCall ? '' : r.price;
+        const unit = r.unit || 'ton';
+        h += '<tr class="quote-row border-b border-gray-100 dark:border-gray-700" data-product="' + r.product.replace(/"/g, '&quot;') + '" data-analysis="' + (r.analysis || '').replace(/"/g, '&quot;') + '" data-unit="' + unit + '">';
+        h += '<td class="py-1.5"><input type="checkbox" class="quote-check rounded border-gray-300 text-dfc-red focus:ring-dfc-red" ' + checked + ' onchange="onQuoteSelectionChange()" /></td>';
+        h += '<td class="py-1.5">' + r.product + '</td>';
+        h += '<td>' + (r.analysis || '') + '</td>';
+        h += '<td class="text-right text-gray-500">' + (unit ? '/' + unit : '') + '</td>';
+        h += '<td class="text-right py-1"><div class="inline-flex items-center justify-end gap-1"><span class="text-gray-400">$</span>';
+        h += '<input type="text" class="quote-price w-24 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded px-2 py-1 text-sm text-right" value="' + priceVal + '" placeholder="' + (isCall ? 'Call' : '0') + '" oninput="onQuotePriceChange()" /></div></td></tr>';
+      });
+      h += '</tbody></table>';
+      h += '<p class="text-xs text-gray-500 mt-2">Check products to include. Price edits apply to this quote only (including $/acre below).</p>';
+      prev.innerHTML = h;
+      syncQuoteSelectionUI();
       document.getElementById('quoteModal').classList.remove('hidden');
     }
     function closeQuote() { document.getElementById('quoteModal').classList.add('hidden'); }
 
+    function quoteSelectAll(on) {
+      document.querySelectorAll('#quotePreview .quote-check').forEach(cb => { cb.checked = !!on; });
+      onQuoteSelectionChange();
+    }
+
     function getQuoteRows() {
       const rows = [];
       document.querySelectorAll('#quotePreview tr.quote-row').forEach(tr => {
+        const cb = tr.querySelector('.quote-check');
+        if (cb && !cb.checked) return;
+        // if no checkbox (legacy), include row
+        if (cb === null) { /* include */ }
         const input = tr.querySelector('.quote-price');
         let price = (input ? input.value.trim() : '');
         if (price === '') price = 'Call';
@@ -1909,6 +1859,7 @@
       });
       return rows;
     }
+
     function quotePriceMap() {
       const map = {};
       getQuoteRows().forEach(r => {
@@ -1917,24 +1868,51 @@
       });
       return map;
     }
-    function onQuotePriceChange() {
+
+    function syncQuoteSelectionUI() {
+      const rows = getQuoteRows();
+      const countEl = document.getElementById('quoteSelectedCount');
+      if (countEl) countEl.textContent = rows.length;
+      // Preserve existing acre rates when rebuilding
+      const prevRates = {};
+      document.querySelectorAll('#quoteAcreRows tr.quote-acre-row').forEach(tr => {
+        prevRates[tr.dataset.product] = {
+          rate: tr.querySelector('.q-acre-rate') ? tr.querySelector('.q-acre-rate').value : '',
+          unit: tr.querySelector('.q-acre-unit') ? tr.querySelector('.q-acre-unit').value : 'lb'
+        };
+      });
+      buildQuoteAcreRows(rows, prevRates);
       recalcQuoteAcre();
-      recalcQuoteBlend();
     }
 
-    function buildQuoteAcreRows(data) {
+    function onQuoteSelectionChange() {
+      syncQuoteSelectionUI();
+    }
+
+    function onQuotePriceChange() {
+      recalcQuoteAcre();
+    }
+
+    function buildQuoteAcreRows(data, prevRates) {
       const tbody = document.getElementById('quoteAcreRows');
-      tbody.innerHTML = data.map((r, i) => {
+      if (!data.length) {
+        tbody.innerHTML = '<tr><td colspan="4" class="py-3 text-center text-gray-500 text-sm">Select products above to set application rates.</td></tr>';
+        return;
+      }
+      prevRates = prevRates || {};
+      tbody.innerHTML = data.map((r) => {
         const info = QUOTE_ANALYSIS[r.product] || { unit: r.unit || 'ton', lbPerGal: 0 };
         const unit = r.unit || info.unit || 'ton';
-        const rateDefault = unit === 'gal' ? 5 : 200;
+        const prev = prevRates[r.product];
+        const rateDefault = prev && prev.rate !== '' ? prev.rate : (unit === 'gal' ? 5 : 200);
+        const rateUnit = prev && prev.unit ? prev.unit : (unit === 'gal' ? 'gal' : 'lb');
         return '<tr class="quote-acre-row border-b border-gray-100 dark:border-gray-700" data-product="' + r.product.replace(/"/g, '&quot;') + '" data-unit="' + unit + '">' +
           '<td class="py-1.5">' + r.product + '</td>' +
           '<td class="py-1 text-right"><input type="number" class="q-acre-rate w-24 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded px-2 py-1 text-sm text-right" value="' + rateDefault + '" min="0" step="1" oninput="recalcQuoteAcre()" /></td>' +
           '<td class="py-1"><select class="q-acre-unit border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded px-2 py-1 text-sm" onchange="recalcQuoteAcre()">' +
-            '<option value="lb"' + (unit !== 'gal' ? ' selected' : '') + '>lbs/acre</option>' +
-            '<option value="ton">tons/acre</option>' +
-            '<option value="gal"' + (unit === 'gal' ? ' selected' : '') + '>gal/acre</option>' +
+            '<option value="lb"' + (rateUnit === 'lb' ? ' selected' : '') + '>lbs/acre</option>' +
+            '<option value="ton"' + (rateUnit === 'ton' ? ' selected' : '') + '>tons/acre</option>' +
+            '<option value="gal"' + (rateUnit === 'gal' ? ' selected' : '') + '>gal/acre</option>' +
           '</select></td>' +
           '<td class="py-1.5 text-right font-medium q-acre-cost">—</td></tr>';
       }).join('');
@@ -1999,103 +1977,6 @@
       }
     }
 
-    function quoteProductPrice(keyName, defaultPrice) {
-      const map = quotePriceMap();
-      if (map[keyName] != null) return map[keyName];
-      return defaultPrice;
-    }
-
-    function recalcQuoteBlend() {
-      const targetN = parseFloat(document.getElementById('qBlendN').value) || 0;
-      const targetP = parseFloat(document.getElementById('qBlendP').value) || 0;
-      const targetK = parseFloat(document.getElementById('qBlendK').value) || 0;
-      const targetS = parseFloat(document.getElementById('qBlendS').value) || 0;
-      const tons = parseFloat(document.getElementById('qBlendTons').value) || 0;
-      const nSource = document.getElementById('qBlendNSource').value;
-      const pSource = document.getElementById('qBlendPSource').value;
-      const kSource = document.getElementById('qBlendKSource').value;
-      const sSource = document.getElementById('qBlendSSource').value;
-      const el = document.getElementById('quoteBlendResults');
-      if (!el) return;
-
-      const products = {};
-      Object.keys(QUOTE_BLEND_DEFAULTS).forEach(k => {
-        const d = QUOTE_BLEND_DEFAULTS[k];
-        products[k] = {
-          name: d.name,
-          n: d.n, p: d.p, k: d.k, s: d.s,
-          price: quoteProductPrice(d.key, d.price)
-        };
-      });
-
-      let mix = { urea: 0, uan28: 0, map: 0, rock40: 0, potash: 0, ams: 0, poly4: 0 };
-      if (targetP > 0) {
-        if (pSource === 'map') mix.map = targetP / 52;
-        else mix.rock40 = targetP / 40;
-      }
-      let sFromRock = mix.rock40 * 6.5;
-      let sStillNeeded = Math.max(0, targetS - sFromRock);
-      if (targetK > 0 && kSource === 'poly4') {
-        mix.poly4 = Math.max(mix.poly4, targetK / 14);
-        sStillNeeded = Math.max(0, targetS - sFromRock - mix.poly4 * 19);
-      }
-      if (sStillNeeded > 0) {
-        if (sSource === 'ams') mix.ams = Math.max(mix.ams, sStillNeeded / 24);
-        else mix.poly4 = Math.max(mix.poly4, sStillNeeded / 19);
-      }
-      let kFromPoly = mix.poly4 * 14;
-      let kStillNeeded = Math.max(0, targetK - kFromPoly);
-      if (kStillNeeded > 0) mix.potash = kStillNeeded / 60;
-
-      let nFromOthers = mix.map * 11 + mix.rock40 * 12 + mix.ams * 21;
-      let nStillNeeded = Math.max(0, targetN - nFromOthers);
-      if (nStillNeeded > 0) {
-        if (nSource === 'ams') mix.ams = mix.ams + (nStillNeeded / 21);
-        else if (nSource === 'uan28') mix.uan28 = nStillNeeded / 28;
-        else if (nSource === 'map') mix.map = mix.map + (nStillNeeded / 11);
-        else if (nSource === 'rock40') mix.rock40 = mix.rock40 + (nStillNeeded / 12);
-        else mix.urea = nStillNeeded / 46;
-      }
-
-      let sumFrac = mix.urea + mix.uan28 + mix.map + mix.rock40 + mix.potash + mix.ams + mix.poly4;
-      let filler = Math.max(0, 1 - sumFrac);
-      const delN = mix.urea * 46 + mix.uan28 * 28 + mix.map * 11 + mix.rock40 * 12 + mix.ams * 21;
-      const delP = mix.map * 52 + mix.rock40 * 40;
-      const delK = mix.potash * 60 + mix.poly4 * 14;
-      const delS = mix.rock40 * 6.5 + mix.ams * 24 + mix.poly4 * 19;
-
-      let totalCost = 0;
-      let lines = [];
-      ['urea', 'uan28', 'map', 'rock40', 'potash', 'ams', 'poly4'].forEach(key => {
-        if (mix[key] > 0.0005) {
-          const t = mix[key] * tons;
-          const cost = t * (products[key].price || 0);
-          totalCost += cost;
-          lines.push({ name: products[key].name, frac: mix[key] * 100, tons: t, cost: cost, price: products[key].price });
-        }
-      });
-
-      let grade = delN.toFixed(1) + '-' + delP.toFixed(1) + '-' + delK.toFixed(1) + '-' + delS.toFixed(1) + 'S';
-      let html = '<div class="bg-gray-50 dark:bg-gray-700/40 rounded-lg p-3 space-y-2">';
-      html += '<div class="font-medium">Target ' + targetN + '-' + targetP + '-' + targetK + '-' + targetS + 'S · ' + tons + ' tons</div>';
-      html += '<div class="text-sm">Delivered grade: <strong>' + grade + '</strong></div>';
-      if (sumFrac > 1.02) {
-        html += '<div class="text-amber-700 dark:text-amber-300 text-xs">Ingredient fractions sum to ' + (sumFrac * 100).toFixed(0) + '% — targets may be too high.</div>';
-      } else if (filler > 0.02) {
-        html += '<div class="text-xs text-gray-500">~' + (filler * 100).toFixed(0) + '% filler / carrier (not costed).</div>';
-      }
-      html += '<table class="w-full text-sm mt-1"><thead><tr class="text-xs uppercase text-gray-500 border-b border-gray-200 dark:border-gray-600"><th class="text-left py-1">Product</th><th class="text-right">%</th><th class="text-right">Tons</th><th class="text-right">Lbs</th><th class="text-right">Est. $</th></tr></thead><tbody>';
-      lines.forEach(l => {
-        const costLabel = (l.price == null || l.price === 0) && l.cost === 0 ? 'Call' : money(l.cost, 0);
-        html += '<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-1">' + l.name + '</td><td class="text-right">' + l.frac.toFixed(1) + '%</td><td class="text-right">' + l.tons.toFixed(2) + '</td><td class="text-right">' + formatMoney(l.tons * 2000, 0) + '</td><td class="text-right">' + costLabel + '</td></tr>';
-      });
-      html += '</tbody></table>';
-      html += '<div class="flex justify-between font-semibold pt-1"><span>Estimated product cost</span><span>' + money(totalCost, 0) + '</span></div>';
-      html += '<div class="text-xs text-gray-500">' + money(tons > 0 ? totalCost / tons : 0, 0) + ' per ton of blend</div>';
-      html += '</div>';
-      el.innerHTML = html;
-    }
-
     function printQuote() {
       const customer = document.getElementById('quoteCustomer').value || 'Customer';
       const date = document.getElementById('quoteDate').value;
@@ -2157,13 +2038,6 @@
         tableHtml += '</p>';
       }
 
-      // Blend section
-      const blendBox = document.getElementById('quoteBlendResults');
-      if (blendBox && blendBox.innerHTML.trim()) {
-        tableHtml += '<h2 style="font-size:14px;margin:24px 0 8px;color:#333">Blend estimate</h2>';
-        // strip interactive-only classes by using text content structure from results
-        tableHtml += '<div>' + blendBox.innerHTML + '</div>';
-      }
 
       tableHtml += '<p style="font-size:12px;color:#666;margin-top:16px">Prices as quoted. Subject to change. Contact DFC to confirm.</p>';
       const w = window.open('', '_blank');
