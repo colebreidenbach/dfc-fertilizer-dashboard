@@ -1818,7 +1818,7 @@
         const isCall = r.price === 'Call' || r.price === '';
         const priceVal = isCall ? '' : r.price;
         const unit = r.unit || 'ton';
-        h += '<tr class="quote-row border-b border-gray-100 dark:border-gray-700" data-product="' + r.product.replace(/"/g, '&quot;') + '" data-analysis="' + (r.analysis || '').replace(/"/g, '&quot;') + '" data-unit="' + unit + '">';
+        h += '<tr class="quote-row border-b border-gray-100 dark:border-gray-700" data-product="' + r.product.replace(/"/g, '&quot;') + '" data-analysis="' + (r.analysis || '').replace(/"/g, '&quot;') + '" data-unit="' + unit + '" data-list-price="' + (isCall ? '' : String(r.price)) + '">';
         h += '<td class="py-1.5"><input type="checkbox" class="quote-check rounded border-gray-300 text-dfc-red focus:ring-dfc-red" ' + checked + ' onchange="onQuoteSelectionChange()" /></td>';
         h += '<td class="py-1.5">' + r.product + '</td>';
         h += '<td>' + (r.analysis || '') + '</td>';
@@ -1836,6 +1836,21 @@
 
     function quoteSelectAll(on) {
       document.querySelectorAll('#quotePreview .quote-check').forEach(cb => { cb.checked = !!on; });
+      if (!on) {
+        // Reset all quote prices back to list defaults
+        document.querySelectorAll('#quotePreview tr.quote-row').forEach(tr => {
+          const input = tr.querySelector('.quote-price');
+          if (!input) return;
+          const listPrice = tr.dataset.listPrice;
+          if (listPrice === undefined || listPrice === '') {
+            input.value = '';
+            input.placeholder = 'Call';
+          } else {
+            input.value = listPrice;
+            input.placeholder = '0';
+          }
+        });
+      }
       onQuoteSelectionChange();
     }
 
