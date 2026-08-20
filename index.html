@@ -328,8 +328,8 @@
 
       <!-- Blend calculator -->
       <div id="tool-blend" class="tool-panel p-5 hidden">
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          Enter target analysis and total tons. Choose N, P, K, and S sources below — the estimate builds the blend from those products.
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+          Build a custom dry blend from target grade and preferred sources. Build order: <strong>P → S → K → N</strong> (credits nutrients already supplied by multi-nutrient products).
         </p>
         <div class="grid grid-cols-2 md:grid-cols-6 gap-3 mb-4">
           <div id="blendNWrap">
@@ -356,41 +356,58 @@
             <button onclick="calcBlend()" class="w-full bg-dfc-red hover:bg-dfc-darkred text-white py-2 rounded-lg text-sm font-medium">Estimate</button>
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+        <div class="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Preferred sources <span class="normal-case font-normal">(primary product used to finish each nutrient)</span></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
           <div id="blendNSourceWrap">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">N source</label>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">N source <span class="text-gray-400 font-normal">finishes N</span></label>
             <select id="blendNSource" onchange="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
-              <option value="urea">Urea (46-0-0)</option>
-              <option value="uan28">UAN 28% (28-0-0)</option>
-              <option value="ams">AMS (21-0-0-24S)</option>
-              <option value="map">MAP (11-52-0)</option>
-              <option value="rock40">40 Rock (12-40-0-6.5S)</option>
+              <option value="urea">Urea · 46-0-0 (N only)</option>
+              <option value="uan28">UAN 28% · 28-0-0 (N only, liquid)</option>
+              <option value="ams">AMS · 21-0-0-24S (also S)</option>
+              <option value="map">MAP · 11-52-0 (also P)</option>
+              <option value="rock40">40 Rock · 12-40-0-6.5S (also P+S)</option>
             </select>
           </div>
           <div id="blendPSourceWrap">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">P source</label>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">P source <span class="text-gray-400 font-normal">sets P first</span></label>
             <select id="blendPSource" onchange="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
-              <option value="map">MAP (11-52-0)</option>
-              <option value="rock40">40 Rock (12-40-0-6.5S)</option>
+              <option value="map">MAP · 11-52-0 (also N)</option>
+              <option value="rock40">40 Rock · 12-40-0-6.5S (also N+S)</option>
             </select>
           </div>
           <div id="blendKSourceWrap">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">K source</label>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">K source <span class="text-gray-400 font-normal">sets/finishes K</span></label>
             <select id="blendKSource" onchange="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
-              <option value="potash">Potash (0-0-60)</option>
-              <option value="poly4">Poly4 (0-0-14-19S)</option>
+              <option value="potash">Potash · 0-0-60 (K only)</option>
+              <option value="poly4">Poly4 · 0-0-14-19S (also S)</option>
             </select>
           </div>
           <div id="blendSSourceWrap">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">S source</label>
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">S source <span class="text-gray-400 font-normal">finishes S</span></label>
             <select id="blendSSource" onchange="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
-              <option value="ams">AMS (21-0-0-24S)</option>
-              <option value="poly4">Poly4 (0-0-14-19S)</option>
+              <option value="ams">AMS · 21-0-0-24S (also N)</option>
+              <option value="poly4">Poly4 · 0-0-14-19S (also K)</option>
             </select>
           </div>
         </div>
+        <div class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-4 mb-4 border border-gray-100 dark:border-gray-600">
+          <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-2">Field application (optional)</div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">Blend rate (lbs/acre)</label>
+              <input type="number" id="blendAppRate" value="200" min="0" step="1" oninput="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">Field acres</label>
+              <input type="number" id="blendAppAcres" value="160" min="0" step="1" oninput="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div class="sm:col-span-2 flex items-end">
+              <p class="text-xs text-gray-500">Shows lbs of N-P-K-S applied per acre and tons needed for the field from this blend grade.</p>
+            </div>
+          </div>
+        </div>
         <div id="blendResults" class="space-y-2 text-sm"></div>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Estimates only. Set Target N to 0 for a PKS-style blend with no dedicated nitrogen. Confirm exact blends with your DFC agronomist.</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Estimates only. Set Target N to 0 for a PKS-style blend. Confirm exact blends with your DFC agronomist before ordering.</p>
       </div>
 
       <!-- Unit converter -->
@@ -900,7 +917,7 @@
               <tbody id="quoteAcreRows"></tbody>
             </table>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
             <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-center border border-green-100 dark:border-green-800">
               <div class="text-xs text-green-700 dark:text-green-400 uppercase">Combined $/Acre</div>
               <div class="text-xl font-bold text-green-800 dark:text-green-300" id="quoteAcrePer">—</div>
@@ -909,9 +926,19 @@
               <div class="text-xs text-blue-700 dark:text-blue-400 uppercase">Total Cost</div>
               <div class="text-xl font-bold text-blue-800 dark:text-blue-300" id="quoteAcreTotal">—</div>
             </div>
-            <div class="bg-red-50 dark:bg-red-900/10 rounded-lg p-3 text-center border border-dfc-red/20">
-              <div class="text-xs text-gray-500 uppercase">Nutrients (lbs/acre)</div>
-              <div class="text-lg font-bold text-dfc-red" id="quoteAcreAnalysis">—</div>
+          </div>
+          <div class="mt-3 rounded-xl border border-dfc-red/30 bg-red-50/50 dark:bg-red-900/10 p-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Blend analysis (grade %)</div>
+                <div class="text-xl sm:text-2xl font-bold text-dfc-red tracking-wide" id="quoteAcreBlendGrade">—</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="quoteAcreBlendDetail">N-P₂O₅-K₂O-S % of total product applied</div>
+              </div>
+              <div>
+                <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">Nutrients applied (lbs/acre)</div>
+                <div class="text-xl sm:text-2xl font-bold text-dfc-red tracking-wide" id="quoteAcreAnalysis">—</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="quoteAcreNutrientDetail">lbs nutrient / acre</div>
+              </div>
             </div>
           </div>
         </div>
@@ -1368,7 +1395,7 @@
     }
     calcAppRate();
 
-    // Blend calculator — driven by NPKS source dropdowns
+    // Blend calculator — driven by NPKS source dropdowns + validation + field rates
     function calcBlend() {
       const targetN = parseFloat(document.getElementById('blendN').value) || 0;
       const targetP = parseFloat(document.getElementById('blendP').value) || 0;
@@ -1379,9 +1406,10 @@
       const pSource = document.getElementById('blendPSource').value;
       const kSource = document.getElementById('blendKSource') ? document.getElementById('blendKSource').value : 'potash';
       const sSource = document.getElementById('blendSSource').value;
+      const appRate = parseFloat(document.getElementById('blendAppRate') && document.getElementById('blendAppRate').value) || 0;
+      const appAcres = parseFloat(document.getElementById('blendAppAcres') && document.getElementById('blendAppAcres').value) || 0;
       const el = document.getElementById('blendResults');
 
-      // Product analyses & prices
       const products = {
         urea:   { name: 'Urea (46-0-0)', n: 46, p: 0, k: 0, s: 0, price: 530 },
         uan28:  { name: 'UAN 28% (28-0-0)', n: 28, p: 0, k: 0, s: 0, price: 0 },
@@ -1392,123 +1420,165 @@
         poly4:  { name: 'Poly4 (0-0-14-19S)', n: 0, p: 0, k: 14, s: 19, price: 525 }
       };
 
-      // Fraction of each ingredient in the blend
       let mix = { urea: 0, uan28: 0, map: 0, rock40: 0, potash: 0, ams: 0, poly4: 0 };
+      const warnings = [];
+      const notes = [];
 
-      // 1) Meet P first
+      // Source clarity notes
+      if (nSource === 'map' && pSource === 'map') notes.push('MAP is both P source and N source — extra MAP for N will raise P above target.');
+      if (nSource === 'rock40' && pSource === 'rock40') notes.push('40 Rock is both P source and N source — extra for N will raise P and S.');
+      if (nSource === 'ams' && sSource === 'ams') notes.push('AMS is both S source and N source — extra AMS for N will raise S above target.');
+      if (kSource === 'poly4' && sSource === 'poly4') notes.push('Poly4 is both K and S source — amounts are balanced for both nutrients where possible.');
+      if (nSource === 'uan28') notes.push('UAN 28% is liquid — typically not mixed into a dry blend; shown as N-equivalent for planning.');
+
+      // 1) P first
       if (targetP > 0) {
         if (pSource === 'map') mix.map = targetP / 52;
         else mix.rock40 = targetP / 40;
       }
 
-      // 2) Meet S (credit S already in 40 Rock; also Poly4 if used later for K)
-      // We'll refine after K step if Poly4 is the K source
+      // 2) S (credit 40 Rock; Poly4 if used for K)
       let sFromRock = mix.rock40 * 6.5;
       let sStillNeeded = Math.max(0, targetS - sFromRock);
 
-      // 3) Meet K
-      // If K source is Poly4, use it first (also supplies S)
       if (targetK > 0 && kSource === 'poly4') {
         mix.poly4 = Math.max(mix.poly4, targetK / 14);
-        // Poly4 also adds S
         sStillNeeded = Math.max(0, targetS - sFromRock - mix.poly4 * 19);
-      } else if (targetK > 0) {
-        // potash primary; credit any Poly4 K if S source adds Poly4 later
-        // temporary — refined after S
       }
 
-      // 4) Finish S with preferred S source
       if (sStillNeeded > 0) {
-        if (sSource === 'ams') {
-          mix.ams = Math.max(mix.ams, sStillNeeded / 24);
-        } else {
-          // poly4 for S
-          const polyForS = sStillNeeded / 19;
-          mix.poly4 = Math.max(mix.poly4, polyForS);
-        }
+        if (sSource === 'ams') mix.ams = Math.max(mix.ams, sStillNeeded / 24);
+        else mix.poly4 = Math.max(mix.poly4, sStillNeeded / 19);
       }
 
-      // 5) Finish K with potash if still short (after Poly4 credit)
+      // 3) Finish K with potash if needed
       let kFromPoly = mix.poly4 * 14;
       let kStillNeeded = Math.max(0, targetK - kFromPoly);
-      if (kStillNeeded > 0) {
-        if (kSource === 'potash' || kSource === 'poly4') {
-          // Always allow potash to finish K if Poly4 wasn't enough or wasn't selected as primary
-          mix.potash = kStillNeeded / 60;
-        }
-      }
+      if (kStillNeeded > 0) mix.potash = kStillNeeded / 60;
 
-      // 6) Nitrogen — preferred N source after credit from existing ingredients
+      // 4) Finish N
       let nFromOthers = mix.map * 11 + mix.rock40 * 12 + mix.ams * 21;
       let nStillNeeded = Math.max(0, targetN - nFromOthers);
       if (nStillNeeded > 0) {
-        if (nSource === 'ams') {
-          mix.ams = mix.ams + (nStillNeeded / 21);
-        } else if (nSource === 'uan28') {
-          mix.uan28 = nStillNeeded / 28;
-        } else if (nSource === 'map') {
-          // MAP as N source (also adds P — may exceed P target)
-          mix.map = mix.map + (nStillNeeded / 11);
-        } else if (nSource === 'rock40') {
-          // 40 Rock as N source (also adds P and S)
-          mix.rock40 = mix.rock40 + (nStillNeeded / 12);
-        } else {
-          // urea (default)
-          mix.urea = nStillNeeded / 46;
-        }
+        if (nSource === 'ams') mix.ams = mix.ams + (nStillNeeded / 21);
+        else if (nSource === 'uan28') mix.uan28 = nStillNeeded / 28;
+        else if (nSource === 'map') mix.map = mix.map + (nStillNeeded / 11);
+        else if (nSource === 'rock40') mix.rock40 = mix.rock40 + (nStillNeeded / 12);
+        else mix.urea = nStillNeeded / 46;
       }
 
-      // Scale so ingredients sum to ~1.0 of blend (if over, flag it)
       let sumFrac = mix.urea + mix.uan28 + mix.map + mix.rock40 + mix.potash + mix.ams + mix.poly4;
-      let filler = Math.max(0, 1 - sumFrac); // could be limestone/filler in real life
+      let filler = Math.max(0, 1 - sumFrac);
 
-      // Actual delivered analysis
       const delN = mix.urea * 46 + mix.uan28 * 28 + mix.map * 11 + mix.rock40 * 12 + mix.ams * 21;
       const delP = mix.map * 52 + mix.rock40 * 40;
       const delK = mix.potash * 60 + mix.poly4 * 14;
       const delS = mix.rock40 * 6.5 + mix.ams * 24 + mix.poly4 * 19;
 
+      // Validation
+      if (targetN + targetP + targetK + targetS > 100) {
+        warnings.push('Target nutrients sum to more than 100% — not physically possible in one blend.');
+      }
+      if (sumFrac > 1.02) {
+        warnings.push('Ingredients sum to ' + (sumFrac * 100).toFixed(0) + '% of the blend — reduce target analysis or change sources.');
+      }
+      if (sumFrac > 0.0001 && sumFrac < 0.85 && (targetN + targetP + targetK + targetS) > 5) {
+        notes.push('Blend is only ' + (sumFrac * 100).toFixed(0) + '% nutrient products — rest would be filler/carrier.');
+      }
+      const tol = 0.6;
+      if (targetN > 0 && Math.abs(delN - targetN) > tol) {
+        if (delN > targetN + tol) warnings.push('Delivered N (' + delN.toFixed(1) + '%) is above target ' + targetN + '% (common when MAP/AMS/40 Rock also supply N).');
+        else warnings.push('Delivered N (' + delN.toFixed(1) + '%) is below target ' + targetN + '%.');
+      }
+      if (targetP > 0 && Math.abs(delP - targetP) > tol) {
+        if (delP > targetP + tol) warnings.push('Delivered P₂O₅ (' + delP.toFixed(1) + '%) is above target ' + targetP + '% (often when MAP/40 Rock is also used for N).');
+        else warnings.push('Delivered P₂O₅ (' + delP.toFixed(1) + '%) is below target ' + targetP + '%.');
+      }
+      if (targetK > 0 && Math.abs(delK - targetK) > tol) {
+        if (delK > targetK + tol) warnings.push('Delivered K₂O (' + delK.toFixed(1) + '%) is above target ' + targetK + '%.');
+        else warnings.push('Delivered K₂O (' + delK.toFixed(1) + '%) is below target ' + targetK + '%.');
+      }
+      if (targetS > 0 && Math.abs(delS - targetS) > tol) {
+        if (delS > targetS + tol) warnings.push('Delivered S (' + delS.toFixed(1) + '%) is above target ' + targetS + '% (often when AMS/Poly4/40 Rock also used for other nutrients).');
+        else warnings.push('Delivered S (' + delS.toFixed(1) + '%) is below target ' + targetS + '%.');
+      }
+      if (!targetN && !targetP && !targetK && !targetS) {
+        warnings.push('Enter at least one target nutrient %.');
+      }
+
       let totalCost = 0;
       let lines = [];
-      const order = ['urea', 'uan28', 'map', 'rock40', 'potash', 'ams', 'poly4'];
-      order.forEach(key => {
+      ['urea', 'uan28', 'map', 'rock40', 'potash', 'ams', 'poly4'].forEach(key => {
         if (mix[key] > 0.0005) {
           const t = mix[key] * tons;
           const cost = t * products[key].price;
           totalCost += cost;
-          lines.push({
-            name: products[key].name,
-            frac: mix[key] * 100,
-            tons: t,
-            cost: cost
-          });
+          lines.push({ name: products[key].name, frac: mix[key] * 100, tons: t, cost: cost, price: products[key].price });
         }
       });
 
       let grade = delN.toFixed(1) + '-' + delP.toFixed(1) + '-' + delK.toFixed(1) + '-' + delS.toFixed(1) + 'S';
-
       let html = '<div class="bg-gray-50 dark:bg-gray-700/40 rounded-lg p-4 space-y-3">';
       html += '<div class="font-semibold">Blend estimate · target ' + targetN + '-' + targetP + '-' + targetK + '-' + targetS + 'S · ' + tons + ' tons</div>';
       html += '<div class="text-sm">Estimated delivered grade: <strong>' + grade + '</strong></div>';
 
-      if (sumFrac > 1.02) {
-        html += '<div class="text-amber-700 dark:text-amber-300 text-sm"><i class="fas fa-exclamation-triangle"></i> Ingredient fractions sum to ' + (sumFrac * 100).toFixed(0) + '% — targets may be too high for a single blend. Reduce analysis or total nutrients.</div>';
-      } else if (filler > 0.02) {
+      if (warnings.length) {
+        html += '<div class="rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-700 p-3 space-y-1">';
+        html += '<div class="text-xs font-semibold text-amber-800 dark:text-amber-300 uppercase">Validation</div>';
+        warnings.forEach(w => {
+          html += '<div class="text-sm text-amber-900 dark:text-amber-200"><i class="fas fa-exclamation-triangle mr-1"></i>' + w + '</div>';
+        });
+        html += '</div>';
+      }
+      if (notes.length) {
+        html += '<div class="text-xs text-gray-500 dark:text-gray-400 space-y-0.5">';
+        notes.forEach(n => { html += '<div>• ' + n + '</div>'; });
+        html += '</div>';
+      }
+      if (filler > 0.02 && sumFrac <= 1.02) {
         html += '<div class="text-xs text-gray-500">~' + (filler * 100).toFixed(0) + '% of the blend would be filler / carrier (not costed).</div>';
       }
 
-      html += '<table class="w-full text-sm mt-2"><thead><tr class="text-xs uppercase text-gray-500 border-b border-gray-200 dark:border-gray-600"><th class="text-left py-1">Product</th><th class="text-right">% of blend</th><th class="text-right">Tons</th><th class="text-right">Lbs</th><th class="text-right">Est. $</th></tr></thead><tbody>';
-      lines.forEach(l => {
-        html += '<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-1.5">' + l.name + '</td><td class="text-right">' + l.frac.toFixed(1) + '%</td><td class="text-right">' + l.tons.toFixed(2) + '</td><td class="text-right">' + formatMoney(l.tons * 2000, 0) + '</td><td class="text-right">' + money(l.cost, 0) + '</td></tr>';
-      });
-      html += '</tbody></table>';
-      html += '<div class="flex justify-between font-semibold pt-2"><span>Estimated product cost</span><span>' + money(totalCost, 0) + '</span></div>';
-      html += '<div class="text-xs text-gray-500">' + money(tons > 0 ? (totalCost / tons) : 0, 0) + ' per ton of blend</div>';
+      if (lines.length) {
+        html += '<table class="w-full text-sm mt-1"><thead><tr class="text-xs uppercase text-gray-500 border-b border-gray-200 dark:border-gray-600"><th class="text-left py-1">Product</th><th class="text-right">% of blend</th><th class="text-right">Tons</th><th class="text-right">Lbs</th><th class="text-right">Est. $</th></tr></thead><tbody>';
+        lines.forEach(l => {
+          const costLabel = (l.price == null || l.price === 0) && l.cost === 0 ? 'Call' : money(l.cost, 0);
+          html += '<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-1.5">' + l.name + '</td><td class="text-right">' + l.frac.toFixed(1) + '%</td><td class="text-right">' + l.tons.toFixed(2) + '</td><td class="text-right">' + formatMoney(l.tons * 2000, 0) + '</td><td class="text-right">' + costLabel + '</td></tr>';
+        });
+        html += '</tbody></table>';
+        html += '<div class="flex justify-between font-semibold pt-2"><span>Estimated product cost</span><span>' + money(totalCost, 0) + '</span></div>';
+        html += '<div class="text-xs text-gray-500">' + money(tons > 0 ? (totalCost / tons) : 0, 0) + ' per ton of blend</div>';
+      }
 
+      // Field application rates from delivered grade
+      if (appRate > 0 && (delN + delP + delK + delS) > 0.05) {
+        const nApp = appRate * (delN / 100);
+        const pApp = appRate * (delP / 100);
+        const kApp = appRate * (delK / 100);
+        const sApp = appRate * (delS / 100);
+        const fmt = (v) => {
+          const r = Math.round(v * 10) / 10;
+          return (r % 1 === 0 ? r.toFixed(0) : r.toFixed(1));
+        };
+        const tonsNeeded = appAcres > 0 ? (appRate * appAcres) / 2000 : 0;
+        const fieldCost = tonsNeeded * (tons > 0 ? totalCost / tons : 0);
+        html += '<div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600">';
+        html += '<div class="text-xs font-semibold text-gray-500 uppercase mb-1">Nutrient application at ' + formatMoney(appRate, 0) + ' lbs blend / acre</div>';
+        html += '<div class="text-lg font-bold text-dfc-red">' + fmt(nApp) + '-' + fmt(pApp) + '-' + fmt(kApp) + '-' + fmt(sApp) + 'S <span class="text-sm font-medium text-gray-500">lbs nutrient / acre</span></div>';
+        html += '<div class="text-xs text-gray-500 mt-1">N ' + fmt(nApp) + ' · P₂O₅ ' + fmt(pApp) + ' · K₂O ' + fmt(kApp) + ' · S ' + fmt(sApp) + '</div>';
+        if (appAcres > 0) {
+          html += '<div class="text-sm mt-2">Field (' + formatMoney(appAcres, 0) + ' acres): <strong>' + tonsNeeded.toFixed(2) + ' tons</strong> of this blend';
+          if (totalCost > 0 && tons > 0) html += ' · est. <strong>' + money(fieldCost, 0) + '</strong>';
+          html += '</div>';
+        }
+        html += '</div>';
+      }
 
       html += '</div>';
       el.innerHTML = html;
     }
+
+
     calcBlend();
 
     // Units
@@ -1798,6 +1868,7 @@
         document.getElementById('quoteAcrePer').textContent = '—';
         document.getElementById('quoteAcreTotal').textContent = '—';
         document.getElementById('quoteAcreAnalysis').textContent = '—';
+        const _qg = document.getElementById('quoteAcreBlendGrade'); if (_qg) _qg.textContent = '—';
       } else {
         let h = '<table class="w-full text-sm" id="quoteTable"><thead><tr class="border-b text-xs uppercase text-gray-500"><th class="text-left py-1">Product</th><th class="text-left">Analysis</th><th class="text-right">Unit</th><th class="text-right" style="min-width:110px">Price</th></tr></thead><tbody>';
         data.forEach((r) => {
@@ -1907,10 +1978,24 @@
         const r = Math.round(v * 10) / 10;
         return (r % 1 === 0 ? r.toFixed(0) : r.toFixed(1));
       };
+      const gradeEl = document.getElementById('quoteAcreBlendGrade');
+      const gradeDetail = document.getElementById('quoteAcreBlendDetail');
+      const nutEl = document.getElementById('quoteAcreAnalysis');
+      const nutDetail = document.getElementById('quoteAcreNutrientDetail');
       if (!count || totalProductLbs < 0.05) {
-        document.getElementById('quoteAcreAnalysis').textContent = '—';
+        if (gradeEl) gradeEl.textContent = '—';
+        if (gradeDetail) gradeDetail.textContent = 'N-P₂O₅-K₂O-S % of total product applied';
+        if (nutEl) nutEl.textContent = '—';
+        if (nutDetail) nutDetail.textContent = 'lbs nutrient / acre';
       } else {
-        document.getElementById('quoteAcreAnalysis').textContent = fmt(nLbs) + '-' + fmt(pLbs) + '-' + fmt(kLbs) + '-' + fmt(sLbs) + 'S';
+        const gN = (nLbs / totalProductLbs) * 100;
+        const gP = (pLbs / totalProductLbs) * 100;
+        const gK = (kLbs / totalProductLbs) * 100;
+        const gS = (sLbs / totalProductLbs) * 100;
+        if (gradeEl) gradeEl.textContent = fmt(gN) + '-' + fmt(gP) + '-' + fmt(gK) + '-' + fmt(gS) + 'S';
+        if (gradeDetail) gradeDetail.textContent = 'Based on ' + fmt(totalProductLbs) + ' lbs product / acre';
+        if (nutEl) nutEl.textContent = fmt(nLbs) + '-' + fmt(pLbs) + '-' + fmt(kLbs) + '-' + fmt(sLbs) + 'S';
+        if (nutDetail) nutDetail.textContent = 'N ' + fmt(nLbs) + ' · P₂O₅ ' + fmt(pLbs) + ' · K₂O ' + fmt(kLbs) + ' · S ' + fmt(sLbs);
       }
     }
 
@@ -2065,7 +2150,9 @@
         tableHtml += '</tbody></table>';
         tableHtml += '<p style="margin-top:8px"><strong>Combined: ' + money(totalPerAcre, 2) + '/acre</strong>';
         if (acres) tableHtml += ' · <strong>Total: ' + money(totalPerAcre * acres, 2) + '</strong>';
+        const blendGrade = document.getElementById('quoteAcreBlendGrade') ? document.getElementById('quoteAcreBlendGrade').textContent : '—';
         const analysis = document.getElementById('quoteAcreAnalysis').textContent;
+        if (blendGrade && blendGrade !== '—') tableHtml += '<br>Blend analysis (grade %): ' + blendGrade;
         if (analysis && analysis !== '—') tableHtml += '<br>Nutrients applied: ' + analysis + ' lbs/acre';
         tableHtml += '</p>';
       }
