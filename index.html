@@ -855,13 +855,13 @@
 
   <!-- Quote Modal -->
   <div id="quoteModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4 no-print">
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-      <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[92vh] overflow-y-auto">
+      <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
         <h2 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-file-invoice text-dfc-red"></i> Customer Quote</h2>
         <button onclick="closeQuote()" class="text-gray-500 hover:text-gray-800 dark:hover:text-white text-2xl leading-none">&times;</button>
       </div>
-      <div class="p-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+      <div class="p-6 space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-medium text-gray-500 mb-1">Customer name</label>
             <input type="text" id="quoteCustomer" placeholder="Customer name" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
@@ -870,10 +870,118 @@
             <label class="block text-xs font-medium text-gray-500 mb-1">Date</label>
             <input type="text" id="quoteDate" value="August 17, 2026" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
           </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1">Acres (for $/acre)</label>
+            <input type="number" id="quoteAcres" value="160" min="0" step="1" oninput="recalcQuoteAcre()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+          </div>
         </div>
-        <p class="text-sm text-gray-500 mb-3">Uses currently selected products. You can edit prices on the quote before printing.</p>
-        <div id="quotePreview" class="border border-gray-200 dark:border-gray-600 rounded-lg p-4 mb-4 text-sm min-h-[120px]"></div>
-        <div class="flex gap-2">
+
+        <!-- Products & prices -->
+        <div>
+          <h3 class="font-semibold text-sm mb-2 flex items-center gap-2"><i class="fas fa-tags text-dfc-red"></i> Products & prices</h3>
+          <p class="text-xs text-gray-500 mb-2">Edit prices for this quote only. Select products on the main list first, then open Quote.</p>
+          <div id="quotePreview" class="border border-gray-200 dark:border-gray-600 rounded-lg p-3 text-sm min-h-[80px]"></div>
+        </div>
+
+        <!-- $/Acre -->
+        <div class="border border-gray-200 dark:border-gray-600 rounded-xl p-4">
+          <h3 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-tractor text-dfc-red"></i> $/Acre application</h3>
+          <p class="text-xs text-gray-500 mb-2">Enter rate for each product. Uses the edited quote prices above.</p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-xs uppercase text-gray-500 border-b border-gray-200 dark:border-gray-600">
+                  <th class="text-left py-1">Product</th>
+                  <th class="text-right">Rate</th>
+                  <th class="text-left">Unit</th>
+                  <th class="text-right">$/Acre</th>
+                </tr>
+              </thead>
+              <tbody id="quoteAcreRows"></tbody>
+            </table>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-center border border-green-100 dark:border-green-800">
+              <div class="text-xs text-green-700 dark:text-green-400 uppercase">Combined $/Acre</div>
+              <div class="text-xl font-bold text-green-800 dark:text-green-300" id="quoteAcrePer">—</div>
+            </div>
+            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 text-center border border-blue-100 dark:border-blue-800">
+              <div class="text-xs text-blue-700 dark:text-blue-400 uppercase">Total Cost</div>
+              <div class="text-xl font-bold text-blue-800 dark:text-blue-300" id="quoteAcreTotal">—</div>
+            </div>
+            <div class="bg-red-50 dark:bg-red-900/10 rounded-lg p-3 text-center border border-dfc-red/20">
+              <div class="text-xs text-gray-500 uppercase">Nutrients (lbs/acre)</div>
+              <div class="text-lg font-bold text-dfc-red" id="quoteAcreAnalysis">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Blend -->
+        <div class="border border-gray-200 dark:border-gray-600 rounded-xl p-4">
+          <h3 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-flask text-dfc-red"></i> Blend on quote</h3>
+          <p class="text-xs text-gray-500 mb-2">Target analysis and tons. Uses quote prices when the product is on this quote; otherwise list price.</p>
+          <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 mb-3">
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">N %</label>
+              <input type="number" id="qBlendN" value="20" min="0" step="0.1" oninput="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">P₂O₅ %</label>
+              <input type="number" id="qBlendP" value="10" min="0" step="0.1" oninput="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">K₂O %</label>
+              <input type="number" id="qBlendK" value="5" min="0" step="0.1" oninput="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">S %</label>
+              <input type="number" id="qBlendS" value="4" min="0" step="0.1" oninput="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">Tons</label>
+              <input type="number" id="qBlendTons" value="20" min="0" step="0.1" oninput="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
+            </div>
+            <div class="flex items-end">
+              <button type="button" onclick="recalcQuoteBlend()" class="w-full bg-dfc-red hover:bg-dfc-darkred text-white py-1.5 rounded-lg text-sm font-medium">Estimate</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">N source</label>
+              <select id="qBlendNSource" onchange="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
+                <option value="urea">Urea</option>
+                <option value="uan28">UAN 28%</option>
+                <option value="ams">AMS</option>
+                <option value="map">MAP</option>
+                <option value="rock40">40 Rock</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">P source</label>
+              <select id="qBlendPSource" onchange="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
+                <option value="map">MAP</option>
+                <option value="rock40">40 Rock</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">K source</label>
+              <select id="qBlendKSource" onchange="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
+                <option value="potash">Potash</option>
+                <option value="poly4">Poly4</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">S source</label>
+              <select id="qBlendSSource" onchange="recalcQuoteBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
+                <option value="ams">AMS</option>
+                <option value="poly4">Poly4</option>
+              </select>
+            </div>
+          </div>
+          <div id="quoteBlendResults" class="text-sm"></div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 sticky bottom-0 bg-white dark:bg-gray-800 py-2">
           <button onclick="printQuote()" class="bg-dfc-red hover:bg-dfc-darkred text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
             <i class="fas fa-print"></i> Print Quote
           </button>
@@ -1658,15 +1766,41 @@
     }
 
     // Quote
+    // Quote helpers — product analysis for nutrient math
+    const QUOTE_ANALYSIS = {
+      'NH3': { n: 82, p: 0, k: 0, s: 0, unit: 'ton', lbPerGal: 0 },
+      'Urea': { n: 46, p: 0, k: 0, s: 0, unit: 'ton', lbPerGal: 0 },
+      'UAN 28%': { n: 28, p: 0, k: 0, s: 0, unit: 'ton', lbPerGal: 10.6 },
+      'MAP': { n: 11, p: 52, k: 0, s: 0, unit: 'ton', lbPerGal: 0 },
+      '40 Rock': { n: 12, p: 40, k: 0, s: 6.5, unit: 'ton', lbPerGal: 0 },
+      'Potash': { n: 0, p: 0, k: 60, s: 0, unit: 'ton', lbPerGal: 0 },
+      'AMS': { n: 21, p: 0, k: 0, s: 24, unit: 'ton', lbPerGal: 0 },
+      'Poly4': { n: 0, p: 0, k: 14, s: 19, unit: 'ton', lbPerGal: 0 },
+      'Optistart Gold': { n: 6, p: 20, k: 5, s: 2, unit: 'gal', lbPerGal: 11 }
+    };
+    const QUOTE_BLEND_DEFAULTS = {
+      urea: { name: 'Urea', n: 46, p: 0, k: 0, s: 0, price: 530, key: 'Urea' },
+      uan28: { name: 'UAN 28%', n: 28, p: 0, k: 0, s: 0, price: 0, key: 'UAN 28%' },
+      map: { name: 'MAP', n: 11, p: 52, k: 0, s: 0, price: 935, key: 'MAP' },
+      rock40: { name: '40 Rock', n: 12, p: 40, k: 0, s: 6.5, price: 940, key: '40 Rock' },
+      potash: { name: 'Potash', n: 0, p: 0, k: 60, s: 0, price: 470, key: 'Potash' },
+      ams: { name: 'AMS', n: 21, p: 0, k: 0, s: 24, price: 540, key: 'AMS' },
+      poly4: { name: 'Poly4', n: 0, p: 0, k: 14, s: 19, price: 525, key: 'Poly4' }
+    };
+
     function openQuote() {
       const data = getSelectedProducts();
       const prev = document.getElementById('quotePreview');
       if (!data.length) {
         prev.innerHTML = '<p class="text-gray-500">No products selected. Check the boxes next to products first.</p>';
+        document.getElementById('quoteAcreRows').innerHTML = '';
+        document.getElementById('quoteBlendResults').innerHTML = '';
+        document.getElementById('quoteAcrePer').textContent = '—';
+        document.getElementById('quoteAcreTotal').textContent = '—';
+        document.getElementById('quoteAcreAnalysis').textContent = '—';
       } else {
-        let h = '<p class="text-xs text-gray-500 mb-2">Edit prices below before printing. Changes apply to this quote only.</p>';
-        h += '<table class="w-full text-sm" id="quoteTable"><thead><tr class="border-b"><th class="text-left py-1">Product</th><th class="text-left">Analysis</th><th class="text-right">Unit</th><th class="text-right" style="min-width:110px">Price</th></tr></thead><tbody>';
-        data.forEach((r, i) => {
+        let h = '<table class="w-full text-sm" id="quoteTable"><thead><tr class="border-b text-xs uppercase text-gray-500"><th class="text-left py-1">Product</th><th class="text-left">Analysis</th><th class="text-right">Unit</th><th class="text-right" style="min-width:110px">Price</th></tr></thead><tbody>';
+        data.forEach((r) => {
           const isCall = r.price === 'Call' || r.price === '';
           const priceVal = isCall ? '' : r.price;
           const unit = r.unit || 'ton';
@@ -1674,26 +1808,26 @@
           h += '<td class="py-1.5">' + r.product + '</td>';
           h += '<td>' + (r.analysis || '') + '</td>';
           h += '<td class="text-right text-gray-500">' + (unit ? '/' + unit : '') + '</td>';
-          h += '<td class="text-right py-1">';
-          h += '<div class="inline-flex items-center justify-end gap-1">';
-          h += '<span class="text-gray-400">$</span>';
-          h += '<input type="text" class="quote-price w-24 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded px-2 py-1 text-sm text-right" value="' + priceVal + '" placeholder="' + (isCall ? 'Call / enter' : '0') + '" />';
-          h += '</div></td></tr>';
+          h += '<td class="text-right py-1"><div class="inline-flex items-center justify-end gap-1"><span class="text-gray-400">$</span>';
+          h += '<input type="text" class="quote-price w-24 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded px-2 py-1 text-sm text-right" value="' + priceVal + '" placeholder="' + (isCall ? 'Call' : '0') + '" oninput="onQuotePriceChange()" /></div></td></tr>';
         });
         h += '</tbody></table>';
-        h += '<p class="text-xs text-gray-500 mt-3">Leave blank or type "Call" if price is not set. Quote prices do not change the main price list.</p>';
+        h += '<p class="text-xs text-gray-500 mt-2">Price edits apply to this quote only (including $/acre and blend below).</p>';
         prev.innerHTML = h;
+        buildQuoteAcreRows(data);
+        recalcQuoteAcre();
+        recalcQuoteBlend();
       }
       document.getElementById('quoteModal').classList.remove('hidden');
     }
     function closeQuote() { document.getElementById('quoteModal').classList.add('hidden'); }
+
     function getQuoteRows() {
       const rows = [];
       document.querySelectorAll('#quotePreview tr.quote-row').forEach(tr => {
         const input = tr.querySelector('.quote-price');
         let price = (input ? input.value.trim() : '');
         if (price === '') price = 'Call';
-        // strip leading $ if typed
         if (price.charAt(0) === '$') price = price.slice(1).trim();
         rows.push({
           product: tr.dataset.product || '',
@@ -1704,29 +1838,249 @@
       });
       return rows;
     }
+    function quotePriceMap() {
+      const map = {};
+      getQuoteRows().forEach(r => {
+        const num = parseFloat(String(r.price).replace(/,/g, ''));
+        map[r.product] = isNaN(num) ? null : num;
+      });
+      return map;
+    }
+    function onQuotePriceChange() {
+      recalcQuoteAcre();
+      recalcQuoteBlend();
+    }
+
+    function buildQuoteAcreRows(data) {
+      const tbody = document.getElementById('quoteAcreRows');
+      tbody.innerHTML = data.map((r, i) => {
+        const info = QUOTE_ANALYSIS[r.product] || { unit: r.unit || 'ton', lbPerGal: 0 };
+        const unit = r.unit || info.unit || 'ton';
+        const rateDefault = unit === 'gal' ? 5 : 200;
+        return '<tr class="quote-acre-row border-b border-gray-100 dark:border-gray-700" data-product="' + r.product.replace(/"/g, '&quot;') + '" data-unit="' + unit + '">' +
+          '<td class="py-1.5">' + r.product + '</td>' +
+          '<td class="py-1 text-right"><input type="number" class="q-acre-rate w-24 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded px-2 py-1 text-sm text-right" value="' + rateDefault + '" min="0" step="1" oninput="recalcQuoteAcre()" /></td>' +
+          '<td class="py-1"><select class="q-acre-unit border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded px-2 py-1 text-sm" onchange="recalcQuoteAcre()">' +
+            '<option value="lb"' + (unit !== 'gal' ? ' selected' : '') + '>lbs/acre</option>' +
+            '<option value="ton">tons/acre</option>' +
+            '<option value="gal"' + (unit === 'gal' ? ' selected' : '') + '>gal/acre</option>' +
+          '</select></td>' +
+          '<td class="py-1.5 text-right font-medium q-acre-cost">—</td></tr>';
+      }).join('');
+    }
+
+    function recalcQuoteAcre() {
+      const acres = parseFloat(document.getElementById('quoteAcres').value) || 0;
+      const prices = quotePriceMap();
+      let totalPerAcre = 0;
+      let nLbs = 0, pLbs = 0, kLbs = 0, sLbs = 0, totalProductLbs = 0;
+      let count = 0;
+      document.querySelectorAll('#quoteAcreRows tr.quote-acre-row').forEach(tr => {
+        const product = tr.dataset.product;
+        const rate = parseFloat(tr.querySelector('.q-acre-rate').value) || 0;
+        const rateUnit = tr.querySelector('.q-acre-unit').value;
+        const info = QUOTE_ANALYSIS[product] || { n: 0, p: 0, k: 0, s: 0, unit: 'ton', lbPerGal: 0 };
+        const prodUnit = info.unit || tr.dataset.unit || 'ton';
+        const price = prices[product];
+        let cost = 0;
+        if (price != null && price > 0) {
+          if (prodUnit === 'ton') {
+            if (rateUnit === 'lb') cost = (rate / 2000) * price;
+            else if (rateUnit === 'ton') cost = rate * price;
+          } else if (prodUnit === 'gal') {
+            if (rateUnit === 'gal') cost = rate * price;
+          }
+        }
+        tr.querySelector('.q-acre-cost').textContent = cost ? money(cost, 2) : (price == null || price === 0 ? 'Call' : '—');
+        totalPerAcre += cost;
+        count++;
+        const lbs = lbsProductPerAcre(rate, rateUnit, prodUnit, info.lbPerGal || 0);
+        totalProductLbs += lbs;
+        nLbs += lbs * ((info.n || 0) / 100);
+        pLbs += lbs * ((info.p || 0) / 100);
+        kLbs += lbs * ((info.k || 0) / 100);
+        sLbs += lbs * ((info.s || 0) / 100);
+      });
+      document.getElementById('quoteAcrePer').textContent = count ? money(totalPerAcre, 2) : '—';
+      document.getElementById('quoteAcreTotal').textContent = count && acres ? money(totalPerAcre * acres, 2) : '—';
+      const fmt = (v) => {
+        const r = Math.round(v * 10) / 10;
+        return (r % 1 === 0 ? r.toFixed(0) : r.toFixed(1));
+      };
+      if (!count || totalProductLbs < 0.05) {
+        document.getElementById('quoteAcreAnalysis').textContent = '—';
+      } else {
+        document.getElementById('quoteAcreAnalysis').textContent = fmt(nLbs) + '-' + fmt(pLbs) + '-' + fmt(kLbs) + '-' + fmt(sLbs) + 'S';
+      }
+    }
+
+    function quoteProductPrice(keyName, defaultPrice) {
+      const map = quotePriceMap();
+      if (map[keyName] != null) return map[keyName];
+      return defaultPrice;
+    }
+
+    function recalcQuoteBlend() {
+      const targetN = parseFloat(document.getElementById('qBlendN').value) || 0;
+      const targetP = parseFloat(document.getElementById('qBlendP').value) || 0;
+      const targetK = parseFloat(document.getElementById('qBlendK').value) || 0;
+      const targetS = parseFloat(document.getElementById('qBlendS').value) || 0;
+      const tons = parseFloat(document.getElementById('qBlendTons').value) || 0;
+      const nSource = document.getElementById('qBlendNSource').value;
+      const pSource = document.getElementById('qBlendPSource').value;
+      const kSource = document.getElementById('qBlendKSource').value;
+      const sSource = document.getElementById('qBlendSSource').value;
+      const el = document.getElementById('quoteBlendResults');
+      if (!el) return;
+
+      const products = {};
+      Object.keys(QUOTE_BLEND_DEFAULTS).forEach(k => {
+        const d = QUOTE_BLEND_DEFAULTS[k];
+        products[k] = {
+          name: d.name,
+          n: d.n, p: d.p, k: d.k, s: d.s,
+          price: quoteProductPrice(d.key, d.price)
+        };
+      });
+
+      let mix = { urea: 0, uan28: 0, map: 0, rock40: 0, potash: 0, ams: 0, poly4: 0 };
+      if (targetP > 0) {
+        if (pSource === 'map') mix.map = targetP / 52;
+        else mix.rock40 = targetP / 40;
+      }
+      let sFromRock = mix.rock40 * 6.5;
+      let sStillNeeded = Math.max(0, targetS - sFromRock);
+      if (targetK > 0 && kSource === 'poly4') {
+        mix.poly4 = Math.max(mix.poly4, targetK / 14);
+        sStillNeeded = Math.max(0, targetS - sFromRock - mix.poly4 * 19);
+      }
+      if (sStillNeeded > 0) {
+        if (sSource === 'ams') mix.ams = Math.max(mix.ams, sStillNeeded / 24);
+        else mix.poly4 = Math.max(mix.poly4, sStillNeeded / 19);
+      }
+      let kFromPoly = mix.poly4 * 14;
+      let kStillNeeded = Math.max(0, targetK - kFromPoly);
+      if (kStillNeeded > 0) mix.potash = kStillNeeded / 60;
+
+      let nFromOthers = mix.map * 11 + mix.rock40 * 12 + mix.ams * 21;
+      let nStillNeeded = Math.max(0, targetN - nFromOthers);
+      if (nStillNeeded > 0) {
+        if (nSource === 'ams') mix.ams = mix.ams + (nStillNeeded / 21);
+        else if (nSource === 'uan28') mix.uan28 = nStillNeeded / 28;
+        else if (nSource === 'map') mix.map = mix.map + (nStillNeeded / 11);
+        else if (nSource === 'rock40') mix.rock40 = mix.rock40 + (nStillNeeded / 12);
+        else mix.urea = nStillNeeded / 46;
+      }
+
+      let sumFrac = mix.urea + mix.uan28 + mix.map + mix.rock40 + mix.potash + mix.ams + mix.poly4;
+      let filler = Math.max(0, 1 - sumFrac);
+      const delN = mix.urea * 46 + mix.uan28 * 28 + mix.map * 11 + mix.rock40 * 12 + mix.ams * 21;
+      const delP = mix.map * 52 + mix.rock40 * 40;
+      const delK = mix.potash * 60 + mix.poly4 * 14;
+      const delS = mix.rock40 * 6.5 + mix.ams * 24 + mix.poly4 * 19;
+
+      let totalCost = 0;
+      let lines = [];
+      ['urea', 'uan28', 'map', 'rock40', 'potash', 'ams', 'poly4'].forEach(key => {
+        if (mix[key] > 0.0005) {
+          const t = mix[key] * tons;
+          const cost = t * (products[key].price || 0);
+          totalCost += cost;
+          lines.push({ name: products[key].name, frac: mix[key] * 100, tons: t, cost: cost, price: products[key].price });
+        }
+      });
+
+      let grade = delN.toFixed(1) + '-' + delP.toFixed(1) + '-' + delK.toFixed(1) + '-' + delS.toFixed(1) + 'S';
+      let html = '<div class="bg-gray-50 dark:bg-gray-700/40 rounded-lg p-3 space-y-2">';
+      html += '<div class="font-medium">Target ' + targetN + '-' + targetP + '-' + targetK + '-' + targetS + 'S · ' + tons + ' tons</div>';
+      html += '<div class="text-sm">Delivered grade: <strong>' + grade + '</strong></div>';
+      if (sumFrac > 1.02) {
+        html += '<div class="text-amber-700 dark:text-amber-300 text-xs">Ingredient fractions sum to ' + (sumFrac * 100).toFixed(0) + '% — targets may be too high.</div>';
+      } else if (filler > 0.02) {
+        html += '<div class="text-xs text-gray-500">~' + (filler * 100).toFixed(0) + '% filler / carrier (not costed).</div>';
+      }
+      html += '<table class="w-full text-sm mt-1"><thead><tr class="text-xs uppercase text-gray-500 border-b border-gray-200 dark:border-gray-600"><th class="text-left py-1">Product</th><th class="text-right">%</th><th class="text-right">Tons</th><th class="text-right">Lbs</th><th class="text-right">Est. $</th></tr></thead><tbody>';
+      lines.forEach(l => {
+        const costLabel = (l.price == null || l.price === 0) && l.cost === 0 ? 'Call' : money(l.cost, 0);
+        html += '<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-1">' + l.name + '</td><td class="text-right">' + l.frac.toFixed(1) + '%</td><td class="text-right">' + l.tons.toFixed(2) + '</td><td class="text-right">' + formatMoney(l.tons * 2000, 0) + '</td><td class="text-right">' + costLabel + '</td></tr>';
+      });
+      html += '</tbody></table>';
+      html += '<div class="flex justify-between font-semibold pt-1"><span>Estimated product cost</span><span>' + money(totalCost, 0) + '</span></div>';
+      html += '<div class="text-xs text-gray-500">' + money(tons > 0 ? totalCost / tons : 0, 0) + ' per ton of blend</div>';
+      html += '</div>';
+      el.innerHTML = html;
+    }
+
     function printQuote() {
       const customer = document.getElementById('quoteCustomer').value || 'Customer';
       const date = document.getElementById('quoteDate').value;
+      const acres = parseFloat(document.getElementById('quoteAcres').value) || 0;
       const rows = getQuoteRows();
       if (!rows.length) {
         alert('No products on this quote. Select products and open Quote again.');
         return;
       }
-      let tableHtml = '<table><thead><tr><th>Product</th><th>Analysis</th><th>Price</th></tr></thead><tbody>';
+
+      let tableHtml = '<h2 style="font-size:14px;margin:20px 0 8px;color:#333">Products & prices</h2>';
+      tableHtml += '<table><thead><tr><th>Product</th><th>Analysis</th><th>Price</th></tr></thead><tbody>';
       rows.forEach(r => {
         let pr;
-        if (r.price === 'Call' || r.price === '') {
-          pr = 'Call';
-        } else {
+        if (r.price === 'Call' || r.price === '') pr = 'Call';
+        else {
           const num = parseFloat(String(r.price).replace(/,/g, ''));
           pr = isNaN(num) ? r.price : ('$' + formatMoney(num, 0) + (r.unit ? '/' + r.unit : ''));
         }
         tableHtml += '<tr><td>' + r.product + '</td><td>' + r.analysis + '</td><td>' + pr + '</td></tr>';
       });
       tableHtml += '</tbody></table>';
-      tableHtml += '<p style="font-size:12px;color:#666;margin-top:12px">Prices as quoted. Subject to change. Contact DFC to confirm.</p>';
+
+      // $/acre section
+      const prices = quotePriceMap();
+      let acreRows = [];
+      let totalPerAcre = 0;
+      document.querySelectorAll('#quoteAcreRows tr.quote-acre-row').forEach(tr => {
+        const product = tr.dataset.product;
+        const rate = parseFloat(tr.querySelector('.q-acre-rate').value) || 0;
+        const rateUnit = tr.querySelector('.q-acre-unit').value;
+        const info = QUOTE_ANALYSIS[product] || { unit: 'ton' };
+        const prodUnit = info.unit || 'ton';
+        const price = prices[product];
+        let cost = 0;
+        if (price != null && price > 0) {
+          if (prodUnit === 'ton') {
+            if (rateUnit === 'lb') cost = (rate / 2000) * price;
+            else if (rateUnit === 'ton') cost = rate * price;
+          } else if (prodUnit === 'gal' && rateUnit === 'gal') cost = rate * price;
+        }
+        totalPerAcre += cost;
+        const unitLabel = { lb: 'lbs/acre', ton: 'tons/acre', gal: 'gal/acre' }[rateUnit] || rateUnit;
+        acreRows.push({ product, rate, unitLabel, cost, price });
+      });
+      if (acreRows.length) {
+        tableHtml += '<h2 style="font-size:14px;margin:24px 0 8px;color:#333">$/Acre application · ' + acres + ' acres</h2>';
+        tableHtml += '<table><thead><tr><th>Product</th><th>Rate</th><th>$/Acre</th></tr></thead><tbody>';
+        acreRows.forEach(r => {
+          tableHtml += '<tr><td>' + r.product + '</td><td>' + r.rate + ' ' + r.unitLabel + '</td><td>' + (r.cost ? ('$' + formatMoney(r.cost, 2)) : 'Call') + '</td></tr>';
+        });
+        tableHtml += '</tbody></table>';
+        tableHtml += '<p style="margin-top:8px"><strong>Combined: ' + money(totalPerAcre, 2) + '/acre</strong>';
+        if (acres) tableHtml += ' · <strong>Total: ' + money(totalPerAcre * acres, 2) + '</strong>';
+        const analysis = document.getElementById('quoteAcreAnalysis').textContent;
+        if (analysis && analysis !== '—') tableHtml += '<br>Nutrients applied: ' + analysis + ' lbs/acre';
+        tableHtml += '</p>';
+      }
+
+      // Blend section
+      const blendBox = document.getElementById('quoteBlendResults');
+      if (blendBox && blendBox.innerHTML.trim()) {
+        tableHtml += '<h2 style="font-size:14px;margin:24px 0 8px;color:#333">Blend estimate</h2>';
+        // strip interactive-only classes by using text content structure from results
+        tableHtml += '<div>' + blendBox.innerHTML + '</div>';
+      }
+
+      tableHtml += '<p style="font-size:12px;color:#666;margin-top:16px">Prices as quoted. Subject to change. Contact DFC to confirm.</p>';
       const w = window.open('', '_blank');
-      w.document.write('<html><head><title>DFC Quote</title><style>body{font-family:system-ui;padding:40px;max-width:700px;margin:auto} table{width:100%;border-collapse:collapse} th,td{padding:8px;border-bottom:1px solid #ddd;text-align:left} th:last-child,td:last-child{text-align:right} h1{color:#C8102E}</style></head><body>');
+      w.document.write('<html><head><title>DFC Quote</title><style>body{font-family:system-ui;padding:40px;max-width:720px;margin:auto;color:#111} table{width:100%;border-collapse:collapse;margin:8px 0} th,td{padding:8px;border-bottom:1px solid #ddd;text-align:left} th:last-child,td:last-child{text-align:right} h1{color:#C8102E;margin-bottom:4px} .bg-gray-50,.dark\\:bg-gray-700\\/40{background:#f8f8f8;padding:12px;border-radius:8px}</style></head><body>');
       w.document.write('<h1>DFC Fertilizer Quote</h1><p><strong>' + customer + '</strong><br>' + date + '</p>');
       w.document.write(tableHtml);
       w.document.write('<p style="margin-top:40px;font-size:12px;color:#666">Central Dakota Frontier Cooperative · Napoleon, ND · 701-754-2252<br>Prices subject to change. Confirm with your DFC representative.</p>');
@@ -1736,6 +2090,7 @@
       setTimeout(function() { w.print(); }, 250);
     }
 
+    // Changelog
     // Changelog
     function openChangelog() { document.getElementById('changelogModal').classList.remove('hidden'); }
     function closeChangelog() { document.getElementById('changelogModal').classList.add('hidden'); }
