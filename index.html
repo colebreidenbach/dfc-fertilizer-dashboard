@@ -1165,6 +1165,35 @@
       return 0;
     }
 
+    // Cost $/acre from product price + rate. priceUnit: 'ton' | 'gal'
+    function costPerAcre(rate, rateUnit, price, priceUnit, lbPerGal) {
+      if (price == null || isNaN(price) || price <= 0 || !rate) return 0;
+      const dens = lbPerGal || 0;
+      const pUnit = priceUnit || 'ton';
+      if (pUnit === 'gal') {
+        // price is $/gal
+        if (rateUnit === 'gal') return rate * price;
+        if (rateUnit === 'lb' && dens > 0) return (rate / dens) * price;
+        if (rateUnit === 'ton' && dens > 0) return ((rate * 2000) / dens) * price;
+        return 0;
+      }
+      // price is $/ton
+      if (rateUnit === 'ton') return rate * price;
+      if (rateUnit === 'lb') return (rate / 2000) * price;
+      if (rateUnit === 'gal') {
+        if (dens > 0) return (rate * dens / 2000) * price;
+        return 0;
+      }
+      return 0;
+    }
+
+    function productPriceUnit(product, info) {
+      // Optistart and explicit gal products are priced per gallon
+      if (info && info.unit === 'gal') return 'gal';
+      if (product === 'Optistart Gold') return 'gal';
+      return 'ton';
+    }
+
     function calcAcre() {
       const acres = parseFloat(document.getElementById('acreAcres').value) || 0;
       let totalPerAcre = 0;
@@ -1183,13 +1212,8 @@
         const k = parseFloat(opt.dataset.k) || 0;
         const s = parseFloat(opt.dataset.s) || 0;
         const lbPerGal = parseFloat(opt.dataset.lbpergal) || 0;
-        let cost = 0;
-        if (prodUnit === 'ton') {
-          if (rateUnit === 'lb') cost = (rate / 2000) * price;
-          else if (rateUnit === 'ton') cost = rate * price;
-        } else if (prodUnit === 'gal') {
-          if (rateUnit === 'gal') cost = rate * price;
-        }
+        const priceUnit = (prodUnit === 'gal') ? 'gal' : 'ton';
+        const cost = costPerAcre(rate, rateUnit, price, priceUnit, lbPerGal);
         tr.querySelector('.acre-row-cost').textContent = cost ? money(cost, 2) : '—';
         totalPerAcre += cost;
         count++;
@@ -1939,12 +1963,15 @@
         const checked = preselected[r.product] ? ' checked' : '';
         const isCall = r.price === 'Call' || r.price === '';
         const priceVal = isCall ? '' : r.price;
-        const unit = r.unit || 'ton';
+        const info = QUOTE_ANALYSIS[r.product] || {};
+        let unit = r.unit || info.unit || 'ton';
+        if (!r.unit && info.lbPerGal) unit = productPriceUnit(r.product, info); // prefer gal for gal-priced liquids
+        const priceUnit = productPriceUnit(r.product, Object.assign({}, info, { unit: unit }));
         h += '<tr class="quote-row border-b border-gray-100 dark:border-gray-700" data-product="' + r.product.replace(/"/g, '&quot;') + '" data-analysis="' + (r.analysis || '').replace(/"/g, '&quot;') + '" data-unit="' + unit + '" data-list-price="' + (isCall ? '' : String(r.price)) + '">';
         h += '<td class="py-1.5"><input type="checkbox" class="quote-check rounded border-gray-300 text-dfc-red focus:ring-dfc-red" ' + checked + ' onchange="onQuoteSelectionChange()" /></td>';
         h += '<td class="py-1.5">' + r.product + '</td>';
         h += '<td>' + (r.analysis || '') + '</td>';
-        h += '<td class="text-right text-gray-500">' + (unit ? '/' + unit : '') + '</td>';
+        h += '<td class="text-right text-gray-500">/' + priceUnit + '</td>';
         h += '<td class="text-right py-1"><div class="inline-flex items-center justify-end gap-1"><span class="text-gray-400">$</span>';
         h += '<input type="text" class="quote-price w-24 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded px-2 py-1 text-sm text-right" value="' + priceVal + '" placeholder="' + (isCall ? 'Call' : '0') + '" oninput="onQuotePriceChange()" /></div></td></tr>';
       });
@@ -2067,16 +2094,10 @@
         const rateUnit = tr.querySelector('.q-acre-unit').value;
         const info = QUOTE_ANALYSIS[product] || { n: 0, p: 0, k: 0, s: 0, unit: 'ton', lbPerGal: 0 };
         const prodUnit = info.unit || tr.dataset.unit || 'ton';
+        const lbPerGal = info.lbPerGal || 0;
         const price = prices[product];
-        let cost = 0;
-        if (price != null && price > 0) {
-          if (prodUnit === 'ton') {
-            if (rateUnit === 'lb') cost = (rate / 2000) * price;
-            else if (rateUnit === 'ton') cost = rate * price;
-          } else if (prodUnit === 'gal') {
-            if (rateUnit === 'gal') cost = rate * price;
-          }
-        }
+        const priceUnit = productPriceUnit(product, info);
+        const cost = costPerAcre(rate, rateUnit, price, priceUnit, lbPerGal);
         tr.querySelector('.q-acre-cost').textContent = cost ? money(cost, 2) : (price == null || price === 0 ? 'Call' : '—');
         totalPerAcre += cost;
         count++;
@@ -2145,16 +2166,10 @@
         const product = tr.dataset.product;
         const rate = parseFloat(tr.querySelector('.q-acre-rate').value) || 0;
         const rateUnit = tr.querySelector('.q-acre-unit').value;
-        const info = QUOTE_ANALYSIS[product] || { unit: 'ton' };
-        const prodUnit = info.unit || 'ton';
+        const info = QUOTE_ANALYSIS[product] || { unit: 'ton', lbPerGal: 0 };
         const price = prices[product];
-        let cost = 0;
-        if (price != null && price > 0) {
-          if (prodUnit === 'ton') {
-            if (rateUnit === 'lb') cost = (rate / 2000) * price;
-            else if (rateUnit === 'ton') cost = rate * price;
-          } else if (prodUnit === 'gal' && rateUnit === 'gal') cost = rate * price;
-        }
+        const priceUnit = productPriceUnit(product, info);
+        const cost = costPerAcre(rate, rateUnit, price, priceUnit, info.lbPerGal || 0);
         totalPerAcre += cost;
         const unitLabel = { lb: 'lbs/acre', ton: 'tons/acre', gal: 'gal/acre' }[rateUnit] || rateUnit;
         acreRows.push({ product, rate, unitLabel, cost, price });
