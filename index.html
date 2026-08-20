@@ -6,6 +6,7 @@
   <title>DFC Fertilizer Price Dashboard | Central Dakota Frontier Cooperative</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script>
     tailwind.config = {
@@ -985,9 +986,19 @@
           </div>
         </div>
 
-        <div class="flex flex-wrap gap-2 sticky bottom-0 bg-white dark:bg-gray-800 py-2">
+        <!-- Notes -->
+        <div>
+          <h3 class="font-semibold text-sm mb-2 flex items-center gap-2"><i class="fas fa-sticky-note text-dfc-red"></i> Notes</h3>
+          <p class="text-xs text-gray-500 mb-2">Your thoughts for this quote — included on print and PDF.</p>
+          <textarea id="quoteNotes" rows="4" placeholder="Delivery timing, storage, grower preferences, follow-up, etc." class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm resize-y min-h-[96px]"></textarea>
+        </div>
+
+        <div class="flex flex-wrap gap-2 sticky bottom-0 bg-white dark:bg-gray-800 py-2 border-t border-gray-100 dark:border-gray-700 pt-3">
           <button onclick="printQuote()" class="bg-dfc-red hover:bg-dfc-darkred text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
             <i class="fas fa-print"></i> Print Quote
+          </button>
+          <button onclick="downloadQuotePdf()" class="bg-gray-800 dark:bg-gray-600 hover:bg-black dark:hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <i class="fas fa-file-pdf"></i> Download PDF
           </button>
           <button onclick="closeQuote()" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-4 py-2 rounded-lg text-sm font-medium">Close</button>
         </div>
@@ -2135,30 +2146,25 @@
       }
     }
 
-    function printQuote() {
-      const customer = document.getElementById('quoteCustomer').value || 'Customer';
-      const date = document.getElementById('quoteDate').value;
+    function buildQuoteBodyHtml() {
       const acres = parseFloat(document.getElementById('quoteAcres').value) || 0;
       const rows = getQuoteRows();
-      if (!rows.length) {
-        alert('No products on this quote. Select products and open Quote again.');
-        return;
-      }
+      if (!rows.length) return null;
 
-      let tableHtml = '<h2 style="font-size:14px;margin:20px 0 8px;color:#333">Products & prices</h2>';
+      let tableHtml = '<h2 style="font-size:14px;margin:20px 0 8px;color:#333">Products &amp; prices</h2>';
       tableHtml += '<table><thead><tr><th>Product</th><th>Analysis</th><th>Price</th></tr></thead><tbody>';
       rows.forEach(r => {
         let pr;
         if (r.price === 'Call' || r.price === '') pr = 'Call';
         else {
           const num = parseFloat(String(r.price).replace(/,/g, ''));
-          pr = isNaN(num) ? r.price : ('$' + formatMoney(num, 0) + (r.unit ? '/' + r.unit : ''));
+          const pUnit = productPriceUnit(r.product, QUOTE_ANALYSIS[r.product] || { unit: r.unit });
+          pr = isNaN(num) ? r.price : ('$' + formatMoney(num, 0) + '/' + pUnit);
         }
         tableHtml += '<tr><td>' + r.product + '</td><td>' + r.analysis + '</td><td>' + pr + '</td></tr>';
       });
       tableHtml += '</tbody></table>';
 
-      // $/acre section
       const prices = quotePriceMap();
       let acreRows = [];
       let totalPerAcre = 0;
@@ -2190,17 +2196,83 @@
         tableHtml += '</p>';
       }
 
+      const notes = (document.getElementById('quoteNotes') && document.getElementById('quoteNotes').value || '').trim();
+      if (notes) {
+        tableHtml += '<h2 style="font-size:14px;margin:24px 0 8px;color:#333">Notes</h2>';
+        tableHtml += '<p style="white-space:pre-wrap;border:1px solid #e5e5e5;border-radius:8px;padding:12px;background:#fafafa;font-size:13px;">' +
+          notes.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p>';
+      }
 
       tableHtml += '<p style="font-size:12px;color:#666;margin-top:16px">Prices as quoted. Subject to change. Contact DFC to confirm.</p>';
+      return tableHtml;
+    }
+
+    function buildQuoteFullHtml() {
+      const customer = document.getElementById('quoteCustomer').value || 'Customer';
+      const date = document.getElementById('quoteDate').value;
+      const body = buildQuoteBodyHtml();
+      if (!body) return null;
+      return '<div id="dfcQuotePdfRoot" style="font-family:system-ui,sans-serif;padding:24px;max-width:720px;margin:auto;color:#111">' +
+        '<h1 style="color:#C8102E;margin:0 0 4px;font-size:22px">DFC Fertilizer Quote</h1>' +
+        '<p style="margin:0 0 16px"><strong>' + customer.replace(/</g, '&lt;') + '</strong><br>' + String(date).replace(/</g, '&lt;') + '</p>' +
+        body +
+        '<p style="margin-top:32px;font-size:12px;color:#666">Central Dakota Frontier Cooperative · Napoleon, ND · 701-754-2252<br>Prices subject to change. Confirm with your DFC representative.</p>' +
+        '</div>';
+    }
+
+    function printQuote() {
+      const full = buildQuoteFullHtml();
+      if (!full) {
+        alert('Select at least one product on this quote first.');
+        return;
+      }
       const w = window.open('', '_blank');
-      w.document.write('<html><head><title>DFC Quote</title><style>body{font-family:system-ui;padding:40px;max-width:720px;margin:auto;color:#111} table{width:100%;border-collapse:collapse;margin:8px 0} th,td{padding:8px;border-bottom:1px solid #ddd;text-align:left} th:last-child,td:last-child{text-align:right} h1{color:#C8102E;margin-bottom:4px} .bg-gray-50,.dark\\:bg-gray-700\\/40{background:#f8f8f8;padding:12px;border-radius:8px}</style></head><body>');
-      w.document.write('<h1>DFC Fertilizer Quote</h1><p><strong>' + customer + '</strong><br>' + date + '</p>');
-      w.document.write(tableHtml);
-      w.document.write('<p style="margin-top:40px;font-size:12px;color:#666">Central Dakota Frontier Cooperative · Napoleon, ND · 701-754-2252<br>Prices subject to change. Confirm with your DFC representative.</p>');
+      if (!w) {
+        alert('Pop-up blocked. Allow pop-ups to print, or use Download PDF.');
+        return;
+      }
+      w.document.write('<html><head><title>DFC Quote</title><style>body{font-family:system-ui;padding:40px;max-width:720px;margin:auto;color:#111} table{width:100%;border-collapse:collapse;margin:8px 0} th,td{padding:8px;border-bottom:1px solid #ddd;text-align:left} th:last-child,td:last-child{text-align:right} h1{color:#C8102E}</style></head><body>');
+      w.document.write(full);
       w.document.write('</body></html>');
       w.document.close();
       w.focus();
       setTimeout(function() { w.print(); }, 250);
+    }
+
+    function downloadQuotePdf() {
+      const full = buildQuoteFullHtml();
+      if (!full) {
+        alert('Select at least one product on this quote first.');
+        return;
+      }
+      if (typeof html2pdf === 'undefined') {
+        alert('PDF library not loaded. Check your internet connection and try again.');
+        return;
+      }
+      const customer = (document.getElementById('quoteCustomer').value || 'Customer').replace(/[^\w\s-]/g, '').trim() || 'Customer';
+      const filename = 'DFC_Quote_' + customer.replace(/\s+/g, '_') + '.pdf';
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.left = '-9999px';
+      container.style.top = '0';
+      container.style.width = '800px';
+      container.style.background = '#fff';
+      container.innerHTML = full;
+      document.body.appendChild(container);
+      const opt = {
+        margin: [0.4, 0.4, 0.4, 0.4],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(container).save().then(function() {
+        document.body.removeChild(container);
+      }).catch(function(err) {
+        console.error(err);
+        if (container.parentNode) document.body.removeChild(container);
+        alert('Could not create PDF. Try Print Quote and choose Save as PDF.');
+      });
     }
 
     // Changelog
