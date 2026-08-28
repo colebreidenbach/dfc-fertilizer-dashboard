@@ -962,6 +962,7 @@
                   <th class="text-right">Qty</th>
                   <th class="text-left">Unit</th>
                   <th class="text-right">$/unit</th>
+                  <th class="text-right">$/lb</th>
                   <th class="text-right">Line total</th>
                 </tr>
               </thead>
@@ -1034,14 +1035,25 @@
           <textarea id="quoteNotes" rows="4" placeholder="Delivery timing, storage, grower preferences, follow-up, etc." class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm resize-y min-h-[96px]"></textarea>
         </div>
 
-        <div class="flex flex-wrap gap-2 sticky bottom-0 bg-white dark:bg-gray-800 py-2 border-t border-gray-100 dark:border-gray-700 pt-3">
-          <button onclick="printQuote()" class="bg-dfc-red hover:bg-dfc-darkred text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
-            <i class="fas fa-print"></i> Print Quote
-          </button>
-          <button onclick="downloadQuotePdf()" class="bg-gray-800 dark:bg-gray-600 hover:bg-black dark:hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
-            <i class="fas fa-file-pdf"></i> Download PDF
-          </button>
-          <button onclick="closeQuote()" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-4 py-2 rounded-lg text-sm font-medium">Close</button>
+        <div class="sticky bottom-0 bg-white dark:bg-gray-800 py-3 border-t border-gray-100 dark:border-gray-700 space-y-3">
+          <div>
+            <div class="text-xs font-medium text-gray-500 uppercase mb-2">Include on print / PDF</div>
+            <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+              <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncProducts" class="rounded border-gray-300 text-dfc-red" checked /> Products &amp; prices</label>
+              <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncBulk" class="rounded border-gray-300 text-dfc-red" checked /> Bulk order</label>
+              <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncAcre" class="rounded border-gray-300 text-dfc-red" /> $/Acre</label>
+              <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncNotes" class="rounded border-gray-300 text-dfc-red" checked /> Notes</label>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="printQuote()" class="bg-dfc-red hover:bg-dfc-darkred text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+              <i class="fas fa-print"></i> Print Quote
+            </button>
+            <button onclick="downloadQuotePdf()" class="bg-gray-800 dark:bg-gray-600 hover:bg-black dark:hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+              <i class="fas fa-file-pdf"></i> Download PDF
+            </button>
+            <button onclick="closeQuote()" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-4 py-2 rounded-lg text-sm font-medium">Close</button>
+          </div>
         </div>
       </div>
     </div>
@@ -2148,7 +2160,7 @@
       const tbody = document.getElementById('quoteBulkRows');
       if (!tbody) return;
       if (!data.length) {
-        tbody.innerHTML = '<tr><td colspan="5" class="py-3 text-center text-gray-500 text-sm">Select products above to enter tons.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="py-3 text-center text-gray-500 text-sm">Select products above to enter tons.</td></tr>';
         const t = document.getElementById('quoteBulkTons');
         const g = document.getElementById('quoteBulkGals');
         const tot = document.getElementById('quoteBulkTotal');
@@ -2172,6 +2184,7 @@
             '<option value="gal"' + (unit === 'gal' ? ' selected' : '') + '>gallons</option>' +
           '</select></td>' +
           '<td class="py-1.5 text-right text-gray-500 q-bulk-unitprice">—</td>' +
+          '<td class="py-1.5 text-right text-gray-500 q-bulk-perlb">—</td>' +
           '<td class="py-1.5 text-right font-medium q-bulk-line">—</td></tr>';
       }).join('');
     }
@@ -2199,6 +2212,13 @@
         }
         const unitLabel = price != null && price > 0 ? money(price, 0) + '/' + priceUnit : 'Call';
         tr.querySelector('.q-bulk-unitprice').textContent = unitLabel;
+        let perLb = null;
+        if (price != null && price > 0) {
+          if (priceUnit === 'ton') perLb = price / 2000;
+          else if (priceUnit === 'gal' && dens > 0) perLb = price / dens;
+        }
+        const perLbEl = tr.querySelector('.q-bulk-perlb');
+        if (perLbEl) perLbEl.textContent = perLb != null ? money(perLb, 3) : '—';
         tr.querySelector('.q-bulk-line').textContent = line ? money(line, 0) : (qty > 0 && (price == null || price === 0) ? 'Call' : '—');
         if (qtyUnit === 'ton') totalTons += qty;
         if (qtyUnit === 'gal') totalGals += qty;
@@ -2268,24 +2288,42 @@
       }
     }
 
+    function quotePrintFlag(id, fallback) {
+      const el = document.getElementById(id);
+      return el ? !!el.checked : fallback;
+    }
+
     function buildQuoteBodyHtml() {
       const acres = parseFloat(document.getElementById('quoteAcres').value) || 0;
       const rows = getQuoteRows();
-      if (!rows.length) return null;
+      const incProducts = quotePrintFlag('printIncProducts', true);
+      const incBulk = quotePrintFlag('printIncBulk', true);
+      const incAcre = quotePrintFlag('printIncAcre', false);
+      const incNotes = quotePrintFlag('printIncNotes', true);
+      if (!incProducts && !incBulk && !incAcre && !incNotes) {
+        return null;
+      }
 
-      let tableHtml = '<h2 style="font-size:14px;margin:20px 0 8px;color:#333">Products &amp; prices</h2>';
-      tableHtml += '<table><thead><tr><th>Product</th><th>Analysis</th><th>Price</th></tr></thead><tbody>';
-      rows.forEach(r => {
-        let pr;
-        if (r.price === 'Call' || r.price === '') pr = 'Call';
-        else {
-          const num = parseFloat(String(r.price).replace(/,/g, ''));
-          const pUnit = productPriceUnit(r.product, QUOTE_ANALYSIS[r.product] || { unit: r.unit });
-          pr = isNaN(num) ? r.price : ('$' + formatMoney(num, 0) + '/' + pUnit);
+      let tableHtml = '';
+      if (incProducts) {
+        if (!rows.length) {
+          tableHtml += '<p style="color:#666;font-size:13px">No products selected.</p>';
+        } else {
+          tableHtml += '<h2 style="font-size:14px;margin:20px 0 8px;color:#333">Products &amp; prices</h2>';
+          tableHtml += '<table><thead><tr><th>Product</th><th>Analysis</th><th>Price</th></tr></thead><tbody>';
+          rows.forEach(r => {
+            let pr;
+            if (r.price === 'Call' || r.price === '') pr = 'Call';
+            else {
+              const num = parseFloat(String(r.price).replace(/,/g, ''));
+              const pUnit = productPriceUnit(r.product, QUOTE_ANALYSIS[r.product] || { unit: r.unit });
+              pr = isNaN(num) ? r.price : ('$' + formatMoney(num, 0) + '/' + pUnit);
+            }
+            tableHtml += '<tr><td>' + r.product + '</td><td>' + r.analysis + '</td><td>' + pr + '</td></tr>';
+          });
+          tableHtml += '</tbody></table>';
         }
-        tableHtml += '<tr><td>' + r.product + '</td><td>' + r.analysis + '</td><td>' + pr + '</td></tr>';
-      });
-      tableHtml += '</tbody></table>';
+      }
 
       // Bulk tons
       const bulkLines = [];
@@ -2296,17 +2334,18 @@
         if (!qty) return;
         const qtyUnit = tr.querySelector('.q-bulk-unit').value;
         const lineTxt = tr.querySelector('.q-bulk-line').textContent;
-        bulkLines.push({ product, qty, qtyUnit, lineTxt });
+        const perLb = tr.querySelector('.q-bulk-perlb') ? tr.querySelector('.q-bulk-perlb').textContent : '—';
+        bulkLines.push({ product, qty, qtyUnit, lineTxt, perLb });
       });
       const bulkTonsEl = document.getElementById('quoteBulkTons');
       const bulkGalsEl = document.getElementById('quoteBulkGals');
       const bulkTotEl = document.getElementById('quoteBulkTotal');
-      if (bulkLines.length) {
+      if (incBulk && bulkLines.length) {
         tableHtml += '<h2 style="font-size:14px;margin:24px 0 8px;color:#333">Bulk order</h2>';
-        tableHtml += '<table><thead><tr><th>Product</th><th>Qty</th><th>Line total</th></tr></thead><tbody>';
+        tableHtml += '<table><thead><tr><th>Product</th><th>Qty</th><th>$/lb</th><th>Line total</th></tr></thead><tbody>';
         bulkLines.forEach(r => {
           const u = r.qtyUnit === 'gal' ? 'gal' : 'tons';
-          tableHtml += '<tr><td>' + r.product + '</td><td>' + r.qty + ' ' + u + '</td><td>' + r.lineTxt + '</td></tr>';
+          tableHtml += '<tr><td>' + r.product + '</td><td>' + r.qty + ' ' + u + '</td><td>' + r.perLb + '</td><td>' + r.lineTxt + '</td></tr>';
         });
         tableHtml += '</tbody></table>';
         tableHtml += '<p style="margin-top:8px">';
@@ -2331,7 +2370,7 @@
         const unitLabel = { lb: 'lbs/acre', ton: 'tons/acre', gal: 'gal/acre' }[rateUnit] || rateUnit;
         acreRows.push({ product, rate, unitLabel, cost, price });
       });
-      if (acreRows.length) {
+      if (incAcre && acreRows.length) {
         tableHtml += '<h2 style="font-size:14px;margin:24px 0 8px;color:#333">$/Acre application · ' + acres + ' acres</h2>';
         tableHtml += '<table><thead><tr><th>Product</th><th>Rate</th><th>$/Acre</th></tr></thead><tbody>';
         acreRows.forEach(r => {
@@ -2348,7 +2387,7 @@
       }
 
       const notes = (document.getElementById('quoteNotes') && document.getElementById('quoteNotes').value || '').trim();
-      if (notes) {
+      if (incNotes && notes) {
         tableHtml += '<h2 style="font-size:14px;margin:24px 0 8px;color:#333">Notes</h2>';
         tableHtml += '<p style="white-space:pre-wrap;border:1px solid #e5e5e5;border-radius:8px;padding:12px;background:#fafafa;font-size:13px;">' +
           notes.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p>';
@@ -2374,7 +2413,7 @@
     function printQuote() {
       const full = buildQuoteFullHtml();
       if (!full) {
-        alert('Select at least one product on this quote first.');
+        alert('Nothing to print. Check at least one section (and add products or notes).');
         return;
       }
       const w = window.open('', '_blank');
@@ -2393,7 +2432,7 @@
     function downloadQuotePdf() {
       const full = buildQuoteFullHtml();
       if (!full) {
-        alert('Select at least one product on this quote first.');
+        alert('Nothing to print. Check at least one section (and add products or notes).');
         return;
       }
       if (typeof html2pdf === 'undefined') {
