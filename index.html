@@ -950,6 +950,40 @@
           <div id="quotePreview" class="border border-gray-200 dark:border-gray-600 rounded-lg p-3 text-sm min-h-[80px] max-h-64 overflow-y-auto"></div>
         </div>
 
+        <!-- Bulk order / total tons -->
+        <div class="border border-gray-200 dark:border-gray-600 rounded-xl p-4">
+          <h3 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-weight-hanging text-dfc-red"></i> Bulk order · total tons</h3>
+          <p class="text-xs text-gray-500 mb-2">Enter tons (or gallons for gal-priced liquids) for each selected product. Uses the edited quote prices above.</p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-xs uppercase text-gray-500 border-b border-gray-200 dark:border-gray-600">
+                  <th class="text-left py-1">Product</th>
+                  <th class="text-right">Qty</th>
+                  <th class="text-left">Unit</th>
+                  <th class="text-right">$/unit</th>
+                  <th class="text-right">Line total</th>
+                </tr>
+              </thead>
+              <tbody id="quoteBulkRows"></tbody>
+            </table>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+            <div class="bg-gray-50 dark:bg-gray-700/40 rounded-lg p-3 text-center border border-gray-200 dark:border-gray-600">
+              <div class="text-xs text-gray-500 uppercase">Total tons</div>
+              <div class="text-xl font-bold" id="quoteBulkTons">—</div>
+            </div>
+            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 text-center border border-blue-100 dark:border-blue-800">
+              <div class="text-xs text-blue-700 dark:text-blue-400 uppercase">Total gallons</div>
+              <div class="text-xl font-bold text-blue-800 dark:text-blue-300" id="quoteBulkGals">—</div>
+            </div>
+            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-center border border-green-100 dark:border-green-800">
+              <div class="text-xs text-green-700 dark:text-green-400 uppercase">Quote total</div>
+              <div class="text-xl font-bold text-green-800 dark:text-green-300" id="quoteBulkTotal">—</div>
+            </div>
+          </div>
+        </div>
+
         <!-- $/Acre -->
         <div class="border border-gray-200 dark:border-gray-600 rounded-xl p-4">
           <h3 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-tractor text-dfc-red"></i> $/Acre application</h3>
@@ -2063,8 +2097,17 @@
           unit: tr.querySelector('.q-acre-unit') ? tr.querySelector('.q-acre-unit').value : 'lb'
         };
       });
+      const prevBulk = {};
+      document.querySelectorAll('#quoteBulkRows tr.quote-bulk-row').forEach(tr => {
+        prevBulk[tr.dataset.product] = {
+          qty: tr.querySelector('.q-bulk-qty') ? tr.querySelector('.q-bulk-qty').value : '',
+          unit: tr.querySelector('.q-bulk-unit') ? tr.querySelector('.q-bulk-unit').value : 'ton'
+        };
+      });
       buildQuoteAcreRows(rows, prevRates);
+      buildQuoteBulkRows(rows, prevBulk);
       recalcQuoteAcre();
+      recalcQuoteBulk();
     }
 
     function onQuoteSelectionChange() {
@@ -2073,6 +2116,7 @@
 
     function onQuotePriceChange() {
       recalcQuoteAcre();
+      recalcQuoteBulk();
     }
 
     function buildQuoteAcreRows(data, prevRates) {
@@ -2098,6 +2142,77 @@
           '</select></td>' +
           '<td class="py-1.5 text-right font-medium q-acre-cost">—</td></tr>';
       }).join('');
+    }
+
+    function buildQuoteBulkRows(data, prevBulk) {
+      const tbody = document.getElementById('quoteBulkRows');
+      if (!tbody) return;
+      if (!data.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="py-3 text-center text-gray-500 text-sm">Select products above to enter tons.</td></tr>';
+        const t = document.getElementById('quoteBulkTons');
+        const g = document.getElementById('quoteBulkGals');
+        const tot = document.getElementById('quoteBulkTotal');
+        if (t) t.textContent = '—';
+        if (g) g.textContent = '—';
+        if (tot) tot.textContent = '—';
+        return;
+      }
+      prevBulk = prevBulk || {};
+      tbody.innerHTML = data.map((r) => {
+        const info = QUOTE_ANALYSIS[r.product] || { unit: r.unit || 'ton', lbPerGal: 0 };
+        const priceUnit = productPriceUnit(r.product, info);
+        const prev = prevBulk[r.product];
+        const unit = prev && prev.unit ? prev.unit : (priceUnit === 'gal' ? 'gal' : 'ton');
+        const qty = prev && prev.qty !== '' ? prev.qty : '';
+        return '<tr class="quote-bulk-row border-b border-gray-100 dark:border-gray-700" data-product="' + r.product.replace(/"/g, '&quot;') + '">' +
+          '<td class="py-1.5">' + r.product + '</td>' +
+          '<td class="py-1 text-right"><input type="number" class="q-bulk-qty w-24 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded px-2 py-1 text-sm text-right" value="' + qty + '" min="0" step="0.1" placeholder="0" oninput="recalcQuoteBulk()" /></td>' +
+          '<td class="py-1"><select class="q-bulk-unit border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded px-2 py-1 text-sm" onchange="recalcQuoteBulk()">' +
+            '<option value="ton"' + (unit === 'ton' ? ' selected' : '') + '>tons</option>' +
+            '<option value="gal"' + (unit === 'gal' ? ' selected' : '') + '>gallons</option>' +
+          '</select></td>' +
+          '<td class="py-1.5 text-right text-gray-500 q-bulk-unitprice">—</td>' +
+          '<td class="py-1.5 text-right font-medium q-bulk-line">—</td></tr>';
+      }).join('');
+    }
+
+    function recalcQuoteBulk() {
+      const prices = quotePriceMap();
+      let totalTons = 0, totalGals = 0, totalCost = 0, any = 0;
+      document.querySelectorAll('#quoteBulkRows tr.quote-bulk-row').forEach(tr => {
+        const product = tr.dataset.product;
+        const qty = parseFloat(tr.querySelector('.q-bulk-qty').value) || 0;
+        const qtyUnit = tr.querySelector('.q-bulk-unit').value;
+        const info = QUOTE_ANALYSIS[product] || { unit: 'ton', lbPerGal: 0 };
+        const price = prices[product];
+        const priceUnit = productPriceUnit(product, info);
+        const dens = info.lbPerGal || 0;
+        let line = 0;
+        if (price != null && price > 0 && qty > 0) {
+          if (priceUnit === 'gal') {
+            if (qtyUnit === 'gal') line = qty * price;
+            else if (qtyUnit === 'ton' && dens > 0) line = ((qty * 2000) / dens) * price;
+          } else {
+            if (qtyUnit === 'ton') line = qty * price;
+            else if (qtyUnit === 'gal' && dens > 0) line = (qty * dens / 2000) * price;
+          }
+        }
+        const unitLabel = price != null && price > 0 ? money(price, 0) + '/' + priceUnit : 'Call';
+        tr.querySelector('.q-bulk-unitprice').textContent = unitLabel;
+        tr.querySelector('.q-bulk-line').textContent = line ? money(line, 0) : (qty > 0 && (price == null || price === 0) ? 'Call' : '—');
+        if (qtyUnit === 'ton') totalTons += qty;
+        if (qtyUnit === 'gal') totalGals += qty;
+        // also convert gal qty to tons for total tons when density known
+        if (qtyUnit === 'gal' && dens > 0) totalTons += (qty * dens) / 2000;
+        totalCost += line;
+        any++;
+      });
+      const tEl = document.getElementById('quoteBulkTons');
+      const gEl = document.getElementById('quoteBulkGals');
+      const totEl = document.getElementById('quoteBulkTotal');
+      if (tEl) tEl.textContent = any ? formatMoney(totalTons, 2) : '—';
+      if (gEl) gEl.textContent = any && totalGals ? formatMoney(totalGals, 0) : (any ? '0' : '—');
+      if (totEl) totEl.textContent = any && totalCost ? money(totalCost, 0) : (any ? '—' : '—');
     }
 
     function recalcQuoteAcre() {
@@ -2171,6 +2286,35 @@
         tableHtml += '<tr><td>' + r.product + '</td><td>' + r.analysis + '</td><td>' + pr + '</td></tr>';
       });
       tableHtml += '</tbody></table>';
+
+      // Bulk tons
+      const bulkLines = [];
+      let bulkTons = 0, bulkGals = 0, bulkCost = 0;
+      document.querySelectorAll('#quoteBulkRows tr.quote-bulk-row').forEach(tr => {
+        const product = tr.dataset.product;
+        const qty = parseFloat(tr.querySelector('.q-bulk-qty').value) || 0;
+        if (!qty) return;
+        const qtyUnit = tr.querySelector('.q-bulk-unit').value;
+        const lineTxt = tr.querySelector('.q-bulk-line').textContent;
+        bulkLines.push({ product, qty, qtyUnit, lineTxt });
+      });
+      const bulkTonsEl = document.getElementById('quoteBulkTons');
+      const bulkGalsEl = document.getElementById('quoteBulkGals');
+      const bulkTotEl = document.getElementById('quoteBulkTotal');
+      if (bulkLines.length) {
+        tableHtml += '<h2 style="font-size:14px;margin:24px 0 8px;color:#333">Bulk order</h2>';
+        tableHtml += '<table><thead><tr><th>Product</th><th>Qty</th><th>Line total</th></tr></thead><tbody>';
+        bulkLines.forEach(r => {
+          const u = r.qtyUnit === 'gal' ? 'gal' : 'tons';
+          tableHtml += '<tr><td>' + r.product + '</td><td>' + r.qty + ' ' + u + '</td><td>' + r.lineTxt + '</td></tr>';
+        });
+        tableHtml += '</tbody></table>';
+        tableHtml += '<p style="margin-top:8px">';
+        if (bulkTonsEl && bulkTonsEl.textContent !== '—') tableHtml += '<strong>Total tons: ' + bulkTonsEl.textContent + '</strong>';
+        if (bulkGalsEl && bulkGalsEl.textContent !== '—' && bulkGalsEl.textContent !== '0') tableHtml += ' · Gallons: ' + bulkGalsEl.textContent;
+        if (bulkTotEl && bulkTotEl.textContent !== '—') tableHtml += ' · <strong>Quote total: ' + bulkTotEl.textContent + '</strong>';
+        tableHtml += '</p>';
+      }
 
       const prices = quotePriceMap();
       let acreRows = [];
