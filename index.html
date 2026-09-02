@@ -104,8 +104,8 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 card-hover">
         <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">NH3</div>
-        <div class="mt-1 text-2xl font-bold text-dfc-red">$790<span class="text-sm font-normal text-gray-500">/ton</span></div>
-        <div class="text-xs text-gray-400 mt-1">$0.482/lb N · Reg ~$962</div>
+        <div class="mt-1 text-2xl font-bold text-dfc-red">$850<span class="text-sm font-normal text-gray-500">/ton</span></div>
+        <div class="text-xs text-gray-400 mt-1">$0.518/lb N · Reg ~$962</div>
       </div>
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 card-hover">
         <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Urea</div>
@@ -157,7 +157,7 @@
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Select Product</label>
             <select id="calcProduct" onchange="loadProduct()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
               <option value="">— Custom / Select —</option>
-              <option value="nh3" data-n="82" data-p="0" data-k="0" data-s="0" data-price="790">NH3 (82-0-0) · $790</option>
+              <option value="nh3" data-n="82" data-p="0" data-k="0" data-s="0" data-price="850">NH3 (82-0-0) · $850</option>
               <option value="urea" data-n="46" data-p="0" data-k="0" data-s="0" data-price="580">Urea (46-0-0) · $580</option>
               <option value="uan28" data-n="28" data-p="0" data-k="0" data-s="0" data-price="">UAN 28% (28-0-0) · Call</option>
               <option value="ats" data-n="12" data-p="0" data-k="0" data-s="26" data-price="">ATS (12-0-0-26S) · Call</option>
@@ -299,7 +299,7 @@
           <div>
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Product</label>
             <select id="rateProduct" onchange="calcAppRate()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
-              <option value="82" data-name="NH3" data-price="790">NH3 (82-0-0) — N</option>
+              <option value="82" data-name="NH3" data-price="850">NH3 (82-0-0) — N</option>
               <option value="46" data-name="Urea" data-price="580" selected>Urea (46-0-0) — N</option>
               <option value="28" data-name="UAN 28%" data-price="0">UAN 28% (28-0-0) — N</option>
               <option value="12" data-name="ATS" data-price="0">ATS (12-0-0-26S) — N</option>
@@ -544,12 +544,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="nh3 ammonia" data-product="NH3" data-analysis="82-0-0" data-price="790" data-unit="ton">
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="nh3 ammonia" data-product="NH3" data-analysis="82-0-0" data-price="850" data-unit="ton">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
-                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="NH3" data-analysis="82-0-0" data-price="790" data-unit="ton"></i></td>
+                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="NH3" data-analysis="82-0-0" data-price="850" data-unit="ton"></i></td>
                 <td class="px-4 py-3.5 font-medium">NH3</td>
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">82-0-0</td>
-                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$790/ton</span></td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$850/ton</span></td>
               </tr>
             </tbody>
           </table>
@@ -841,6 +841,7 @@
           <div class="font-semibold">September 2, 2026</div>
           <ul class="mt-1 text-gray-600 dark:text-gray-300 space-y-1">
             <li>• Urea $560 → $580/ton</li>
+            <li>• NH3 $790 → $850/ton</li>
           </ul>
         </div>
         <div class="border-l-4 border-gray-300 dark:border-gray-600 pl-4">
@@ -1167,7 +1168,7 @@
 
     // Cost per acre — multi product
     const ACRE_PRODUCTS = [
-      { name: 'NH3', price: 790, unit: 'ton', n: 82, p: 0, k: 0, s: 0, lbPerGal: 0 },
+      { name: 'NH3', price: 850, unit: 'ton', n: 82, p: 0, k: 0, s: 0, lbPerGal: 0 },
       { name: 'Urea', price: 580, unit: 'ton', n: 46, p: 0, k: 0, s: 0, lbPerGal: 0 },
       { name: 'UAN 28%', price: 0, unit: 'ton', n: 28, p: 0, k: 0, s: 0, lbPerGal: 10.6 },
       { name: 'ATS', price: 0, unit: 'ton', n: 12, p: 0, k: 0, s: 26, lbPerGal: 11.1 },
@@ -2517,7 +2518,7 @@
       labels: ['Mar 2026', 'Apr 2026', 'May 2026', 'Jun 2026', 'Jul 2026', 'Aug 17 2026'],
       urea: [677, 858, 865, 764, 560, 580],
       map: [886, 932, 942, 955, 958, 935],
-      nh3: [924, 1088, 1118, 1091, 962, 790],
+      nh3: [924, 1088, 1118, 1091, 790, 850],
       potash: [487, 489, 493, 494, 494, 470],
       rock40: [900, 920, 935, 945, 950, 940],
       ams: [510, 525, 535, 545, 540, 460],
