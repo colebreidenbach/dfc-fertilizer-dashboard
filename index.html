@@ -74,7 +74,7 @@
       <div class="flex items-center justify-between h-14">
         <div>
           <h1 class="text-base sm:text-lg font-bold tracking-tight">Fertilizer Price Dashboard</h1>
-          <p class="text-xs text-gray-300">Updated Sep 2, 2026 · <button onclick="openChangelog()" class="underline hover:text-white">View changes</button></p>
+          <p class="text-xs text-gray-300">Updated <span id="priceAsOfLabel">Sep 2, 2026</span> · <button onclick="openChangelog()" class="underline hover:text-white">View changes</button></p>
         </div>
         <div class="flex items-center gap-2 no-print">
           <button onclick="openHistory()" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2" title="Pricing History">
@@ -127,7 +127,7 @@
     <!-- Regional comparison note -->
     <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg px-4 py-2 mb-6 text-sm text-blue-800 dark:text-blue-300 flex items-start gap-2">
       <i class="fas fa-info-circle mt-0.5"></i>
-      <span><strong>Regional comparison:</strong> “Reg” values are recent Midwest retail averages (illustrative). DFC prices shown are current as of Aug 17, 2026.</span>
+      <span><strong>Regional comparison:</strong> “Reg” values are recent Midwest retail averages (illustrative). DFC prices shown are current as of <span id="priceAsOfBanner">Sep 2, 2026</span>.</span>
     </div>
 
     <!-- Favorites strip -->
@@ -824,7 +824,7 @@
           <button onclick="toggleHistoryProduct('poly4')" id="hist-poly4" class="hist-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700">Poly4</button>
         </div>
         <div class="relative h-72 sm:h-96"><canvas id="priceChart"></canvas></div>
-        <p class="text-xs text-gray-400 mt-4">Final points are current DFC prices (Aug 17, 2026). Earlier values are regional averages for reference.</p>
+        <p class="text-xs text-gray-400 mt-4">Final points are current DFC prices (Sep 2, 2026). Earlier values are regional averages for reference.</p>
       </div>
     </div>
   </div>
@@ -943,7 +943,7 @@
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-500 mb-1">Date</label>
-            <input type="text" id="quoteDate" value="August 17, 2026" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+            <input type="text" id="quoteDate" value="September 2, 2026" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-500 mb-1">Acres (for $/acre)</label>
@@ -1055,6 +1055,7 @@
               <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncProducts" class="rounded border-gray-300 text-dfc-red" checked /> Products &amp; prices</label>
               <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncBulk" class="rounded border-gray-300 text-dfc-red" checked /> Bulk order</label>
               <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncAcre" class="rounded border-gray-300 text-dfc-red" /> $/Acre</label>
+              <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncBlend" class="rounded border-gray-300 text-dfc-red" /> Blend build</label>
               <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncNotes" class="rounded border-gray-300 text-dfc-red" checked /> Notes</label>
             </div>
           </div>
@@ -1074,6 +1075,9 @@
 
   <script>
     const DASHBOARD_PASSWORD = "DFC2026";
+    const PRICE_AS_OF_ISO = "2026-09-02";
+    const PRICE_AS_OF_LABEL = "Sep 2, 2026";
+    const PRICE_AS_OF_LONG = "September 2, 2026";
 
     function formatMoney(n, decimals) {
       if (n == null || isNaN(n)) return '—';
@@ -1083,6 +1087,18 @@
         maximumFractionDigits: d
       });
     }
+    function applyPriceAsOfDates() {
+      const el = document.getElementById('priceAsOfLabel');
+      if (el) el.textContent = PRICE_AS_OF_LABEL;
+      const banner = document.getElementById('priceAsOfBanner');
+      if (banner) banner.textContent = PRICE_AS_OF_LABEL;
+      const q = document.getElementById('quoteDate');
+      if (q && (!q.value || q.value.indexOf('August 17') !== -1 || q.dataset.autofill !== '0')) {
+        q.value = PRICE_AS_OF_LONG;
+      }
+    }
+    document.addEventListener('DOMContentLoaded', applyPriceAsOfDates);
+
     function money(n, decimals) {
       if (n == null || isNaN(n) || n === 0 && decimals === undefined) {
         /* still format 0 */
@@ -1407,7 +1423,7 @@
         'footer{margin-top:40px;font-size:12px;color:#666}' +
         '</style></head><body>');
       w.document.write('<h1>DFC Cost per Acre Estimate</h1>');
-      w.document.write('<p class="sub">Central Dakota Frontier Cooperative · Prices as of Aug 17, 2026</p>');
+      w.document.write('<p class="sub">Central Dakota Frontier Cooperative · Prices as of ' + PRICE_AS_OF_LABEL + '</p>');
       w.document.write('<p><strong>Field size:</strong> ' + data.acres + ' acres</p>');
       w.document.write('<table><thead><tr><th>Product</th><th>Rate</th><th>Price</th><th>$/Acre</th></tr></thead><tbody>' + rowsHtml + '</tbody></table>');
       w.document.write('<div class="totals">');
@@ -1431,11 +1447,11 @@
       data.rows.forEach(r => {
         csv += '"' + r.name + '",' + r.rate + ',"' + (unitLabel[r.rateUnit] || r.rateUnit) + '",' +
           r.price + ',"' + r.prodUnit + '",' + r.cost.toFixed(2) + ',' + data.acres + ',' +
-          (r.cost * data.acres).toFixed(2) + ',"2026-08-17"\n';
+          (r.cost * data.acres).toFixed(2) + ',"' + PRICE_AS_OF_ISO + '"\n';
       });
       csv += '\n"NUTRIENTS LBS/ACRE","' + data.analysisLbs + '",,,,,,,\n';
       csv += '"BLEND GRADE","' + data.analysisGrade + '",,,,,,,\n';
-      csv += '"COMBINED",,,,,' + data.totalPerAcre.toFixed(2) + ',' + data.acres + ',' + data.totalCost.toFixed(2) + ',"2026-08-17"\n';
+      csv += '"COMBINED",,,,,' + data.totalPerAcre.toFixed(2) + ',' + data.acres + ',' + data.totalCost.toFixed(2) + ',"' + PRICE_AS_OF_ISO + '"\n';
       downloadFile(csv, 'DFC_Cost_Per_Acre_Estimate.csv', 'text/csv');
     }
 
@@ -1444,7 +1460,7 @@
       if (!data.rows.length) { alert('Add at least one product first.'); return; }
       const unitLabel = { lb: 'lbs/acre', ton: 'tons/acre', gal: 'gal/acre' };
       let text = 'DFC Cost per Acre Estimate\n';
-      text += 'Field: ' + data.acres + ' acres · Prices as of Aug 17, 2026\n\n';
+      text += 'Field: ' + data.acres + ' acres · Prices as of ' + PRICE_AS_OF_LABEL + '\n\n';
       data.rows.forEach(r => {
         text += r.name + ' — ' + r.rate + ' ' + (unitLabel[r.rateUnit] || '') + ' @ $' + formatMoney(r.price, 0) + '/' + r.prodUnit + ' = ' + money(r.cost, 2) + '/acre\n';
       });
@@ -1976,13 +1992,13 @@
       const data = getSelectedProducts();
       if (!data.length) { alert('Select at least one product first.'); return; }
       let csv = 'Product,Analysis,Price,Unit,Date\\n';
-      data.forEach(r => { csv += `"${r.product}","${r.analysis}","${r.price}","${r.unit}","2026-08-17"\\n`; });
-      downloadFile(csv, 'DFC_Fertilizer_Prices_2026-08-17.csv', 'text/csv');
+      data.forEach(r => { csv += `"${r.product}","${r.analysis}","${r.price}","${r.unit}","${PRICE_AS_OF_ISO}"\\n`; });
+      downloadFile(csv, 'DFC_Fertilizer_Prices_' + PRICE_AS_OF_ISO + '.csv', 'text/csv');
     }
     function exportJSON() {
       const data = getSelectedProducts();
       if (!data.length) { alert('Select at least one product first.'); return; }
-      downloadFile(JSON.stringify({ date: '2026-08-17', source: 'DFC', products: data }, null, 2), 'DFC_Fertilizer_Prices_2026-08-17.json', 'application/json');
+      downloadFile(JSON.stringify({ date: PRICE_AS_OF_ISO, source: 'DFC', products: data }, null, 2), 'DFC_Fertilizer_Prices_' + PRICE_AS_OF_ISO + '.json', 'application/json');
     }
     function downloadFile(content, filename, type) {
       const blob = new Blob([content], { type });
@@ -2312,8 +2328,9 @@
       const incProducts = quotePrintFlag('printIncProducts', true);
       const incBulk = quotePrintFlag('printIncBulk', true);
       const incAcre = quotePrintFlag('printIncAcre', false);
+      const incBlend = quotePrintFlag('printIncBlend', false);
       const incNotes = quotePrintFlag('printIncNotes', true);
-      if (!incProducts && !incBulk && !incAcre && !incNotes) {
+      if (!incProducts && !incBulk && !incAcre && !incBlend && !incNotes) {
         return null;
       }
 
@@ -2397,6 +2414,28 @@
         if (blendGrade && blendGrade !== '—') tableHtml += '<br>Blend analysis (grade %): ' + blendGrade;
         if (analysis && analysis !== '—') tableHtml += '<br>Nutrients applied: ' + analysis + ' lbs/acre';
         tableHtml += '</p>';
+      }
+
+      if (incBlend) {
+        const n = document.getElementById('blendN') ? document.getElementById('blendN').value : '';
+        const p = document.getElementById('blendP') ? document.getElementById('blendP').value : '';
+        const k = document.getElementById('blendK') ? document.getElementById('blendK').value : '';
+        const s = document.getElementById('blendS') ? document.getElementById('blendS').value : '';
+        const tons = document.getElementById('blendTons') ? document.getElementById('blendTons').value : '';
+        const nSrc = document.getElementById('blendNSource');
+        const pSrc = document.getElementById('blendPSource');
+        const kSrc = document.getElementById('blendKSource');
+        const sSrc = document.getElementById('blendSSource');
+        const srcLabel = function(sel) { return sel && sel.selectedOptions[0] ? sel.selectedOptions[0].textContent : ''; };
+        tableHtml += '<h2 style="font-size:14px;margin:24px 0 8px;color:#333">Blend build</h2>';
+        tableHtml += '<p style="font-size:13px;margin:0 0 8px">Target: ' + n + '-' + p + '-' + k + '-' + s + 'S &nbsp;·&nbsp; ' + tons + ' tons</p>';
+        tableHtml += '<p style="font-size:12px;color:#555;margin:0 0 8px">N: ' + srcLabel(nSrc) + '<br>P: ' + srcLabel(pSrc) + '<br>K: ' + srcLabel(kSrc) + '<br>S: ' + srcLabel(sSrc) + '</p>';
+        const blendBox = document.getElementById('blendResults');
+        if (blendBox && blendBox.innerHTML.trim()) {
+          tableHtml += '<div style="font-size:13px">' + blendBox.innerHTML + '</div>';
+        } else {
+          tableHtml += '<p style="color:#666;font-size:13px">Open the Blend tool and run a mix to include recipe details.</p>';
+        }
       }
 
       const notes = (document.getElementById('quoteNotes') && document.getElementById('quoteNotes').value || '').trim();
@@ -2515,7 +2554,7 @@
 
     // History chart
     const historyData = {
-      labels: ['Mar 2026', 'Apr 2026', 'May 2026', 'Jun 2026', 'Jul 2026', 'Aug 17 2026'],
+      labels: ['Mar 2026', 'Apr 2026', 'May 2026', 'Jun 2026', 'Aug 17 2026', 'Sep 2 2026'],
       urea: [677, 858, 865, 764, 560, 580],
       map: [886, 932, 942, 955, 958, 935],
       nh3: [924, 1088, 1118, 1091, 790, 850],
