@@ -1041,6 +1041,78 @@
           </div>
         </div>
 
+        <!-- Quote blend build -->
+        <div class="border border-gray-200 dark:border-gray-600 rounded-xl p-4">
+          <h3 class="font-semibold text-sm mb-2 flex items-center gap-2"><i class="fas fa-flask text-dfc-red"></i> Blend build</h3>
+          <p class="text-xs text-gray-500 mb-3">Type an analysis (example <strong>12-36-6-5</strong>) and tons. Sources below build the mix. Uses quote prices when those products are on this quote.</p>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
+            <div class="col-span-2 sm:col-span-2">
+              <label class="block text-xs text-gray-500 mb-1">Analysis (N-P-K-S)</label>
+              <input type="text" id="qBlendGrade" placeholder="12-36-6-5" oninput="onQuoteBlendGradeInput()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm font-medium tracking-wide" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">Tons</label>
+              <input type="number" id="qBlendTons" value="20" min="0" step="0.1" oninput="recalcQuoteBlendBuild()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">N %</label>
+              <input type="number" id="qBlendN" value="" min="0" step="0.1" placeholder="12" oninput="recalcQuoteBlendBuild()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">P %</label>
+              <input type="number" id="qBlendP" value="" min="0" step="0.1" placeholder="36" oninput="recalcQuoteBlendBuild()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">K %</label>
+              <input type="number" id="qBlendK" value="" min="0" step="0.1" placeholder="6" oninput="recalcQuoteBlendBuild()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">S %</label>
+              <input type="number" id="qBlendS" value="" min="0" step="0.1" placeholder="5" oninput="recalcQuoteBlendBuild()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm" />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">N source</label>
+              <select id="qBlendNSource" onchange="recalcQuoteBlendBuild()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
+                <option value="urea">Urea · 46-0-0</option>
+                <option value="uan28">UAN 28%</option>
+                <option value="ams">AMS</option>
+                <option value="map">MAP</option>
+                <option value="rock40">40 Rock</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">P source</label>
+              <select id="qBlendPSource" onchange="recalcQuoteBlendBuild()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
+                <option value="map">MAP · 11-52-0</option>
+                <option value="rock40">40 Rock · 12-40-0-6.5S</option>
+                <option value="app">10-34-0</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">K source</label>
+              <select id="qBlendKSource" onchange="recalcQuoteBlendBuild()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
+                <option value="potash">Potash · 0-0-60</option>
+                <option value="poly4">Poly4</option>
+                <option value="kts">KTS</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">S source</label>
+              <select id="qBlendSSource" onchange="recalcQuoteBlendBuild()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
+                <option value="ams">AMS · 21-0-0-24S</option>
+                <option value="poly4">Poly4</option>
+                <option value="ats">ATS</option>
+                <option value="kts">KTS</option>
+              </select>
+            </div>
+          </div>
+          <div id="qBlendResults" class="text-sm"></div>
+        </div>
+
         <!-- Notes -->
         <div>
           <h3 class="font-semibold text-sm mb-2 flex items-center gap-2"><i class="fas fa-sticky-note text-dfc-red"></i> Notes</h3>
@@ -1055,7 +1127,7 @@
               <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncProducts" class="rounded border-gray-300 text-dfc-red" checked /> Products &amp; prices</label>
               <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncBulk" class="rounded border-gray-300 text-dfc-red" checked /> Bulk order</label>
               <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncAcre" class="rounded border-gray-300 text-dfc-red" /> $/Acre</label>
-              <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncBlend" class="rounded border-gray-300 text-dfc-red" /> Blend build</label>
+              <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncBlend" class="rounded border-gray-300 text-dfc-red" checked /> Blend build</label>
               <label class="inline-flex items-center gap-2 cursor-pointer"><input type="checkbox" id="printIncNotes" class="rounded border-gray-300 text-dfc-red" checked /> Notes</label>
             </div>
           </div>
@@ -2317,6 +2389,58 @@
       }
     }
 
+    function parseBlendGrade(str) {
+      if (!str) return null;
+      const cleaned = String(str).trim().toUpperCase().replace(/S$/, '').replace(/\s+/g, '');
+      const parts = cleaned.split('-').map(x => parseFloat(x));
+      if (parts.length < 3 || parts.some(n => isNaN(n))) return null;
+      return { n: parts[0] || 0, p: parts[1] || 0, k: parts[2] || 0, s: parts[3] || 0 };
+    }
+
+    function onQuoteBlendGradeInput() {
+      const g = parseBlendGrade(document.getElementById('qBlendGrade').value);
+      if (!g) return;
+      document.getElementById('qBlendN').value = g.n;
+      document.getElementById('qBlendP').value = g.p;
+      document.getElementById('qBlendK').value = g.k;
+      document.getElementById('qBlendS').value = g.s;
+      recalcQuoteBlendBuild();
+    }
+
+    function recalcQuoteBlendBuild() {
+      const nEl = document.getElementById('qBlendN');
+      if (!nEl) return;
+      const targetN = parseFloat(nEl.value) || 0;
+      const targetP = parseFloat(document.getElementById('qBlendP').value) || 0;
+      const targetK = parseFloat(document.getElementById('qBlendK').value) || 0;
+      const targetS = parseFloat(document.getElementById('qBlendS').value) || 0;
+      const tons = parseFloat(document.getElementById('qBlendTons').value) || 0;
+      if (!targetN && !targetP && !targetK && !targetS) {
+        const box = document.getElementById('qBlendResults');
+        if (box) box.innerHTML = '<p class="text-xs text-gray-500">Enter an analysis such as 12-36-6-5 to build the blend.</p>';
+        return;
+      }
+      // Sync into the main Blend tool so print uses the same recipe
+      const setVal = (id, v) => { const e = document.getElementById(id); if (e) e.value = v; };
+      setVal('blendN', targetN);
+      setVal('blendP', targetP);
+      setVal('blendK', targetK);
+      setVal('blendS', targetS);
+      setVal('blendTons', tons);
+      const nSrc = document.getElementById('qBlendNSource');
+      const pSrc = document.getElementById('qBlendPSource');
+      const kSrc = document.getElementById('qBlendKSource');
+      const sSrc = document.getElementById('qBlendSSource');
+      if (nSrc && document.getElementById('blendNSource')) document.getElementById('blendNSource').value = nSrc.value;
+      if (pSrc && document.getElementById('blendPSource')) document.getElementById('blendPSource').value = pSrc.value;
+      if (kSrc && document.getElementById('blendKSource')) document.getElementById('blendKSource').value = kSrc.value;
+      if (sSrc && document.getElementById('blendSSource')) document.getElementById('blendSSource').value = sSrc.value;
+      if (typeof calcBlend === 'function') calcBlend();
+      const src = document.getElementById('blendResults');
+      const dest = document.getElementById('qBlendResults');
+      if (src && dest) dest.innerHTML = src.innerHTML;
+    }
+
     function quotePrintFlag(id, fallback) {
       const el = document.getElementById(id);
       return el ? !!el.checked : fallback;
@@ -2430,11 +2554,21 @@
         tableHtml += '<h2 style="font-size:14px;margin:24px 0 8px;color:#333">Blend build</h2>';
         tableHtml += '<p style="font-size:13px;margin:0 0 8px">Target: ' + n + '-' + p + '-' + k + '-' + s + 'S &nbsp;·&nbsp; ' + tons + ' tons</p>';
         tableHtml += '<p style="font-size:12px;color:#555;margin:0 0 8px">N: ' + srcLabel(nSrc) + '<br>P: ' + srcLabel(pSrc) + '<br>K: ' + srcLabel(kSrc) + '<br>S: ' + srcLabel(sSrc) + '</p>';
-        const blendBox = document.getElementById('blendResults');
-        if (blendBox && blendBox.innerHTML.trim()) {
+        const qn = document.getElementById('qBlendN');
+        if (qn && (qn.value || document.getElementById('qBlendGrade').value)) {
+          const n = document.getElementById('qBlendN').value || '0';
+          const p = document.getElementById('qBlendP').value || '0';
+          const k = document.getElementById('qBlendK').value || '0';
+          const s = document.getElementById('qBlendS').value || '0';
+          const tons = document.getElementById('qBlendTons') ? document.getElementById('qBlendTons').value : '';
+          tableHtml = tableHtml.replace(/Target: [^<]*/, 'Target: ' + n + '-' + p + '-' + k + '-' + s + 'S &nbsp;·&nbsp; ' + tons + ' tons');
+        }
+        const qBox = document.getElementById('qBlendResults');
+        const blendBox = (qBox && qBox.innerHTML.trim()) ? qBox : document.getElementById('blendResults');
+        if (blendBox && blendBox.innerHTML.trim() && blendBox.innerHTML.indexOf('Enter an analysis') < 0) {
           tableHtml += '<div style="font-size:13px">' + blendBox.innerHTML + '</div>';
         } else {
-          tableHtml += '<p style="color:#666;font-size:13px">Open the Blend tool and run a mix to include recipe details.</p>';
+          tableHtml += '<p style="color:#666;font-size:13px">Enter an analysis in Blend build (example 12-36-6-5) to include the recipe.</p>';
         }
       }
 
