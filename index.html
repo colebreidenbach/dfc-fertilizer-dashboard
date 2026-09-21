@@ -74,7 +74,7 @@
       <div class="flex items-center justify-between h-14">
         <div>
           <h1 class="text-base sm:text-lg font-bold tracking-tight">Fertilizer Price Dashboard</h1>
-          <p class="text-xs text-gray-300">Updated <span id="priceAsOfLabel">Sep 16, 2026</span> · <button onclick="openChangelog()" class="underline hover:text-white">View changes</button></p>
+          <p class="text-xs text-gray-300">Updated <span id="priceAsOfLabel">Sep 21, 2026</span> · <button onclick="openChangelog()" class="underline hover:text-white">View changes</button></p>
         </div>
         <div class="flex items-center gap-2 no-print">
           <button onclick="openHistory()" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2" title="Pricing History">
@@ -114,8 +114,8 @@
       </div>
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 card-hover">
         <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">MAP</div>
-        <div class="mt-1 text-2xl font-bold text-blue-700 dark:text-blue-400">$935<span class="text-sm font-normal text-gray-500">/ton</span></div>
-        <div class="text-xs text-gray-400 mt-1">$0.899/lb P · Reg ~$958</div>
+        <div class="mt-1 text-2xl font-bold text-blue-700 dark:text-blue-400">$945<span class="text-sm font-normal text-gray-500">/ton</span></div>
+        <div class="text-xs text-gray-400 mt-1">$0.909/lb P · Reg ~$958</div>
       </div>
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 card-hover">
         <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Potash</div>
@@ -127,7 +127,7 @@
     <!-- Regional comparison note -->
     <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg px-4 py-2 mb-6 text-sm text-blue-800 dark:text-blue-300 flex items-start gap-2">
       <i class="fas fa-info-circle mt-0.5"></i>
-      <span><strong>Regional comparison:</strong> “Reg” values are recent Midwest retail averages (illustrative). DFC prices shown are current as of <span id="priceAsOfBanner">Sep 16, 2026</span>.</span>
+      <span><strong>Regional comparison:</strong> “Reg” values are recent Midwest retail averages (illustrative). DFC prices shown are current as of <span id="priceAsOfBanner">Sep 21, 2026</span>.</span>
     </div>
 
     <!-- Favorites strip -->
@@ -167,10 +167,10 @@
               <option value="s7235" data-n="7" data-p="23" data-k="5" data-s="0" data-price="">7-23-5 · Call</option>
               <option value="s82054" data-n="8" data-p="20" data-k="5" data-s="4" data-price="">8-20-5-4S · Call</option>
               <option value="kts" data-n="0" data-p="0" data-k="25" data-s="17" data-price="">KTS (0-0-25-17S) · Call</option>
-              <option value="map" data-n="11" data-p="52" data-k="0" data-s="0" data-price="935">MAP (11-52-0) · $935</option>
-              <option value="40rock" data-n="12" data-p="40" data-k="0" data-s="6.5" data-price="940">40 Rock (12-40-0-6.5S) · $940</option>
+              <option value="map" data-n="11" data-p="52" data-k="0" data-s="0" data-price="945">MAP (11-52-0) · $945</option>
+              <option value="40rock" data-n="12" data-p="40" data-k="0" data-s="6.5" data-price="950">40 Rock (12-40-0-6.5S) · $950</option>
               <option value="potash" data-n="0" data-p="0" data-k="60" data-s="0" data-price="470">Potash (0-0-60) · $470</option>
-              <option value="ams" data-n="21" data-p="0" data-k="0" data-s="24" data-price="460">AMS (21-0-0-24S) · $460</option>
+              <option value="ams" data-n="21" data-p="0" data-k="0" data-s="24" data-price="470">AMS (21-0-0-24S) · $470</option>
               <option value="poly4" data-n="0" data-p="0" data-k="14" data-s="19" data-price="475">Poly4 (0-0-14-19S) · $475</option>
             </select>
           </div>
@@ -312,13 +312,13 @@
               <option value="23" data-name="7-23-5" data-price="0">7-23-5 — P2O5</option>
               <option value="25" data-name="KTS" data-price="0">KTS — K2O</option>
               <option value="17" data-name="KTS" data-price="0">KTS — S</option>
-              <option value="21" data-name="AMS" data-price="460">AMS (21-0-0-24S) — N</option>
-              <option value="24" data-name="AMS" data-price="460">AMS (21-0-0-24S) — S</option>
-              <option value="11" data-name="MAP" data-price="935">MAP (11-52-0) — N</option>
-              <option value="52" data-name="MAP" data-price="935">MAP (11-52-0) — P₂O₅</option>
+              <option value="21" data-name="AMS" data-price="470">AMS (21-0-0-24S) — N</option>
+              <option value="24" data-name="AMS" data-price="470">AMS (21-0-0-24S) — S</option>
+              <option value="11" data-name="MAP" data-price="945">MAP (11-52-0) — N</option>
+              <option value="52" data-name="MAP" data-price="945">MAP (11-52-0) — P₂O₅</option>
               <option value="60" data-name="Potash" data-price="470">Potash (0-0-60) — K₂O</option>
-              <option value="40" data-name="40 Rock" data-price="940">40 Rock — P₂O₅</option>
-              <option value="6.5" data-name="40 Rock" data-price="940">40 Rock — S</option>
+              <option value="40" data-name="40 Rock" data-price="950">40 Rock — P₂O₅</option>
+              <option value="6.5" data-name="40 Rock" data-price="950">40 Rock — S</option>
               <option value="19" data-name="Poly4" data-price="475">Poly4 — S</option>
               <option value="14" data-name="Poly4" data-price="475">Poly4 — K₂O</option>
             </select>
@@ -577,19 +577,19 @@
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">46-0-0</td>
                 <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$595/ton</span></td>
               </tr>
-              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="map" data-product="MAP" data-analysis="11-52-0" data-price="935" data-unit="ton">
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="map" data-product="MAP" data-analysis="11-52-0" data-price="945" data-unit="ton">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
-                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="MAP" data-analysis="11-52-0" data-price="935" data-unit="ton"></i></td>
+                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="MAP" data-analysis="11-52-0" data-price="945" data-unit="ton"></i></td>
                 <td class="px-4 py-3.5 font-medium">MAP</td>
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">11-52-0</td>
-                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$935/ton</span></td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$945/ton</span></td>
               </tr>
-              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="40 rock" data-product="40 Rock" data-analysis="12-40-0-6.5S" data-price="940" data-unit="ton">
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="40 rock" data-product="40 Rock" data-analysis="12-40-0-6.5S" data-price="950" data-unit="ton">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
-                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="40 Rock" data-analysis="12-40-0-6.5S" data-price="940" data-unit="ton"></i></td>
+                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="40 Rock" data-analysis="12-40-0-6.5S" data-price="950" data-unit="ton"></i></td>
                 <td class="px-4 py-3.5 font-medium">40 Rock</td>
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">12-40-0-6.5S</td>
-                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$940/ton</span></td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$950/ton</span></td>
               </tr>
               <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="potash" data-product="Potash" data-analysis="0-0-60" data-price="470" data-unit="ton">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
@@ -598,12 +598,12 @@
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">0-0-60</td>
                 <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$470/ton</span></td>
               </tr>
-              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="ams" data-product="AMS" data-analysis="21-0-0-24S" data-price="460" data-unit="ton">
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="ams" data-product="AMS" data-analysis="21-0-0-24S" data-price="470" data-unit="ton">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
-                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="AMS" data-analysis="21-0-0-24S" data-price="460" data-unit="ton"></i></td>
+                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="AMS" data-analysis="21-0-0-24S" data-price="470" data-unit="ton"></i></td>
                 <td class="px-4 py-3.5 font-medium">AMS</td>
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">21-0-0-24S</td>
-                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$460/ton</span></td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$470/ton</span></td>
               </tr>
               <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="poly4" data-product="Poly4" data-analysis="0-0-14-19S-11Ca-4Mg" data-price="475" data-unit="ton">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
@@ -727,12 +727,12 @@
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">12-40-0-10S</td>
                 <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
               </tr>
-              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="crystal green" data-product="Crystal Green" data-analysis="7-33-0" data-price="Call" data-unit="">
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="crystal green" data-product="Crystal Green" data-analysis="7-33-0" data-price="995" data-unit="ton">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
-                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="Crystal Green" data-analysis="7-33-0" data-price="Call" data-unit=""></i></td>
+                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="Crystal Green" data-analysis="7-33-0" data-price="995" data-unit="ton"></i></td>
                 <td class="px-4 py-3.5 font-medium">Crystal Green</td>
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">7-33-0</td>
-                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$995/ton</span></td>
               </tr>
               <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="esn" data-product="ESN" data-analysis="44-0-0" data-price="Call" data-unit="">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
@@ -824,7 +824,7 @@
           <button onclick="toggleHistoryProduct('poly4')" id="hist-poly4" class="hist-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700">Poly4</button>
         </div>
         <div class="relative h-72 sm:h-96"><canvas id="priceChart"></canvas></div>
-        <p class="text-xs text-gray-400 mt-4">Final points are current DFC prices (Sep 16, 2026). Earlier values are regional averages for reference.</p>
+        <p class="text-xs text-gray-400 mt-4">Final points are current DFC prices (Sep 21, 2026). Earlier values are regional averages for reference.</p>
       </div>
     </div>
   </div>
@@ -838,6 +838,15 @@
       </div>
       <div class="p-6 space-y-4 text-sm">
         <div class="border-l-4 border-dfc-red pl-4">
+          <div class="font-semibold">September 21, 2026</div>
+          <ul class="mt-1 text-gray-600 dark:text-gray-300 space-y-1">
+            <li>• MAP $935 → $945/ton</li>
+            <li>• 40 Rock $940 → $950/ton</li>
+            <li>• Crystal Green Call → $995/ton</li>
+            <li>• AMS $460 → $470/ton</li>
+          </ul>
+        </div>
+        <div class="border-l-4 border-gray-300 dark:border-gray-600 pl-4">
           <div class="font-semibold">September 16, 2026</div>
           <ul class="mt-1 text-gray-600 dark:text-gray-300 space-y-1">
             <li>• Urea $580 → $595/ton</li>
@@ -949,7 +958,7 @@
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-500 mb-1">Date</label>
-            <input type="text" id="quoteDate" value="September 16, 2026" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+            <input type="text" id="quoteDate" value="September 21, 2026" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-500 mb-1">Acres (for $/acre)</label>
@@ -1153,9 +1162,9 @@
 
   <script>
     const DASHBOARD_PASSWORD = "DFC2026";
-    const PRICE_AS_OF_ISO = "2026-09-16";
-    const PRICE_AS_OF_LABEL = "Sep 16, 2026";
-    const PRICE_AS_OF_LONG = "September 16, 2026";
+    const PRICE_AS_OF_ISO = "2026-09-21";
+    const PRICE_AS_OF_LABEL = "Sep 21, 2026";
+    const PRICE_AS_OF_LONG = "September 21, 2026";
 
     function formatMoney(n, decimals) {
       if (n == null || isNaN(n)) return '—';
@@ -1270,10 +1279,10 @@
       { name: '7-23-5', price: 0, unit: 'ton', n: 7, p: 23, k: 5, s: 0, lbPerGal: 11.1 },
       { name: '8-20-5-4', price: 0, unit: 'ton', n: 8, p: 20, k: 5, s: 4, lbPerGal: 11.4 },
       { name: 'KTS', price: 0, unit: 'ton', n: 0, p: 0, k: 25, s: 17, lbPerGal: 12.2 },
-      { name: 'MAP', price: 935, unit: 'ton', n: 11, p: 52, k: 0, s: 0, lbPerGal: 0 },
-      { name: '40 Rock', price: 940, unit: 'ton', n: 12, p: 40, k: 0, s: 6.5, lbPerGal: 0 },
+      { name: 'MAP', price: 945, unit: 'ton', n: 11, p: 52, k: 0, s: 0, lbPerGal: 0 },
+      { name: '40 Rock', price: 950, unit: 'ton', n: 12, p: 40, k: 0, s: 6.5, lbPerGal: 0 },
       { name: 'Potash', price: 470, unit: 'ton', n: 0, p: 0, k: 60, s: 0, lbPerGal: 0 },
-      { name: 'AMS', price: 460, unit: 'ton', n: 21, p: 0, k: 0, s: 24, lbPerGal: 0 },
+      { name: 'AMS', price: 470, unit: 'ton', n: 21, p: 0, k: 0, s: 24, lbPerGal: 0 },
       { name: 'Poly4', price: 475, unit: 'ton', n: 0, p: 0, k: 14, s: 19, lbPerGal: 0 }
     ];
     let acreRowId = 0;
@@ -1596,10 +1605,10 @@
         s7235:    { name: '7-23-5', n: 7, p: 23, k: 5, s: 0, price: 0, liquid: true, lbPerGal: 11.1 },
         s82054:   { name: '8-20-5-4S', n: 8, p: 20, k: 5, s: 4, price: 0, liquid: true, lbPerGal: 11.4 },
         kts:      { name: 'KTS (0-0-25-17S)', n: 0, p: 0, k: 25, s: 17, price: 0, liquid: true, lbPerGal: 12.2 },
-        map:      { name: 'MAP (11-52-0)', n: 11, p: 52, k: 0, s: 0, price: 935, liquid: false, lbPerGal: 0 },
-        rock40:   { name: '40 Rock (12-40-0-6.5S)', n: 12, p: 40, k: 0, s: 6.5, price: 940, liquid: false, lbPerGal: 0 },
+        map:      { name: 'MAP (11-52-0)', n: 11, p: 52, k: 0, s: 0, price: 945, liquid: false, lbPerGal: 0 },
+        rock40:   { name: '40 Rock (12-40-0-6.5S)', n: 12, p: 40, k: 0, s: 6.5, price: 950, liquid: false, lbPerGal: 0 },
         potash:   { name: 'Potash (0-0-60)', n: 0, p: 0, k: 60, s: 0, price: 470, liquid: false, lbPerGal: 0 },
-        ams:      { name: 'AMS (21-0-0-24S)', n: 21, p: 0, k: 0, s: 24, price: 460, liquid: false, lbPerGal: 0 },
+        ams:      { name: 'AMS (21-0-0-24S)', n: 21, p: 0, k: 0, s: 24, price: 470, liquid: false, lbPerGal: 0 },
         poly4:    { name: 'Poly4 (0-0-14-19S)', n: 0, p: 0, k: 14, s: 19, price: 475, liquid: false, lbPerGal: 0 }
       };
 
@@ -2101,7 +2110,8 @@
       '40 Rock': { n: 12, p: 40, k: 0, s: 6.5, unit: 'ton', lbPerGal: 0 },
       'Potash': { n: 0, p: 0, k: 60, s: 0, unit: 'ton', lbPerGal: 0 },
       'AMS': { n: 21, p: 0, k: 0, s: 24, unit: 'ton', lbPerGal: 0 },
-      'Poly4': { n: 0, p: 0, k: 14, s: 19, unit: 'ton', lbPerGal: 0 }
+      'Poly4': { n: 0, p: 0, k: 14, s: 19, unit: 'ton', lbPerGal: 0 },
+      'Crystal Green': { n: 7, p: 33, k: 0, s: 0, unit: 'ton', lbPerGal: 0 }
     };
 
     function getCatalogProducts() {
@@ -2692,13 +2702,13 @@
 
     // History chart
     const historyData = {
-      labels: ['Mar 2026', 'Apr 2026', 'May 2026', 'Jun 2026', 'Aug 17 2026', 'Sep 16 2026'],
+      labels: ['Mar 2026', 'Apr 2026', 'May 2026', 'Jun 2026', 'Sep 16 2026', 'Sep 21 2026'],
       urea: [677, 858, 865, 764, 580, 595],
-      map: [886, 932, 942, 955, 958, 935],
+      map: [886, 932, 942, 955, 935, 945],
       nh3: [924, 1088, 1118, 1091, 790, 850],
       potash: [487, 489, 493, 494, 494, 470],
-      rock40: [900, 920, 935, 945, 950, 940],
-      ams: [510, 525, 535, 545, 540, 460],
+      rock40: [900, 920, 935, 945, 940, 950],
+      ams: [510, 525, 535, 545, 460, 470],
       poly4: [490, 505, 515, 520, 525, 475]
     };
     const activeHist = { urea: true, map: false, nh3: false, potash: false, rock40: false, ams: false, poly4: false };
