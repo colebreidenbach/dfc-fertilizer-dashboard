@@ -74,7 +74,7 @@
       <div class="flex items-center justify-between h-14">
         <div>
           <h1 class="text-base sm:text-lg font-bold tracking-tight">Fertilizer Price Dashboard</h1>
-          <p class="text-xs text-gray-300">Updated <span id="priceAsOfLabel">Sep 28, 2026</span> · <button onclick="openChangelog()" class="underline hover:text-white">View changes</button></p>
+          <p class="text-xs text-gray-300">Updated <span id="priceAsOfLabel">Oct 14, 2026</span> · <button onclick="openChangelog()" class="underline hover:text-white">View changes</button></p>
         </div>
         <div class="flex items-center gap-2 no-print">
           <button onclick="openHistory()" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2" title="Pricing History">
@@ -127,7 +127,7 @@
     <!-- Regional comparison note -->
     <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg px-4 py-2 mb-6 text-sm text-blue-800 dark:text-blue-300 flex items-start gap-2">
       <i class="fas fa-info-circle mt-0.5"></i>
-      <span><strong>Regional comparison:</strong> “Reg” values are recent Midwest retail averages (illustrative). DFC prices shown are current as of <span id="priceAsOfBanner">Sep 28, 2026</span>.</span>
+      <span><strong>Regional comparison:</strong> “Reg” values are recent Midwest retail averages (illustrative). DFC prices shown are current as of <span id="priceAsOfBanner">Oct 14, 2026</span>.</span>
     </div>
 
     <!-- Favorites strip -->
@@ -172,6 +172,7 @@
               <option value="potash" data-n="0" data-p="0" data-k="60" data-s="0" data-price="470">Potash (0-0-60) · $470</option>
               <option value="ams" data-n="21" data-p="0" data-k="0" data-s="24" data-price="495">AMS (21-0-0-24S) · $495</option>
               <option value="poly4" data-n="0" data-p="0" data-k="14" data-s="19" data-price="475">Poly4 (0-0-14-19S) · $475</option>
+              <option value="sul4r" data-n="0" data-p="0" data-k="0" data-s="17" data-price="475">Sul4r-Plus (0-0-0-17S-21Ca) · $475</option>
             </select>
           </div>
           <div>
@@ -320,6 +321,7 @@
               <option value="40" data-name="40 Rock" data-price="980">40 Rock — P₂O₅</option>
               <option value="6.5" data-name="40 Rock" data-price="980">40 Rock — S</option>
               <option value="19" data-name="Poly4" data-price="475">Poly4 — S</option>
+              <option value="17" data-name="Sul4r-Plus" data-price="475">Sul4r-Plus — S</option>
               <option value="14" data-name="Poly4" data-price="475">Poly4 — K₂O</option>
             </select>
           </div>
@@ -421,6 +423,7 @@
             <select id="blendSSource" onchange="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
               <option value="ams">AMS · 21-0-0-24S (dry, also N)</option>
               <option value="poly4">Poly4 · 0-0-14-19S (dry, also K)</option>
+              <option value="sul4r">Sul4r-Plus · 0-0-0-17S-21Ca (dry)</option>
               <option value="ats">ATS · 12-0-0-26S (liquid, also N)</option>
               <option value="kts">KTS · 0-0-25-17S (liquid, also K)</option>
               <option value="optigold">Optistart Gold · 6-20-5-2S (liquid)</option>
@@ -610,6 +613,13 @@
                 <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="Poly4" data-analysis="0-0-14-19S-11Ca-4Mg" data-price="475" data-unit="ton"></i></td>
                 <td class="px-4 py-3.5 font-medium">Poly4</td>
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">0-0-14-19S-11Ca-4Mg</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$475/ton</span></td>
+              </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="sul4r-plus sul4r" data-product="Sul4r-Plus" data-analysis="0-0-0-17S-21Ca (Fulvic)" data-price="475" data-unit="ton">
+                <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="Sul4r-Plus" data-analysis="0-0-0-17S-21Ca (Fulvic)" data-price="475" data-unit="ton"></i></td>
+                <td class="px-4 py-3.5 font-medium">Sul4r-Plus</td>
+                <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">0-0-0-17S-21Ca w/Fulvic Acid</td>
                 <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$475/ton</span></td>
               </tr>
             </tbody>
@@ -824,7 +834,7 @@
           <button onclick="toggleHistoryProduct('poly4')" id="hist-poly4" class="hist-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700">Poly4</button>
         </div>
         <div class="relative h-72 sm:h-96"><canvas id="priceChart"></canvas></div>
-        <p class="text-xs text-gray-400 mt-4">Final points are current DFC prices (Sep 28, 2026). Earlier values are regional averages for reference.</p>
+        <p class="text-xs text-gray-400 mt-4">Final points are current DFC prices (Oct 14, 2026). Earlier values are regional averages for reference.</p>
       </div>
     </div>
   </div>
@@ -838,6 +848,12 @@
       </div>
       <div class="p-6 space-y-4 text-sm">
         <div class="border-l-4 border-dfc-red pl-4">
+          <div class="font-semibold">October 14, 2026</div>
+          <ul class="mt-1 text-gray-600 dark:text-gray-300 space-y-1">
+            <li>• Added Sul4r-Plus (0-0-0-17S-21Ca w/Fulvic Acid) · $475/ton under Dry</li>
+          </ul>
+        </div>
+        <div class="border-l-4 border-gray-300 dark:border-gray-600 pl-4">
           <div class="font-semibold">September 28, 2026</div>
           <ul class="mt-1 text-gray-600 dark:text-gray-300 space-y-1">
             <li>• Synced from DFC Fertilizer Price List 9/28/2026</li>
@@ -969,7 +985,7 @@
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-500 mb-1">Date</label>
-            <input type="text" id="quoteDate" value="September 28, 2026" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+            <input type="text" id="quoteDate" value="October 14, 2026" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-500 mb-1">Acres (for $/acre)</label>
@@ -1131,6 +1147,7 @@
               <select id="qBlendSSource" onchange="recalcQuoteBlendBuild()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-2 py-1.5 text-sm">
                 <option value="ams">AMS · 21-0-0-24S</option>
                 <option value="poly4">Poly4</option>
+                <option value="sul4r">Sul4r-Plus · 0-0-0-17S</option>
                 <option value="ats">ATS</option>
                 <option value="kts">KTS</option>
               </select>
@@ -1173,9 +1190,9 @@
 
   <script>
     const DASHBOARD_PASSWORD = "DFC2026";
-    const PRICE_AS_OF_ISO = "2026-09-28";
-    const PRICE_AS_OF_LABEL = "Sep 28, 2026";
-    const PRICE_AS_OF_LONG = "September 28, 2026";
+    const PRICE_AS_OF_ISO = "2026-10-14";
+    const PRICE_AS_OF_LABEL = "Oct 14, 2026";
+    const PRICE_AS_OF_LONG = "October 14, 2026";
 
     function formatMoney(n, decimals) {
       if (n == null || isNaN(n)) return '—';
@@ -1294,7 +1311,8 @@
       { name: '40 Rock', price: 980, unit: 'ton', n: 12, p: 40, k: 0, s: 6.5, lbPerGal: 0 },
       { name: 'Potash', price: 470, unit: 'ton', n: 0, p: 0, k: 60, s: 0, lbPerGal: 0 },
       { name: 'AMS', price: 495, unit: 'ton', n: 21, p: 0, k: 0, s: 24, lbPerGal: 0 },
-      { name: 'Poly4', price: 475, unit: 'ton', n: 0, p: 0, k: 14, s: 19, lbPerGal: 0 }
+      { name: 'Poly4', price: 475, unit: 'ton', n: 0, p: 0, k: 14, s: 19, lbPerGal: 0 },
+      { name: 'Sul4r-Plus', price: 475, unit: 'ton', n: 0, p: 0, k: 0, s: 17, lbPerGal: 0 }
     ];
     let acreRowId = 0;
 
@@ -1620,10 +1638,11 @@
         rock40:   { name: '40 Rock (12-40-0-6.5S)', n: 12, p: 40, k: 0, s: 6.5, price: 980, liquid: false, lbPerGal: 0 },
         potash:   { name: 'Potash (0-0-60)', n: 0, p: 0, k: 60, s: 0, price: 470, liquid: false, lbPerGal: 0 },
         ams:      { name: 'AMS (21-0-0-24S)', n: 21, p: 0, k: 0, s: 24, price: 495, liquid: false, lbPerGal: 0 },
-        poly4:    { name: 'Poly4 (0-0-14-19S)', n: 0, p: 0, k: 14, s: 19, price: 475, liquid: false, lbPerGal: 0 }
+        poly4:    { name: 'Poly4 (0-0-14-19S)', n: 0, p: 0, k: 14, s: 19, price: 475, liquid: false, lbPerGal: 0 },
+        sul4r:    { name: 'Sul4r-Plus (0-0-0-17S-21Ca)', n: 0, p: 0, k: 0, s: 17, price: 475, liquid: false, lbPerGal: 0 }
       };
 
-      let mix = { urea: 0, uan28: 0, ats: 0, app: 0, optigold: 0, s6246: 0, s7235: 0, s82054: 0, kts: 0, map: 0, rock40: 0, potash: 0, ams: 0, poly4: 0 };
+      let mix = { urea: 0, uan28: 0, ats: 0, app: 0, optigold: 0, s6246: 0, s7235: 0, s82054: 0, kts: 0, map: 0, rock40: 0, potash: 0, ams: 0, poly4: 0, sul4r: 0 };
       const warnings = [];
       const notes = [];
       const liquidKeys = ['uan28', 'ats', 'app', 'optigold', 's6246', 's7235', 's82054', 'kts'];
@@ -1658,7 +1677,7 @@
 
       // Helper nutrient totals from current mix
       function currentS() {
-        return mix.rock40 * 6.5 + mix.ats * 26 + mix.kts * 17 + mix.optigold * 2 + mix.s82054 * 4 + mix.ams * 24 + mix.poly4 * 19;
+        return mix.rock40 * 6.5 + mix.ats * 26 + mix.kts * 17 + mix.optigold * 2 + mix.s82054 * 4 + mix.ams * 24 + mix.poly4 * 19 + mix.sul4r * 17;
       }
       function currentK() {
         return mix.potash * 60 + mix.poly4 * 14 + mix.kts * 25 + mix.optigold * 5 + mix.s6246 * 6 + mix.s7235 * 5 + mix.s82054 * 5;
@@ -1686,6 +1705,7 @@
       let sStillNeeded = Math.max(0, targetS - currentS());
       if (sStillNeeded > 0) {
         if (sSource === 'ams') mix.ams = mix.ams + (sStillNeeded / 24);
+        else if (sSource === 'sul4r') mix.sul4r = mix.sul4r + (sStillNeeded / 17);
         else if (sSource === 'ats') mix.ats = mix.ats + (sStillNeeded / 26);
         else if (sSource === 'kts') mix.kts = mix.kts + (sStillNeeded / 17);
         else if (sSource === 'optigold') mix.optigold = mix.optigold + (sStillNeeded / 2);
@@ -1709,7 +1729,7 @@
         else mix.urea = nStillNeeded / 46;
       }
 
-      const orderKeys = ['urea', 'uan28', 'ats', 'app', 'optigold', 's6246', 's7235', 's82054', 'kts', 'map', 'rock40', 'potash', 'ams', 'poly4'];
+      const orderKeys = ['urea', 'uan28', 'ats', 'app', 'optigold', 's6246', 's7235', 's82054', 'kts', 'map', 'rock40', 'potash', 'ams', 'poly4', 'sul4r'];
       let sumFrac = orderKeys.reduce((a, k) => a + mix[k], 0);
       let filler = Math.max(0, 1 - sumFrac);
 
@@ -2122,6 +2142,7 @@
       'Potash': { n: 0, p: 0, k: 60, s: 0, unit: 'ton', lbPerGal: 0 },
       'AMS': { n: 21, p: 0, k: 0, s: 24, unit: 'ton', lbPerGal: 0 },
       'Poly4': { n: 0, p: 0, k: 14, s: 19, unit: 'ton', lbPerGal: 0 },
+      'Sul4r-Plus': { n: 0, p: 0, k: 0, s: 17, unit: 'ton', lbPerGal: 0 },
       'Crystal Green': { n: 7, p: 33, k: 0, s: 0, unit: 'ton', lbPerGal: 0 }
     };
 
