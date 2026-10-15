@@ -74,7 +74,7 @@
       <div class="flex items-center justify-between h-14">
         <div>
           <h1 class="text-base sm:text-lg font-bold tracking-tight">Fertilizer Price Dashboard</h1>
-          <p class="text-xs text-gray-300">Updated <span id="priceAsOfLabel">Oct 14, 2026</span> · <button onclick="openChangelog()" class="underline hover:text-white">View changes</button></p>
+          <p class="text-xs text-gray-300">Updated <span id="priceAsOfLabel">Oct 15, 2026</span> · <button onclick="openChangelog()" class="underline hover:text-white">View changes</button></p>
         </div>
         <div class="flex items-center gap-2 no-print">
           <button onclick="openHistory()" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2" title="Pricing History">
@@ -109,8 +109,8 @@
       </div>
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 card-hover">
         <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Urea</div>
-        <div class="mt-1 text-2xl font-bold text-green-700 dark:text-green-400">$630<span class="text-sm font-normal text-gray-500">/ton</span></div>
-        <div class="text-xs text-gray-400 mt-1">$0.685/lb N · Reg ~$683</div>
+        <div class="mt-1 text-2xl font-bold text-green-700 dark:text-green-400">$620<span class="text-sm font-normal text-gray-500">/ton</span></div>
+        <div class="text-xs text-gray-400 mt-1">$0.674/lb N · Reg ~$683</div>
       </div>
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 card-hover">
         <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">MAP</div>
@@ -127,7 +127,7 @@
     <!-- Regional comparison note -->
     <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg px-4 py-2 mb-6 text-sm text-blue-800 dark:text-blue-300 flex items-start gap-2">
       <i class="fas fa-info-circle mt-0.5"></i>
-      <span><strong>Regional comparison:</strong> “Reg” values are recent Midwest retail averages (illustrative). DFC prices shown are current as of <span id="priceAsOfBanner">Oct 14, 2026</span>.</span>
+      <span><strong>Regional comparison:</strong> “Reg” values are recent Midwest retail averages (illustrative). DFC prices shown are current as of <span id="priceAsOfBanner">Oct 15, 2026</span>.</span>
     </div>
 
     <!-- Favorites strip -->
@@ -158,7 +158,7 @@
             <select id="calcProduct" onchange="loadProduct()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
               <option value="">— Custom / Select —</option>
               <option value="nh3" data-n="82" data-p="0" data-k="0" data-s="0" data-price="890">NH3 (82-0-0) · $890</option>
-              <option value="urea" data-n="46" data-p="0" data-k="0" data-s="0" data-price="630">Urea (46-0-0) · $630</option>
+              <option value="urea" data-n="46" data-p="0" data-k="0" data-s="0" data-price="620">Urea (46-0-0) · $620</option>
               <option value="uan28" data-n="28" data-p="0" data-k="0" data-s="0" data-price="">UAN 28% (28-0-0) · Call</option>
               <option value="ats" data-n="12" data-p="0" data-k="0" data-s="26" data-price="">ATS (12-0-0-26S) · Call</option>
               <option value="app" data-n="10" data-p="34" data-k="0" data-s="0" data-price="">10-34-0 · Call</option>
@@ -301,7 +301,7 @@
             <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Product</label>
             <select id="rateProduct" onchange="calcAppRate()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
               <option value="82" data-name="NH3" data-price="890">NH3 (82-0-0) — N</option>
-              <option value="46" data-name="Urea" data-price="630" selected>Urea (46-0-0) — N</option>
+              <option value="46" data-name="Urea" data-price="620" selected>Urea (46-0-0) — N</option>
               <option value="28" data-name="UAN 28%" data-price="0">UAN 28% (28-0-0) — N</option>
               <option value="12" data-name="ATS" data-price="0">ATS (12-0-0-26S) — N</option>
               <option value="26" data-name="ATS" data-price="0">ATS (12-0-0-26S) — S</option>
@@ -573,12 +573,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="urea" data-product="Urea" data-analysis="46-0-0" data-price="630" data-unit="ton">
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="urea" data-product="Urea" data-analysis="46-0-0" data-price="620" data-unit="ton">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
-                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="Urea" data-analysis="46-0-0" data-price="630" data-unit="ton"></i></td>
+                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="Urea" data-analysis="46-0-0" data-price="620" data-unit="ton"></i></td>
                 <td class="px-4 py-3.5 font-medium">Urea</td>
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">46-0-0</td>
-                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$630/ton</span></td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$620/ton</span></td>
               </tr>
               <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="map" data-product="MAP" data-analysis="11-52-0" data-price="970" data-unit="ton">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
@@ -834,7 +834,7 @@
           <button onclick="toggleHistoryProduct('poly4')" id="hist-poly4" class="hist-btn px-3 py-1.5 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700">Poly4</button>
         </div>
         <div class="relative h-72 sm:h-96"><canvas id="priceChart"></canvas></div>
-        <p class="text-xs text-gray-400 mt-4">Final points are current DFC prices (Oct 14, 2026). Earlier values are regional averages for reference.</p>
+        <p class="text-xs text-gray-400 mt-4">Final points are current DFC prices (Oct 15, 2026). Earlier values are regional averages for reference.</p>
       </div>
     </div>
   </div>
@@ -848,6 +848,12 @@
       </div>
       <div class="p-6 space-y-4 text-sm">
         <div class="border-l-4 border-dfc-red pl-4">
+          <div class="font-semibold">October 15, 2026</div>
+          <ul class="mt-1 text-gray-600 dark:text-gray-300 space-y-1">
+            <li>• Urea $630 → $620/ton</li>
+          </ul>
+        </div>
+        <div class="border-l-4 border-gray-300 dark:border-gray-600 pl-4">
           <div class="font-semibold">October 14, 2026</div>
           <ul class="mt-1 text-gray-600 dark:text-gray-300 space-y-1">
             <li>• Added Sul4r-Plus (0-0-0-17S-21Ca w/Fulvic Acid) · $475/ton under Dry</li>
@@ -985,7 +991,7 @@
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-500 mb-1">Date</label>
-            <input type="text" id="quoteDate" value="October 14, 2026" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
+            <input type="text" id="quoteDate" value="October 15, 2026" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-500 mb-1">Acres (for $/acre)</label>
@@ -1190,9 +1196,9 @@
 
   <script>
     const DASHBOARD_PASSWORD = "DFC2026";
-    const PRICE_AS_OF_ISO = "2026-10-14";
-    const PRICE_AS_OF_LABEL = "Oct 14, 2026";
-    const PRICE_AS_OF_LONG = "October 14, 2026";
+    const PRICE_AS_OF_ISO = "2026-10-15";
+    const PRICE_AS_OF_LABEL = "Oct 15, 2026";
+    const PRICE_AS_OF_LONG = "October 15, 2026";
 
     function formatMoney(n, decimals) {
       if (n == null || isNaN(n)) return '—';
@@ -1298,7 +1304,7 @@
     // Cost per acre — multi product
     const ACRE_PRODUCTS = [
       { name: 'NH3', price: 890, unit: 'ton', n: 82, p: 0, k: 0, s: 0, lbPerGal: 0 },
-      { name: 'Urea', price: 630, unit: 'ton', n: 46, p: 0, k: 0, s: 0, lbPerGal: 0 },
+      { name: 'Urea', price: 620, unit: 'ton', n: 46, p: 0, k: 0, s: 0, lbPerGal: 0 },
       { name: 'UAN 28%', price: 0, unit: 'ton', n: 28, p: 0, k: 0, s: 0, lbPerGal: 10.6 },
       { name: 'ATS', price: 0, unit: 'ton', n: 12, p: 0, k: 0, s: 26, lbPerGal: 11.1 },
       { name: '10-34-0', price: 0, unit: 'ton', n: 10, p: 34, k: 0, s: 0, lbPerGal: 11.65 },
@@ -1625,7 +1631,7 @@
       const el = document.getElementById('blendResults');
 
       const products = {
-        urea:     { name: 'Urea (46-0-0)', n: 46, p: 0, k: 0, s: 0, price: 630, liquid: false, lbPerGal: 0 },
+        urea:     { name: 'Urea (46-0-0)', n: 46, p: 0, k: 0, s: 0, price: 620, liquid: false, lbPerGal: 0 },
         uan28:    { name: 'UAN 28% (28-0-0)', n: 28, p: 0, k: 0, s: 0, price: 0, liquid: true, lbPerGal: 10.6 },
         ats:      { name: 'ATS (12-0-0-26S)', n: 12, p: 0, k: 0, s: 26, price: 0, liquid: true, lbPerGal: 11.1 },
         app:      { name: '10-34-0', n: 10, p: 34, k: 0, s: 0, price: 0, liquid: true, lbPerGal: 11.65 },
@@ -2735,7 +2741,7 @@
     // History chart
     const historyData = {
       labels: ['Mar 2026', 'Apr 2026', 'May 2026', 'Jun 2026', 'Sep 21 2026', 'Sep 28 2026'],
-      urea: [677, 858, 865, 764, 595, 630],
+      urea: [677, 858, 865, 764, 630, 620],
       map: [886, 932, 942, 955, 945, 970],
       nh3: [924, 1088, 1118, 1091, 850, 890],
       potash: [487, 489, 493, 494, 494, 470],
