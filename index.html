@@ -175,7 +175,7 @@
               <option value="poly4" data-n="0" data-p="0" data-k="14" data-s="19" data-price="485">Poly4 (0-0-14-19S) · $485</option>
               <option value="superu" data-n="46" data-p="0" data-k="0" data-s="0" data-price="">SuperU (46-0-0 w/ NBPT & DCD) · Call</option>
               <option value="rhizosorb" data-n="8" data-p="39" data-k="0" data-s="0" data-price="">RhizoSorb (8-39-0) · Call</option>
-              <option value="sul4r" data-n="0" data-p="0" data-k="0" data-s="17" data-price="485">Sul4r-Plus (0-0-0-17S-21Ca) · $485</option>
+              <option value="sul4r" data-n="0" data-p="0" data-k="0" data-s="17" data-price="485">Sul4r-Plus (0-0-0-17S-21Ca w/Fulvic Acid) · $485</option>
             </select>
           </div>
           <div>
@@ -428,7 +428,7 @@
             <select id="blendSSource" onchange="calcBlend()" class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 rounded-lg px-3 py-2 text-sm">
               <option value="ams">AMS · 21-0-0-24S (dry, also N)</option>
               <option value="poly4">Poly4 · 0-0-14-19S (dry, also K)</option>
-              <option value="sul4r">Sul4r-Plus · 0-0-0-17S-21Ca (dry)</option>
+              <option value="sul4r">Sul4r-Plus · 0-0-0-17S-21Ca w/Fulvic Acid (dry)</option>
               <option value="ats">ATS · 12-0-0-26S (liquid, also N)</option>
               <option value="kts">KTS · 0-0-25-17S (liquid, also K)</option>
               <option value="optigold">Optistart Gold · 6-20-5-2S (liquid)</option>
@@ -627,9 +627,9 @@
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">0-0-14-19S-11Ca-4Mg</td>
                 <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$485/ton</span></td>
               </tr>
-              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="sul4r-plus sul4r" data-product="Sul4r-Plus" data-analysis="0-0-0-17S-21Ca (Fulvic)" data-price="485" data-unit="ton">
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="sul4r-plus sul4r" data-product="Sul4r-Plus" data-analysis="0-0-0-17S-21Ca w/Fulvic Acid" data-price="485" data-unit="ton">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
-                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="Sul4r-Plus" data-analysis="0-0-0-17S-21Ca (Fulvic)" data-price="485" data-unit="ton"></i></td>
+                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="Sul4r-Plus" data-analysis="0-0-0-17S-21Ca w/Fulvic Acid" data-price="485" data-unit="ton"></i></td>
                 <td class="px-4 py-3.5 font-medium">Sul4r-Plus</td>
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">0-0-0-17S-21Ca w/Fulvic Acid</td>
                 <td class="px-4 py-3.5 text-right"><span class="badge-price px-3 py-1 rounded-full font-semibold text-sm">$485/ton</span></td>
@@ -1699,7 +1699,7 @@
         potash:   { name: 'Potash (0-0-60)', n: 0, p: 0, k: 60, s: 0, price: 490, liquid: false, lbPerGal: 0 },
         ams:      { name: 'AMS (21-0-0-24S)', n: 21, p: 0, k: 0, s: 24, price: 505, liquid: false, lbPerGal: 0 },
         poly4:    { name: 'Poly4 (0-0-14-19S)', n: 0, p: 0, k: 14, s: 19, price: 485, liquid: false, lbPerGal: 0 },
-        sul4r:    { name: 'Sul4r-Plus (0-0-0-17S-21Ca)', n: 0, p: 0, k: 0, s: 17, price: 485, liquid: false, lbPerGal: 0 }
+        sul4r:    { name: 'Sul4r-Plus (0-0-0-17S-21Ca w/Fulvic Acid)', n: 0, p: 0, k: 0, s: 17, price: 485, liquid: false, lbPerGal: 0 }
       };
 
       let mix = { urea: 0, uan28: 0, uan32: 0, ats: 0, app: 0, optigold: 0, s6246: 0, s7235: 0, s82054: 0, kts: 0, map: 0, rock40: 0, potash: 0, ams: 0, poly4: 0, sul4r: 0 };
