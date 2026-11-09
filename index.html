@@ -174,6 +174,7 @@
               <option value="ams" data-n="21" data-p="0" data-k="0" data-s="24" data-price="495">AMS (21-0-0-24S) · $495</option>
               <option value="poly4" data-n="0" data-p="0" data-k="14" data-s="19" data-price="475">Poly4 (0-0-14-19S) · $475</option>
               <option value="superu" data-n="46" data-p="0" data-k="0" data-s="0" data-price="">SuperU (46-0-0 w/ NBPT & DCD) · Call</option>
+              <option value="rhizosorb" data-n="8" data-p="39" data-k="0" data-s="0" data-price="">RhizoSorb (8-39-0) · Call</option>
               <option value="sul4r" data-n="0" data-p="0" data-k="0" data-s="17" data-price="475">Sul4r-Plus (0-0-0-17S-21Ca) · $475</option>
             </select>
           </div>
@@ -769,6 +770,13 @@
                 <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">46-0-0 w/ NBPT & DCD</td>
                 <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
               </tr>
+              <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="rhizosorb" data-product="RhizoSorb" data-analysis="8-39-0" data-price="Call" data-unit="">
+                <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
+                <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="RhizoSorb" data-analysis="8-39-0" data-price="Call" data-unit=""></i></td>
+                <td class="px-4 py-3.5 font-medium">RhizoSorb</td>
+                <td class="px-4 py-3.5 text-gray-600 dark:text-gray-400">8-39-0</td>
+                <td class="px-4 py-3.5 text-right"><span class="badge-call px-3 py-1 rounded-full font-semibold text-sm">Call</span></td>
+              </tr>
               <tr class="product-row border-t border-gray-100 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20" data-name="pell lime" data-product="Pell Lime" data-analysis="—" data-price="Call" data-unit="">
                 <td class="px-3 py-3 no-print"><input type="checkbox" class="product-checkbox" onchange="updateSelectedCount()" /></td>
                 <td class="px-3 py-3 no-print"><i class="fas fa-star star-btn" onclick="toggleFavorite(this)" data-product="Pell Lime" data-analysis="—" data-price="Call" data-unit=""></i></td>
@@ -874,6 +882,7 @@
             <li>• Added SuperU (46-0-0 w/ NBPT & DCD) · Call under Other</li>
             <li>• UAN renamed to 28-0-0</li>
             <li>• Added 32-0-0 under Liquid · Call</li>
+            <li>• Added RhizoSorb (8-39-0) · Call under Other</li>
           </ul>
         </div>
         <div class="border-l-4 border-gray-300 dark:border-gray-600 pl-4">
@@ -2184,7 +2193,8 @@
       'Poly4': { n: 0, p: 0, k: 14, s: 19, unit: 'ton', lbPerGal: 0 },
       'Sul4r-Plus': { n: 0, p: 0, k: 0, s: 17, unit: 'ton', lbPerGal: 0 },
       'Crystal Green': { n: 7, p: 33, k: 0, s: 0, unit: 'ton', lbPerGal: 0 },
-      'SuperU': { n: 46, p: 0, k: 0, s: 0, unit: 'ton', lbPerGal: 0 }
+      'SuperU': { n: 46, p: 0, k: 0, s: 0, unit: 'ton', lbPerGal: 0 },
+      'RhizoSorb': { n: 8, p: 39, k: 0, s: 0, unit: 'ton', lbPerGal: 0 }
     };
 
     function getCatalogProducts() {
